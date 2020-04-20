@@ -57,11 +57,6 @@ device_tracker:
     devices:
       srp_iphone_ios: 'location/phone/srp_iphone_ios'
 
-#lutron:
-#  host: 192.168.35.158
-#  username: "lutron"
-#  password: "integration"
-
 lutron_caseta_pro:
    bridges:
       - host: 192.168.35.158
@@ -77,11 +72,11 @@ cover:
 
 climate:
   - platform: venstar
-    host: 192.168.35.223
+    host: !secret venstar_host1
     ssl: false
     humidifier: false
   - platform: venstar
-    host: 192.168.35.224
+    host: !secret venstar_host2
     ssl: false
     humidifier: false
   - platform: mqtt
@@ -183,14 +178,13 @@ sensor:
     password: !secret ups_pass
     resources:
       - ups.load
-#      - ups.realpower.nominal
       - input.voltage
       - battery.runtime
       - ups.status.display
       
   - platform: rest
     name: "Vera House Mode"
-    resource: "http://192.168.35.155:3480/data_request?id=variableget&Variable=Mode"
+    resource: !secret vera_resource
     method: "GET"
     scan_interval: 5
     value_template: >-
