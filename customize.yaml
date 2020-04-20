@@ -1,0 +1,24 @@
+person.scott:
+  entity_picture: https://www.gravatar.com/avatar/7ef327c7d17eb7c2466bbd613db99884.jpg?s=80&d=wavatar
+person.stephanie:
+  entity_picture: https://www.gravatar.com/avatar/608e3038b8dd7098729f71371af81d14.jpg?s=80&d=wavatar
+sensor.memory_use_percent:
+  friendly_name: Memory use
+weather.dark_sky:
+  friendly_name: 'Dark Sky: Santa Rosa'
+device_tracker.audi_bt:
+  friendly_name: Audi
+device_tracker.explorer_bt:
+  friendly_name: Explorer
+device_tracker.rav4_bt:
+  friendly_name: Rav4
+sensor.load_1m:
+  icon: mdi:memory
+sensor.pentair_airtemp:
+  friendly_name: Air Temperature
+sensor.pentair_pooltemp:
+  friendly_name: Pool Temperature
+sensor.pentair_spatemp:
+  friendly_name: Spa Temperature
+climate.guest_1:
+  unit_of_measurement: "°F"

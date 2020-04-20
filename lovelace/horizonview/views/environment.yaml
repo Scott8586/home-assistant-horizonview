@@ -1,0 +1,12 @@
+#title: Environment
+icon: mdi:weather-sunny
+path: environment
+theme: default
+badges: []
+cards:
+  - entities:
+      - sun.sun
+#      - sensor.weewx_solar_altitude
+      - sensor.moon
+    title: Astronomy
+    type: entities

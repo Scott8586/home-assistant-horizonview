@@ -1,0 +1,56 @@
+#title: Net Ops
+icon: mdi:lan
+path: net-ops
+theme: default
+badges:
+  - entity: binary_sensor.updater
+cards:
+  - entities:
+      - entity: sensor.load_1m
+      - entity: sensor.cpu_temperature
+      - entity: sensor.memory_use_percent
+      - entity: sensor.processor_use
+      - entity: sensor.last_boot
+    title: Local Machine
+    type: entities
+  - entities:
+      - sensor.closet_ups_status
+      - sensor.closet_ups_load
+      - sensor.closet_ups_input_voltage
+      - sensor.closet_ups_battery_minutes
+    title: Network Operations
+    type: entities
+  - type: entities
+    entities:
+      - automation.telegram_test_command
+    title: Test Messages
+  - title: Host Control
+    show_name: true
+    show_state: true
+    type: glance
+    entities:
+      - entity: sensor.uptime
+        name: Lovelace UI
+        icon: 'mdi:restart'
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          service_data:
+            entity_id: automation.home_assistant_reload_command
+      - entity: sensor.uptime
+        icon: 'mdi:restart'
+        name: Home Assistant
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          service_data:
+            entity_id: automation.home_assistant_restart_command
+      - entity: sensor.last_boot
+        icon: 'mdi:restart'
+        name: HA Server
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          service_data:
+            entity_id: automation.home_assistant_reboot_command
+

@@ -1,0 +1,27 @@
+custom_header:
+  compact_mode: true
+resources:
+  - url: /hacsfiles/bignumber-card/bignumber-card.js?v=0.0.2
+    type: module
+  - url: /hacsfiles/custom-header/custom-header.js?v=0.0.2
+    type: module
+  - url: /hacsfiles/lovelace-card-tools/card-tools.js
+    type: module
+  - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js?=0.0.2
+    type: module
+  - url: /hacsfiles/flex-horseshoe-card/flex-horseshoe-card.js?v=0.0.2
+    type: module
+  - url: /hacsfiles/simple-thermostat/simple-thermostat.js?v=0.0.
+    type: module
+  - url: /hacsfiles/button-card/button-card.js?v=0.0.2
+    type: module
+  - url: /local/vertical-style-card.js?v=0.1
+    type: js
+title: Horizon View
+views:
+  - !include /config/lovelace/horizonview/views/home.yaml
+  - !include /config/lovelace/horizonview/views/environment.yaml
+#  - !include /config/lovelace/horizonview/views/media.yaml
+  - !include /config/lovelace/horizonview/views/net_ops.yaml
+  - !include /config/lovelace/horizonview/views/sensors.yaml
+

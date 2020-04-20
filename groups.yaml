@@ -1,0 +1,30 @@
+closet:
+  name: Network Operations
+  control: hidden
+  entities:
+    - sensor.closet_ups_status
+    - sensor.closet_ups_load
+    - sensor.closet_ups_input_voltage
+    - sensor.closet_ups_battery_minutes
+
+localmachine:
+  name: This Machine
+  control: hidden
+  entities:
+    - sensor.cpu_temperature
+    - sensor.load_1m_templated
+    - sensor.processor_use
+    - sensor.memory_use_percent
+    - sensor.last_boot
+
+environment:
+  name: Environment
+  control: hidden
+  entities:
+    - sun.sun
+    - sensor.weewx_solar_altitude
+    - sensor.moon
+    - sensor.ambient_temperature
+    - sensor.ambient_humidity
+    - sensor.ambient_pressure
+    - sensor.ambient_adjusted_pressure

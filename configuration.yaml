@@ -1,0 +1,264 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret hvw_latitude
+  longitude: !secret hvw_longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 100
+  # metric for Metric, imperial for Imperial
+  unit_system: imperial
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Los_Angeles
+  # Customization file
+  customize: !include customize.yaml
+  customize_glob: !include customize_glob.yaml
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+http:
+  ssl_certificate:    !secret ssl_certificate
+  ssl_key:            !secret ssl_key
+
+telegram_bot:
+  - platform: polling # polling or broadcast
+    api_key: !secret telegram_apikey
+    parse_mode: html # otherwise '_' are interpreted as for italics in msg parser
+    allowed_chat_ids:
+      - !secret telegram_chatid # First chat Group "HA Horizonview"
+      - !secret telegram_userid # "Scott"
+
+notify:
+  - name: telegram_horizonview
+    platform: telegram
+    api_key: !secret telegram_apikey
+    chat_id: !secret telegram_chatid
+
+logger:
+  default: info
+  logs:
+#    homeassistant.components.automation: debug
+#    aiounifi: debug
+#    homeassistant.components.unifi: debug
+#    homeassistant.components.sensor: debug
+    homeassistant.components.climate: debug
+
+device_tracker:
+  - platform: mqtt
+    devices:
+      explorer_bt: 'monitor/horizonview_garage/explorer/device_tracker'
+      audi_bt: 'monitor/horizonview_garage/audi/device_tracker'
+      rav4_bt: 'monitor/horizonview_garage/rav4/device_tracker'
+  - platform: mqtt_json
+    devices:
+      srp_iphone_ios: 'location/phone/srp_iphone_ios'
+
+#lutron:
+#  host: 192.168.35.158
+#  username: "lutron"
+#  password: "integration"
+
+lutron_caseta_pro:
+   bridges:
+      - host: 192.168.35.158
+        mac: c4:f3:12:db:74:71
+        cover: [2, 4, 5, 6, 8]
+        switch: [3, 7, 9]
+        
+cover:
+    - platform: myq
+      username: !secret myq_user
+      password: !secret myq_pass
+      type: liftmaster
+
+climate:
+  - platform: venstar
+    host: 192.168.35.223
+    ssl: false
+    humidifier: false
+  - platform: venstar
+    host: 192.168.35.224
+    ssl: false
+    humidifier: false
+  - platform: mqtt
+    name: "Pool"
+    min_temp: 40
+    max_temp: 104
+    modes:
+      - "off"
+      - "heat"
+    current_temperature_topic: pentair/pooltemp/state
+    action_topic: pentair/circuit/505/state
+    mode_command_topic: pentair/heater/pool/mode/set
+    mode_state_topic: pentair/heater/pool/mode/state
+    temperature_command_topic: pentair/heater/pool/temperature/set
+    temperature_state_topic: pentair/heater/pool/setpoint/state
+  - platform: mqtt
+    name: "Spa"
+    min_temp: 40
+    max_temp: 104
+    modes:
+      - "off"
+      - "heat"
+    current_temperature_topic: pentair/spatemp/state
+    action_topic: pentair/circuit/500/state
+    mode_command_topic: pentair/heater/spa/mode/set
+    mode_state_topic: pentair/heater/spa/mode/state
+    temperature_command_topic: pentair/heater/spa/temperature/set
+    temperature_state_topic: pentair/heater/spa/setpoint/state
+
+schluter:
+  username: !secret schluter_username
+  password: !secret schluter_password
+  
+sensor:
+  - platform: mqtt
+    state_topic: 'monitor/horizonview_garage/audi'
+    value_template: '{{ value_json.rssi }}'
+    unit_of_measurement: 'dBm'
+    name: 'Audi'
+  - platform: mqtt
+    state_topic: 'monitor/horizonview_garage/explorer'
+    value_template: '{{ value_json.rssi }}'
+    unit_of_measurement: 'dBm'
+    name: 'Explorer'
+  - platform: mqtt
+    state_topic: 'monitor/horizonview_garage/rav4'
+    value_template: '{{ value_json.rssi }}'
+    unit_of_measurement: 'dBm'
+    name: 'Rav4'
+  - platform: mqtt
+    name: pentair_pooltemp
+    state_topic: pentair/pooltemp/state
+    unit_of_measurement: "°F"
+  - platform: mqtt
+    name: pentair_spatemp
+    state_topic: pentair/spatemp/state
+    unit_of_measurement: "°F"
+  - platform: mqtt
+    name: pentair_airtemp
+    state_topic: pentair/airtemp/state
+    unit_of_measurement: "°F"
+  - platform: mqtt
+    name: garage_humidity
+    state_topic: environment/horizonview/1/humidity
+    unit_of_measurement: "%"
+  - platform: mqtt
+    name: garage_temperature
+    state_topic: environment/horizonview/1/temperature_F
+    unit_of_measurement: "°F"
+  - platform: mqtt
+    name: cellar_humidity
+    state_topic: environment/horizonview/2/humidity
+    unit_of_measurement: "%"
+  - platform: mqtt
+    name: cellar_temperature
+    state_topic: environment/horizonview/2/temperature_F
+    unit_of_measurement: "°F"
+  - platform: mqtt
+    name: outside_humidity
+    state_topic: environment/horizonview/3/humidity
+    unit_of_measurement: "%"
+  - platform: mqtt
+    name: outside_temperature
+    state_topic: environment/horizonview/3/temperature_F
+    unit_of_measurement: "°F"
+  - platform: xfinity
+    username: !secret xfinity_email
+    password: !secret xfinity_password
+  - platform: rainforest_eagle
+    ip_address: !secret eagle_host
+    cloud_id: !secret eagle_cloud_id
+    install_code: !secret eagle_install_code
+  - platform: nut
+    name: closet UPS
+    host: !secret ups_host
+    port: 3493
+    alias: ups
+    username: !secret ups_user
+    password: !secret ups_pass
+    resources:
+      - ups.load
+#      - ups.realpower.nominal
+      - input.voltage
+      - battery.runtime
+      - ups.status.display
+      
+  - platform: rest
+    name: "Vera House Mode"
+    resource: "http://192.168.35.155:3480/data_request?id=variableget&Variable=Mode"
+    method: "GET"
+    scan_interval: 5
+    value_template: >-
+      {% set mapper =  {
+        '1' : 'Home',
+        '2' : 'Away',
+        '3' : 'Night',
+        '4' : 'Vacation' } %}
+      {{ mapper[value] }}
+  - platform: systemmonitor
+    resources:
+      - type: memory_use_percent
+      - type: processor_use
+      - type: load_1m       
+      - type: last_boot
+# CPU Temperature of pi
+  - platform: command_line
+    name: CPU Temperature
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    # If errors occur, remove degree symbol below
+    unit_of_measurement: " °C"
+#    value_template: "{{ (value | multiply(0.0018) + 32) | float | round(2) }}"
+    value_template: "{{ value | multiply(0.001) | float | round(1) }}"
+  - platform: template
+    sensors:
+      closet_ups_battery_minutes:
+        friendly_name: "Closet UPS Battery Minutes"
+        value_template: "{{ states('sensor.closet_ups_battery_runtime') | multiply(0.0167) | float | round(0) }}"
+        unit_of_measurement: "min"
+# Time and date
+  - platform: uptime
+  - platform: time_date
+    display_options:        
+      - 'time'              
+      - 'date'              
+      - 'date_time'         
+      - 'date_time_utc'     
+      - 'date_time_iso'     
+      - 'time_date'         
+      - 'time_utc'          
+  - platform: moon
+
+# Example configuration.yaml entry
+utility_meter:
+  daily_energy:
+    source: sensor.eagle_200_net_meter_energy_delivered_minus_received
+    cycle: daily
+  monthly_energy:
+    source: sensor.eagle_200_net_meter_energy_delivered_minus_received
+    cycle: monthly
+
+weather:
+  - platform: darksky
+    api_key: !secret darksky_api
+    mode: daily
+    scan_interval:
+      minutes: 15
+
+# Text to speech
+#tts:
+#  - platform: google_translate
+
+lovelace:
+  mode: yaml
+
+#group: !include groups.yaml
+zone: !include zones.yaml
+rest_command: !include rest.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
