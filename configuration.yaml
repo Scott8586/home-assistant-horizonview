@@ -227,6 +227,36 @@ sensor:
       - 'time_utc'          
   - platform: moon
 
+switch:
+  - platform: mqtt
+    name: pentair_pool
+    command_topic: pentair/circuit/505/command
+    state_topic: pentair/circuit/505/state
+  - platform: mqtt
+    name: pentair_spa
+    command_topic: pentair/circuit/500/command
+    state_topic: pentair/circuit/500/state
+  - platform: mqtt
+    name: pentair_spa_jets
+    command_topic: pentair/circuit/504/command
+    state_topic: pentair/circuit/504/state
+  - platform: mqtt
+    name: pentair_waterfall
+    command_topic: pentair/circuit/506/command
+    state_topic: pentair/circuit/506/state
+  - platform: mqtt
+    name: pentair_cleaner
+    command_topic: pentair/circuit/501/command
+    state_topic: pentair/circuit/501/state
+  - platform: mqtt
+    name: pentair_pool_lights
+    command_topic: pentair/circuit/502/command
+    state_topic: pentair/circuit/502/state
+  - platform: mqtt
+    name: pentair_spa_lights
+    command_topic: pentair/circuit/503/command
+    state_topic: pentair/circuit/503/state
+
 # Example configuration.yaml entry
 utility_meter:
   daily_energy:

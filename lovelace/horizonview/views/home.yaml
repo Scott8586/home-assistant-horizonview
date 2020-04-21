@@ -12,7 +12,7 @@ cards:
     type: 'custom:bignumber-card'
   - type: weather-forecast
     entity: weather.dark_sky
-  - type: "custom:simple-thermostat"
+  - type: thermostat
     entity: climate.main_floor
   - type: thermostat
     entity: climate.downstairs
@@ -22,10 +22,6 @@ cards:
     entity: climate.guest_1
   - type: thermostat
     entity: climate.guest_2
-  - type: thermostat
-    entity: climate.pool
-  - type: thermostat
-    entity: climate.spa
   - type: horizontal-stack
     cards:
     - color: '#FFFFFF'
