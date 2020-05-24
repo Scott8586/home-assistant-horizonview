@@ -29,6 +29,10 @@
       data:
         topic: "monitor/scan/restart"
         payload: ""
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/tasmotas/state"
+        payload: ""
 
 # Sonos Volume Reset - start the day at low volume
 - id: 'sonosvolumereset'
@@ -53,8 +57,7 @@
   action:
     service: notify.telegram_horizonview # or telegram_bot.send_message
     data_template:
-      message: "Pool Temperature {{ states('sensor.pentair_pooltemp') }}F"
-
+      message: "Pool Temperature {{ states('sensor.pentair_pool_temperature') }}F"
 
 # Test message      
 - id: 'testmessage'

@@ -136,7 +136,7 @@ cards:
       cards:
       - type: 'custom:flex-horseshoe-card'
         entities:
-        - entity: sensor.pentair_airtemp
+        - entity: sensor.pentair_air_temperature
           decimals: 1
           unit: '°F'
           area: "Air Temp"
@@ -182,7 +182,7 @@ cards:
           88: 'red'
       - type: 'custom:flex-horseshoe-card'
         entities:
-          - entity: sensor.pentair_pooltemp
+          - entity: sensor.pentair_pool_temperature
             decimals: 1
             unit: '°F'
             area: "Pool Temp"
@@ -229,7 +229,7 @@ cards:
           }
       - type: 'custom:flex-horseshoe-card'
         entities:
-          - entity: sensor.pentair_spatemp
+          - entity: sensor.pentair_spa_temperature
             decimals: 1
             unit: '°F'
             area: "Spa Temp"
@@ -373,4 +373,13 @@ cards:
           2: 'blue'
           4: 'orange'
           6: 'red'
+  - entities:
+      - switch.cellar_a_c
+      - switch.sonos_amps
+      - switch.family_room_a_v
+      - switch.game_room_a_v
+      - switch.master_a_v
+    show_header_toggle: false
+    title: Switches
+    type: entities
 

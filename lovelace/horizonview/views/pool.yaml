@@ -12,7 +12,7 @@ cards:
       cards:
       - type: 'custom:flex-horseshoe-card'
         entities:
-        - entity: sensor.pentair_airtemp
+        - entity: sensor.pentair_air_temperature
           decimals: 1
           unit: '°F'
           area: "Air Temp"
@@ -58,7 +58,7 @@ cards:
           88: 'red'
       - type: 'custom:flex-horseshoe-card'
         entities:
-          - entity: sensor.pentair_pooltemp
+          - entity: sensor.pentair_pool_temperature
             decimals: 1
             unit: '°F'
             area: "Pool Temp"
@@ -105,7 +105,7 @@ cards:
           }
       - type: 'custom:flex-horseshoe-card'
         entities:
-          - entity: sensor.pentair_spatemp
+          - entity: sensor.pentair_spa_temperature
             decimals: 1
             unit: '°F'
             area: "Spa Temp"

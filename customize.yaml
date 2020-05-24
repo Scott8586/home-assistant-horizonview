@@ -32,14 +32,12 @@ sensor.outside_temperature:
   friendly_name: Outside Temperature
 sensor.outside_humidity:
   friendly_name: Outside Humidity
-sensor.pentair_airtemp:
+sensor.pentair_air_temperature:
   friendly_name: Air Temperature
-sensor.pentair_pooltemp:
+sensor.pentair_pool_temperature:
   friendly_name: Pool Temperature
-sensor.pentair_spatemp:
+sensor.pentair_spa_temperature:
   friendly_name: Spa Temperature
-climate.guest_1:
-  unit_of_measurement: "°F"
 switch.pentair_pool:
   friendly_name: Pool
 switch.pentair_spa:

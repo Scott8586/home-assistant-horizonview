@@ -3,9 +3,9 @@ icon: mdi:thermometer-lines
 path: sensors
 cards:
   - entities:
-      - entity: sensor.pentair_airtemp
-      - entity: sensor.pentair_pooltemp
-      - entity: sensor.pentair_spatemp
+      - entity: sensor.pentair_air_temperature
+      - entity: sensor.pentair_pool_temperature
+      - entity: sensor.pentair_spa_temperature
     title: Pool Temps
     type: entities
   - entities:

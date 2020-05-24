@@ -23,6 +23,7 @@ cards:
   - type: entities
     entities:
       - automation.telegram_test_command
+      - automation.daily_pool_temp_report_at_5am
     title: Test Messages
   - title: Host Control
     show_name: true

@@ -127,15 +127,15 @@ sensor:
     unit_of_measurement: 'dBm'
     name: 'Rav4'
   - platform: mqtt
-    name: pentair_pooltemp
+    name: pentair_pool_temperature
     state_topic: pentair/pooltemp/state
     unit_of_measurement: "°F"
   - platform: mqtt
-    name: pentair_spatemp
+    name: pentair_spa_temperature
     state_topic: pentair/spatemp/state
     unit_of_measurement: "°F"
   - platform: mqtt
-    name: pentair_airtemp
+    name: pentair_air_temperature
     state_topic: pentair/airtemp/state
     unit_of_measurement: "°F"
   - platform: mqtt
@@ -162,6 +162,31 @@ sensor:
     name: outside_temperature
     state_topic: environment/horizonview/3/temperature_F
     unit_of_measurement: "°F"
+  - platform: mqtt
+    name: 'Family Room A/V State'
+    state_topic: tele/tasmota2/STATE
+    value_template: '{{ value_json["Wifi"]["RSSI"] }}'
+    json_attributes_topic: 'tele/tasmota2/STATE'
+  - platform: mqtt
+    name: 'Game Room A/V State'
+    state_topic: tele/tasmota3/STATE
+    value_template: '{{ value_json["Wifi"]["RSSI"] }}'
+    json_attributes_topic: 'tele/tasmota3/STATE'
+  - platform: mqtt
+    name: 'Master Retreat A/V State'
+    state_topic: tele/tasmota4/STATE
+    value_template: '{{ value_json["Wifi"]["RSSI"] }}'
+    json_attributes_topic: 'tele/tasmota4/STATE'
+  - platform: mqtt
+    name: 'Cellar A/C Power'
+    state_topic: tele/tasmota5/SENSOR
+    value_template: '{{ value_json["ENERGY"]["Today"] }}'
+    json_attributes_topic: 'tele/tasmota5/SENSOR'
+  - platform: mqtt
+    name: 'Sonos AMPs Power'
+    state_topic: tele/tasmota6/SENSOR
+    value_template: '{{ value_json["ENERGY"]["Today"] }}'
+    json_attributes_topic: 'tele/tasmota6/SENSOR'
   - platform: xfinity
     username: !secret xfinity_email
     password: !secret xfinity_password
@@ -181,7 +206,16 @@ sensor:
       - input.voltage
       - battery.runtime
       - ups.status.display
-      
+  # Weewx Weather
+  - platform: rest
+    resource: http://192.168.35.157/weewx/daily.json
+    name: Weewx Weather
+    scan_interval: 150
+    force_update: true
+    json_attributes:
+      - current
+      - almanac
+    value_template: '{{ value_json.location }}'
   - platform: rest
     name: "Vera House Mode"
     resource: !secret vera_resource
@@ -256,6 +290,76 @@ switch:
     name: pentair_spa_lights
     command_topic: pentair/circuit/503/command
     state_topic: pentair/circuit/503/state
+  - platform: mqtt
+    name: "Family Room A/V"
+    state_topic: "stat/tasmota2/POWER"
+    #value_template: "{{ value_json.POWER }}"
+    command_topic: "cmnd/tasmota2/POWER"
+    availability_topic: "tele/tasmota2/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    state_on: "ON"
+    state_off: "OFF"
+    retain: false
+  - platform: mqtt
+    name: "Game Room A/V"
+    state_topic: "stat/tasmota3/POWER"
+    #value_template: "{{ value_json.POWER }}"
+    command_topic: "cmnd/tasmota3/POWER"
+    availability_topic: "tele/tasmota3/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    state_on: "ON"
+    state_off: "OFF"
+    retain: false
+  - platform: mqtt
+    name: "Master A/V"
+    state_topic: "stat/tasmota4/POWER"
+    #value_template: "{{ value_json.POWER }}"
+    command_topic: "cmnd/tasmota4/POWER"
+    availability_topic: "tele/tasmota4/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    state_on: "ON"
+    state_off: "OFF"
+    retain: false
+  - platform: mqtt
+    name: "Cellar A/C"
+    state_topic: "stat/tasmota5/POWER"
+    #value_template: "{{ value_json.POWER }}"
+    command_topic: "cmnd/tasmota5/POWER"
+    availability_topic: "tele/tasmota5/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    state_on: "ON"
+    state_off: "OFF"
+    retain: false
+  - platform: mqtt
+    name: "Sonos AMPs"
+    state_topic: "stat/tasmota6/POWER"
+    #value_template: "{{ value_json.POWER }}"
+    command_topic: "cmnd/tasmota6/POWER"
+    availability_topic: "tele/tasmota6/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    state_on: "ON"
+    state_off: "OFF"
+    retain: false
 
 # Example configuration.yaml entry
 utility_meter:
@@ -265,6 +369,9 @@ utility_meter:
   monthly_energy:
     source: sensor.eagle_200_net_meter_energy_delivered_minus_received
     cycle: monthly
+
+iqvia:
+  zip_code: "95404"
 
 weather:
   - platform: darksky
@@ -284,17 +391,19 @@ lovelace:
       type: module
     - url: /hacsfiles/custom-header/custom-header.js?v=0.0.2
       type: module
-    - url: /hacsfiles/lovelace-card-tools/card-tools.js
+    - url: /hacsfiles/lovelace-card-tools/card-tools.js?v=0.0.2
       type: module
     - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js?=0.0.2
       type: module
     - url: /hacsfiles/flex-horseshoe-card/flex-horseshoe-card.js?v=0.0.2
       type: module
-    - url: /hacsfiles/simple-thermostat/simple-thermostat.js?v=0.0.
+    - url: /hacsfiles/simple-thermostat/simple-thermostat.js?v=0.0.2
       type: module
     - url: /hacsfiles/button-card/button-card.js?v=0.0.2
       type: module
-    - url: /local/vertical-style-card.js?v=0.1
+    - url: /hacsfiles/entity-attributes-card/entity-attributes-card.js?v=0.0.2
+      type: module
+    - url: /local/vertical-style-card.js?v=0.0.2
       type: js
 
 #group: !include groups.yaml
