@@ -1,0 +1,14 @@
+# Notify House Alarm State
+id: 'notifyhousealarmstate'
+alias: "N: House Alarm State"
+initial_state: 'on'
+trigger:
+  platform: state
+  entity_id: alarm_control_panel.house_alarm
+condition:
+  - condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: "{{ trigger.to_state.name }} is {{ trigger.to_state.state }}"

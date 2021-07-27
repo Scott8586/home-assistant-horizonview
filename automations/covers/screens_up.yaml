@@ -1,0 +1,13 @@
+id: 'shadesupsunset'
+alias: "A: Sunset Shades Up"
+trigger:
+  platform: sun
+  event: sunset
+  offset: "-00:20:00"
+condition:
+  condition: state
+  entity_id: sensor.vera_house_mode
+  state: Home
+action:
+  service: scene.turn_on
+  entity_id: scene.all_shades_up

@@ -1,0 +1,20 @@
+# Pool Notifications
+id: 'spapumpnotify'
+alias: 'N: Pool Ops Notify'
+trigger:
+  platform: state
+  entity_id: >
+    switch.pentair_spa_pump, switch.pentair_spa_jets,
+    switch.pentair_pool_pump, switch.pentair_pool_cleaner,
+    switch.pentair_waterfall,
+    switch.pentair_pool_lights, switch.pentair_spa_lights,
+    climate.pool, climate.spa
+condition:
+- condition: template
+  value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: "{{ trigger.to_state.name }} is {{ trigger.to_state.state }}"
+
+

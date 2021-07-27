@@ -1,0 +1,18 @@
+# Room Assistant State Notifications
+id: 'roomassistantstatepnotify'
+alias: 'N: Room Assistant State Change'
+trigger:
+  platform: state
+  entity_id: >
+    sensor.room_assistant_familyroom,
+    sensor.room_assistant_gameroom,
+    sensor.room_assistant_retreat,
+    sensor.room_assistant_garage
+condition:
+- condition: template
+  value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: "{{ trigger.to_state.name }} is {{ trigger.to_state.state }}"
+

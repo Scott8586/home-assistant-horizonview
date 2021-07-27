@@ -1,0 +1,26 @@
+id: 'shadesdownazimuth'
+alias: "A: Sunrise Shades Down"
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.weewx_solar_radiation
+    above: 150
+  - platform: numeric_state
+    entity_id: sun.sun
+    value_template: "{{ state_attr('sun.sun', 'azimuth') | int }}"
+    above: 105
+condition:
+  condition: and
+  conditions:
+    - condition: state
+      entity_id: sensor.vera_house_mode
+      state: Home
+    - condition: numeric_state
+      entity_id: sensor.weewx_solar_radiation
+      above: 150
+    - condition: numeric_state
+      entity_id: sun.sun
+      value_template: "{{ state_attr('sun.sun', 'azimuth') | int }}"
+      above: 105
+action:
+  service: scene.turn_on
+  entity_id: scene.all_shades_down

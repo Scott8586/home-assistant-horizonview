@@ -1,0 +1,18 @@
+# Notify sump pump
+id: 'notifysumppump'
+alias: "N: Sump Pump"
+initial_state: 'on'
+trigger:
+  platform: state
+  entity_id: binary_sensor.sump_pump_75
+condition:
+  - condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: >
+      {% if is_state(trigger.to_state, 'off') %}
+        {{ trigger.to_state.name }} is on!
+      {% endif %}
+

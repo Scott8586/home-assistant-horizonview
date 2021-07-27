@@ -1,13 +1,13 @@
 - name: Tworoads
   latitude: !secret tworoads_latitude
   longitude: !secret tworoads_longitude
-  radius: 100
+  radius: 200
   icon: mdi:account-multiple
 
 - name: Vistasea
   latitude: !secret vistasea_latitude
   longitude: !secret vistasea_longitude
-  radius: 300
+  radius: 200
   icon: mdi:account-multiple
 
 - name: BRI
@@ -22,8 +22,14 @@
   radius: 100
   icon: mdi:worker
   
+- name: SEATAC
+  latitude: !secret seatac_latitude
+  longitude: !secret seatac_longitude
+  radius: 2000
+  icon: mdi:worker
+
 - name: Horizon View
   latitude: !secret hvw_latitude
   longitude: !secret hvw_longitude
-  radius: 300
+  radius: 200
   icon: mdi:account-multiple

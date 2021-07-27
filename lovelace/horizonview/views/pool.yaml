@@ -152,12 +152,15 @@ cards:
             padding: 0px 0px 0px;
           }
   - entities:
-      - entity: switch.pentair_pool
-      - entity: switch.pentair_cleaner
-      - entity: switch.pentair_spa
+      - entity: switch.pentair_pool_pump
+      - entity: switch.pentair_pool_cleaner
+      - entity: switch.pentair_spa_pump
+      - entity: switch.pentair_spa_jets
       - entity: switch.pentair_waterfall
       - entity: switch.pentair_pool_lights
       - entity: switch.pentair_spa_lights
+      - entity: automation.daily_pool_temp
+      - entity: automation.spa_pump_notify
     show_header_toggle: false
     title: Pool Controls
     type: entities

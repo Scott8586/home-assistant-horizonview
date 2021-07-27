@@ -4,24 +4,117 @@ path: default_view
 badges:
   - entity: person.scott
   - entity: person.stephanie
-  - entity: device_tracker.audi_bt
-  - entity: device_tracker.explorer_bt
+  - entity: device_tracker.audi_a6_gps
+  - entity: device_tracker.audi_q7_gps
   - entity: device_tracker.rav4_bt
 cards:
-  - entity: sensor.time
-    type: 'custom:bignumber-card'
-  - type: weather-forecast
-    entity: weather.dark_sky
-  - type: thermostat
-    entity: climate.main_floor
-  - type: thermostat
-    entity: climate.downstairs
-  - type: thermostat
-    entity: climate.master_bath
-  - type: thermostat
-    entity: climate.guest_1
-  - type: thermostat
-    entity: climate.guest_2
+  - type: 'vertical-stack'                     
+    cards:                              
+    - type: 'custom:button-card'
+      entity: sensor.current_date_time
+      show_icon: false
+      show_label: false
+      show_name: false
+      show_state: true
+      styles:
+        state:
+        - font-size: 1.5em
+        - font-weight: bold
+        - text-transform: uppercase
+      card:
+      - border: '1px solid rgb(255, 255, 255)'
+      - height: 50px
+    - entity: weather.dark_sky
+      theme: default  
+      type: weather-forecast        
+    - type: 'custom:sun-card'       
+  - type: 'vertical-stack'                     
+    cards:                              
+    - entity: camera.hv_front_yard
+      type: picture-entity
+    - entity: camera.hv_back_yard
+      type: picture-entity
+    - entity: camera.hv_side_yard
+      type: picture-entity
+  - type: 'vertical-stack'
+    name: HVAC
+    cards:
+    - type: custom:simple-thermostat
+      entity: climate.main_floor
+      icon: false
+      step_layout: row
+      control:                        
+        hvac: true
+        preset:                       
+          away: true                  
+          temperature:                    
+            name: Hold                    
+          none:                            
+            name: Home                     
+    - type: custom:simple-thermostat
+      entity: climate.downstairs
+      icon: false
+      step_layout: row
+      control:                        
+        hvac: true
+        preset:                       
+          away: true                  
+          temperature:                    
+            name: Hold                    
+          none:                            
+            name: Home                     
+#  - type: 'vertical-stack'
+#    name: Floors
+#    cards:
+#    - type: custom:simple-thermostat
+#      entity: climate.master_bath
+#      icon: false
+#      step_layout: row
+#      control: false
+#    - type: custom:simple-thermostat
+#      entity: climate.guest_1
+#      icon: false
+#      step_layout: row
+#      control: false
+#    - type: custom:simple-thermostat
+#      entity: climate.guest_2
+#      icon: false
+#      step_layout: row
+#      control: false
+  - type: custom:canvas-gauge-card
+    card_height: 220
+    entity: sensor.air_quality_index
+#    name: AQI reading
+#    style:
+#      top: 50%
+#      left: 50%
+    gauge:
+      type: "radial-gauge"
+      title: AQI
+      width: 200
+      height: 200
+      minValue: 0
+      maxValue: 500
+      startAngle: 40
+      ticksAngle: 280
+      valueBox: true
+      majorTicks: ["0", "50", "100", "150", "200", "250", "300", "350", "400", "450", "500"]
+      minorTicks: 10
+      strokeTicks: true
+      highlights: [{"from": 0, "to": 50,"color": "rgba(104, 225, 67, .75)"},{"from": 50, "to": 100,"color": "rgba(255, 255, 85, .75)"},{"from": 100, "to": 150,"color": "rgba(239, 133, 51, .75)"},{"from": 150, "to": 200,"color": "rgba(234, 51, 36, .75)"},{"from": 200, "to": 300,"color": "rgba(140, 26, 75, .75)"},{"from": 300, "to": 500,"color": "rgba(115, 20, 37, .75)"}]
+      borders: true
+      needleType: "arrow"
+      needleWidth: 4
+      needleCircleSize: 7
+      needleCircleOuter: true
+      needleCircleInner: false
+      animationDuration: 1500
+      animationRule: "linear"
+      valueBoxBorderRadius: 10
+      colorValueBoxRect: "#222"
+      colorValueBoxRectEnd: "#333"
+      valueDec: 2
+      valueInt: 2
   - type: horizontal-stack
     cards:
     - color: '#FFFFFF'
@@ -96,36 +189,59 @@ cards:
         service_data:
           mode: 4
       type: 'custom:button-card'
-  - type: entities
-    entities:
-      - sensor.audi
-      - sensor.explorer
-      - sensor.rav4
-    title: Cars
   - entities:
-      - cover.hvw_main_door
-      - cover.hvw_side_door
-    title: Cover
+      - cover.hv_main_door
+      - cover.hv_side_door
+    title: Garage
     type: entities
   - type: entities
     entities:
-      - cover.great_room_shade_1
-      - cover.great_room_shade_2
-      - cover.great_room_shade_3
+      - cover.living_room_shade_1
+      - cover.living_room_shade_2
+      - cover.living_room_shade_3
       - cover.master_retreat_shade_1
       - cover.stairs_shade_1
     title: Shades
-  - type: entities
+#  - type: entities
+#    entities:
+#      - scene.all_shades_down
+#      - scene.all_shades_up
+#      - scene.living_room_shades_down
+#      - scene.living_room_shades_up
+#      - scene.retreat_shade_down
+#      - scene.retreat_shade_up
+#      - scene.stair_shade_down
+#      - scene.stair_shade_up
+#    title: Scenes
+  - color_thresholds:
+    - color: '#e45e65'
+      value: 2000
+    - color: '#e0b400'
+      value: 1000
+    - color: '#0da035'
+      value: 0
+    color_thresholds_transition: hard
     entities:
-      - scene.all_shades_down
-      - scene.all_shades_up
-      - scene.living_room_shades_down
-      - scene.living_room_shades_up
-      - scene.retreat_shade_down
-      - scene.retreat_shade_up
-      - scene.stair_shade
-      - scene.stair_shade_up
-    title: Scenes
+      - sensor.tasmota62_ccs811_eco2
+    group: false
+    hour24: true
+    line_width: 5
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: false
+      average: false
+      fill: fade
+      icon: true
+      labels: false
+      name: true
+      state: true           
+    style: |                
+      ha-card {             
+        border: solid 2px var(--primary-color);
+      }                     
+    type: 'custom:mini-graph-card'
   - type: 'custom:vertical-style-card'
     title: Pool
     style:
@@ -374,12 +490,20 @@ cards:
           4: 'orange'
           6: 'red'
   - entities:
-      - switch.cellar_a_c
-      - switch.sonos_amps
+      - switch.cellar_ac
+      - switch.sonos_amp
       - switch.family_room_a_v
       - switch.game_room_a_v
-      - switch.master_a_v
+      - switch.master_retreat_a_v
     show_header_toggle: false
     title: Switches
     type: entities
-
+  - entities:
+      - switch.fountain_10
+      - switch.frontyard_lights_69
+      - switch.lower_path_lights_44
+      - switch.living_room_lamp_57
+      - switch.retreat_lamp_58
+    show_header_toggle: false
+    title: Vera Z-Wave
+    type: entities

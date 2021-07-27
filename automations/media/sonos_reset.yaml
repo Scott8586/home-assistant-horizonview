@@ -1,0 +1,14 @@
+# Sonos Volume Reset - start the day at low volume
+id: 'sonosvolumereset'
+alias: "A: Sonos Volume Reset"
+trigger:
+  platform: time
+  at: '05:00:00'
+action:
+  - service: media_player.volume_set
+    data_template:
+      entity_id: >
+        media_player.dining_room, media_player.downstairs,
+        media_player.family_room, media_player.kitchen_bar,
+        media_player.main_deck, media_player.retreat
+      volume_level: 0.05

@@ -1,0 +1,10 @@
+# Daily Pool temperature report
+id: 'dailypooltemp'
+alias: 'N: Daily Pool Temp'
+trigger:
+  platform: time
+  at: '08:30:00'
+action:
+  service: notify.telegram_horizonview # or telegram_bot.send_message
+  data_template:
+    message: "Pool Temperature {{ states('sensor.pentair_pool_temperature') }}F"

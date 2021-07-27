@@ -1,0 +1,22 @@
+id: 'maindoorcloserav4'
+alias: "A: Main Door Close Rav4 Leaves"
+trigger:
+  - platform: state
+    entity_id: device_tracker.rav4_tracker
+    from: home
+    to: not_home
+condition:
+  condition: and
+  conditions:
+    - condition: state
+      entity_id: sensor.vera_house_mode
+      state: Home
+#    - condition: state
+#      entity_id: device_tracker.rav4_tracker 
+#      state: not_home
+    - condition: state
+      entity_id: cover.hv_main_door
+      state: open
+action:
+  service: cover.close_cover
+  entity_id: cover.hv_main_door

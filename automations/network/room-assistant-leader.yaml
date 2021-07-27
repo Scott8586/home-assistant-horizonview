@@ -1,0 +1,17 @@
+# Room Assistant Leader Notifications
+id: 'roomassistantleadernotify'
+alias: 'N: Room Assistant Leader Change'
+trigger:
+  platform: state
+  entity_id: >
+    sensor.familyroom_hv_cluster_leader,
+    sensor.gameroom_hv_cluster_leader,
+    sensor.retreat_hv_cluster_leader
+condition:
+- condition: template
+  value_template: "{{ trigger.to_state.state != 'gameroom-hv' }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: "{{ trigger.to_state.name }} is {{ trigger.to_state.state }}"
+

@@ -1,7 +1,22 @@
 "sensor.*_humidity":
   icon: mdi:water-percent
+  unit_of_measurement: "%"
   device_class: humidity
 "sensor.*_temperature":
+#  unit_of_measurement: '°F'
   device_class: temperature
 "cover.*_shade*":
   device_class: shade
+"device_tracker.steph*":
+  entity_picture: https://www.gravatar.com/avatar/608e3038b8dd7098729f71371af81d14.jpg?s=80&d=wavatar
+  gravatar: steph@tworoads.net
+"device_tracker.scott*":
+  entity_picture: https://www.gravatar.com/avatar/7ef327c7d17eb7c2466bbd613db99884.jpg?s=80&d=wavatar
+  gravatar: srp@tworoads.net
+"sensor.*_gps":
+  icon: mdi:crosshairs-gps
+"sensor.*wan_in*":
+  icon: mdi:download-network
+"sensor.*wan_out*":
+  icon: mdi:upload-network
+

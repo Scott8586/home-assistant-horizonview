@@ -1,0 +1,17 @@
+# Pool Report
+id: 'poolreport'
+alias: "N: Pool Report"
+initial_state: 'on'
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/pool'
+action:
+  - service: !secret telegram_notify
+    data_template:
+      message: > 
+        Mode: {{states('climate.pool')}}
+         Set: {{state_attr('climate.pool', 'temperature')}}F, 
+         Now: {{state_attr('climate.pool', 'current_temperature')}}F,
+         Air: {{states('sensor.pentair_air_temperature')}}F

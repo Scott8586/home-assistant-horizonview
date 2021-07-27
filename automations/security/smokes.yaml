@@ -1,0 +1,22 @@
+# Notify smoke detector - always on
+id: 'notifysmokedetector'
+alias: "N: Smoke Detector"
+initial_state: 'on'
+trigger:
+  platform: state
+  entity_id: >
+    binary_sensor.upper_hall_smoke,
+    binary_sensor.master_bed_smoke,
+    binary_sensor.game_room_smoke,
+    binary_sensor.family_room_smoke,
+    binary_sensor.garage_heat,
+    binary_sensor.sprinkler_flow
+
+condition:
+  - condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: "{{ trigger.to_state.name }} is {{ trigger.to_state.state }}"
+

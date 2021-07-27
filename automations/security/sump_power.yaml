@@ -1,0 +1,20 @@
+# Notify sump power
+id: 'notifysumppower'
+alias: "N: Sump Power"
+initial_state: 'on'
+trigger:
+  platform: state
+  entity_id: binary_sensor.sump_power_76
+condition:
+  - condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: >
+      {% if is_state(trigger.entity_id, 'on') %}
+        {{ trigger.to_state.name }} is off!
+      {% else %}
+        {{ trigger.to_state.name }} is back on
+      {% endif %}
+

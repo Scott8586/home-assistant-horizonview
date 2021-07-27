@@ -9,12 +9,10 @@ cards:
     title: Pool Temps
     type: entities
   - entities:
-      - entity: sensor.garage_temperature
-      - entity: sensor.garage_humidity
-      - entity: sensor.cellar_temperature
-      - entity: sensor.cellar_humidity
-      - entity: sensor.outside_temperature
-      - entity: sensor.outside_humidity
-    title: Remote 433Mhz Sensors
+    - entity: sensor.garage_temperature
+    - entity: sensor.garage_humidity
+    - entity: sensor.garage_pressure
+    - entity: sensor.garage_sealevel_pressure
+    title: Garage BME280
     type: entities
 

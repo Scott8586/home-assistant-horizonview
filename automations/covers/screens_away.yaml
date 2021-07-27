@@ -1,0 +1,17 @@
+id: 'shadesdownaway'
+alias: "A: Sunrise Shades Down Away"
+trigger:
+  platform: sun
+  event: sunrise
+condition:
+  condition: or
+  conditions:
+    - condition: state
+      entity_id: sensor.vera_house_mode
+      state: Away
+    - condition: state
+      entity_id: sensor.vera_house_mode
+      state: Vacation
+action:
+  service: scene.turn_on
+  entity_id: scene.all_shades_down

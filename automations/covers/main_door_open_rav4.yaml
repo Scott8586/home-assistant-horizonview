@@ -1,0 +1,22 @@
+id: 'maindooropenrav4'
+alias: "A: Main Door Open Rav4 Arrives"
+trigger:
+  - platform: state
+    entity_id: device_tracker.rav4_tracker
+    from: not_home
+    to: home
+condition:
+  condition: and
+  conditions:
+    - condition: state
+      entity_id: sensor.vera_house_mode
+      state: Home
+#    - condition: state
+#      entity_id: device_tracker.rav4_tracker 
+#      state: home
+    - condition: state
+      entity_id: cover.hv_main_door
+      state: closed
+action:
+  service: cover.open_cover
+  entity_id: cover.hv_main_door

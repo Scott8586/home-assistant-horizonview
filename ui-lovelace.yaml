@@ -3,10 +3,12 @@ custom_header:
 title: Horizon View
 views:
   - !include /config/lovelace/horizonview/views/home.yaml
-  - !include /config/lovelace/horizonview/views/environment.yaml
-  - !include /config/lovelace/horizonview/views/pollen.yaml
+  - !include /config/lovelace/horizonview/views/weather.yaml
+  - !include /config/lovelace/horizonview/views/hydrawise.yaml
+#  - !include /config/lovelace/horizonview/views/environment.yaml
+#  - !include /config/lovelace/horizonview/views/pollen.yaml
   - !include /config/lovelace/horizonview/views/pool.yaml
 #  - !include /config/lovelace/horizonview/views/media.yaml
   - !include /config/lovelace/horizonview/views/net_ops.yaml
+  - !include /config/lovelace/horizonview/views/tracking.yaml
   - !include /config/lovelace/horizonview/views/sensors.yaml
-

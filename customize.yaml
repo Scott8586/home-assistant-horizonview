@@ -6,12 +6,6 @@ sensor.memory_use_percent:
   friendly_name: Memory use
 weather.dark_sky:
   friendly_name: 'Dark Sky: Santa Rosa'
-device_tracker.audi_bt:
-  friendly_name: Audi
-device_tracker.explorer_bt:
-  friendly_name: Explorer
-device_tracker.rav4_bt:
-  friendly_name: Rav4
 sensor.load_1m:
   icon: mdi:memory
 sensor.closet_ups_status:
@@ -20,6 +14,16 @@ sensor.closet_ups_load:
   friendly_name: Closet UPS Load
 sensor.closet_ups_input_voltage:
   friendly_name: Closet UPS Line Voltage
+sensor.raspi_familyroom_hv_cpu_temperature:
+  friendly_name: Family Room raspi24 CPU Temp
+sensor.monitor_familyroom_status:
+  friendly_name: Family Room Monitor Status
+sensor.raspi_retreat_hv_cpu_temperature:
+  friendly_name: Retreat raspi25 CPU Temp
+sensor.raspi_garage_hv_cpu_temperature:
+  friendly_name: Garage raspi23 CPU Temp
+sensor.monitor_retreat_status:
+  friendly_name: Retreat Monitor Status
 sensor.garage_temperature:
   friendly_name: Garage Temperature
 sensor.garage_humidity:
@@ -38,18 +42,26 @@ sensor.pentair_pool_temperature:
   friendly_name: Pool Temperature
 sensor.pentair_spa_temperature:
   friendly_name: Spa Temperature
-switch.pentair_pool:
-  friendly_name: Pool
-switch.pentair_spa:
-  friendly_name: Spa
+switch.pentair_pool_pump:
+  friendly_name: Pool Pump
+switch.pentair_spa_pump:
+  friendly_name: Spa Pump
 switch.pentair_spa_jets:
   friendly_name: Spa Jets
 switch.pentair_waterfall:
   friendly_name: Waterfall
-switch.pentair_cleaner:
+switch.pentair_pool_cleaner:
   friendly_name: Pool Cleaner
 switch.pentair_pool_lights:
   friendly_name: Pool Lights
 switch.pentair_spa_lights:
   friendly_name: Spa Lights
- 
+#device_tracker.audi_a6_bt:
+#  friendly_name: Audi A6(l)
+#device_tracker.audi_a6_gps:
+#  friendly_name: Audi A6
+#device_tracker.audi_q7_bt:
+#  friendly_name: Audi Q7(l)
+#device_tracker.audi_q7_gps:
+#  friendly_name: Audi Q7
+
