@@ -1,0 +1,56 @@
+title: Tracking
+icon: mdi:crosshairs-gps
+badges:
+  - entity: person.scott
+  - entity: person.stephanie
+#  - entity: binary_sensor.scott_presence
+#  - entity: binary_sensor.steph_presence
+#  - entity: binary_sensor.both_home
+  - entity: device_tracker.audi_a6_ibeacon_tracker
+  - entity: device_tracker.audi_a6_gps
+  - entity: device_tracker.audi_q7_ibeacon_tracker
+  - entity: device_tracker.audi_q7_gps
+  - entity: device_tracker.toyota_rav4_ibeacon_tracker
+cards:
+  - entities:
+      - sensor.audi_a6
+      - sensor.audi_q7
+      - sensor.toyota_rav4
+    title: Cars
+    type: entities
+#  - type: entities
+#    entities:
+#      - automation.person_home
+#      - automation.person_away
+#      - automation.home_presence
+#      - automation.away_presence
+#      - automation.both_home
+#      - automation.car_zone_change
+#      - automation.enter_named_zone
+#      - automation.leave_named_zone
+#    show_header_toggle: false
+#    title: Notifications
+  - entities:
+      - device_tracker.srp_iphone_ios
+#      - sensor.scott_s_iphone_battery_state
+#      - sensor.scott_s_iphone_battery_level
+      - device_tracker.scotts_iphone
+      - device_tracker.scotts_iphone_bt_tracker
+      - device_tracker.scotts_ipad2
+      - device_tracker.scotts_ipad_bt_tracker
+      - device_tracker.scotts_personal_mbp
+      - device_tracker.scotts_work_mbp2
+      - device_tracker.scotts_mpad
+    title: Scott's Devices
+    type: entities
+  - entities:
+      - device_tracker.stephs_iphone
+      - device_tracker.stephanies_iphone_bt_tracker
+      - device_tracker.stephanplewatch
+      - device_tracker.stephanies_apple_watch_bt_tracker
+      - device_tracker.stephsipadair
+      - device_tracker.stephanies_ipad_air_bt_tracker
+      - device_tracker.lp_bloomfield10
+    title: Stephanie's Devices
+    type: entities
+

@@ -11,7 +11,7 @@ action:
   - service: !secret telegram_notify
     data_template:
       message: > 
-        Mode: {{states('climate.pool')}}
-         Set: {{state_attr('climate.pool', 'temperature')}}F, 
-         Now: {{state_attr('climate.pool', 'current_temperature')}}F,
+        Mode: {{states('climate.pentair_0d_ce_47_pool_heat')}}
+         Set: {{state_attr('climate.pentair_0d_ce_47_pool_heat', 'temperature')}}F, 
+         Now: {{state_attr('climate.pentair_0d_ce_47_pool_heat', 'current_temperature')}}F,
          Air: {{states('sensor.pentair_air_temperature')}}F

@@ -1,0 +1,222 @@
+title: Weather
+icon: mdi:weather-sunny
+path: weather
+theme: default
+badges: []
+cards:
+  - entities:
+      - sensor.weewx_outside_temperature
+      - sensor.weewx_outside_humidity
+      - sensor.weewx_outside_dewpoint
+      - sensor.weewx_outside_heat_index
+      - sensor.weewx_pm25
+      - sensor.weewx_cloudbase
+      - sensor.weewx_wind_speed
+      - sensor.weewx_wind_direction_ordinal
+      - sensor.weewx_inside_temperature
+      - sensor.weewx_inside_humidity
+      - sensor.weewx_garage_temperature
+      - sensor.weewx_garage_humidity
+      - sensor.weewx_cellar_temperature
+      - sensor.weewx_cellar_humidity
+    title: Weather Station
+    type: entities
+  - entities:
+      - sun.sun
+      - sensor.solar_elevation
+      - sensor.moon
+    title: Environment
+    type: entities
+  - entities:
+      - entity: sensor.weewx_outside_temperature
+        name: Temperature
+      - entity: sensor.weewx_outside_dewpoint
+        name: Dewpoint
+      - entity: sensor.weewx_outside_humidity
+        name: Humidity
+        y_axis: secondary
+    name: Outside Weather
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: false
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    type: 'custom:mini-graph-card'
+  - entities:
+      - sensor.upstairs_thermostat_temperature
+      - sensor.weewx_inside_temperature
+      - sensor.weewx_master_temperature
+    name: Upstairs Temperature
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: false
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    type: 'custom:mini-graph-card'
+  - entities:
+      - sensor.downstairs_thermostat_temperature
+      - sensor.weewx_guest_temperature
+    name: Downstairs Temperature
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: false
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    type: 'custom:mini-graph-card'
+  - entities:
+      - sensor.weewx_garage_temperature
+    name: Garage Temperature
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: true
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    type: 'custom:mini-graph-card'
+  - entities:
+      - sensor.weewx_pm25
+    name: Fine Particulate Matter PM 2.5
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: true
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    color_thresholds:
+      - value: 0 
+        color: "#68E143"
+      - value: 12
+        color: "#FFFF55"
+      - value: 35
+        color: "#EF8533"
+      - value: 55
+        color: "#EA3324"
+      - value: 150
+        color: "#8C1A4B"
+      - value: 250
+        color: "#731425"
+      - value: 350
+        color: "#731425"
+    type: 'custom:mini-graph-card'
+  - color_thresholds:
+    - color: '#e45e65'
+      value: 2000
+    - color: '#e0b400'
+      value: 1000
+    - color: '#0da035'
+      value: 0
+    color_thresholds_transition: hard
+    entities:
+#      - sensor.tasmota62_ccs811_eco2
+      - sensor.office_eco2
+    group: false
+    hour24: true
+    line_width: 5
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: false
+      average: false
+      fill: fade
+      icon: true
+      labels: false
+      name: true
+      state: true
+    style: |
+      ha-card {
+        border: solid 2px var(--primary-color);
+      }
+    type: 'custom:mini-graph-card'
+  - color_thresholds:     
+    - color: '#e45e65'               
+      value: 2000                    
+    - color: '#e0b400'               
+      value: 1000                    
+    - color: '#0da035'               
+      value: 0                       
+    color_thresholds_transition: hard
+    entities:                        
+      - sensor.family_room_eco2
+    group: false                             
+    hour24: true      
+    line_width: 5                            
+    points_per_hour: 1
+    align_icon: left     
+    align_header: left   
+    show:           
+      extrema: false
+      average: false
+      fill: fade      
+      icon: true                               
+      labels: false                            
+      name: true                               
+      state: true                              
+    style: |                                   
+      ha-card {                                
+        border: solid 2px var(--primary-color);
+      }                           
+    type: 'custom:mini-graph-card'

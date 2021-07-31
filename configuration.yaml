@@ -48,29 +48,48 @@ alexa:
     client_secret: e5b8174ad9abb3764329790c8e4331dac2300ed750bfa6cb710bd7e497c69b64
     filter:
       include_entities:
-#        - sensor.pentair_pool_temperature
         - sensor.garage_temperature
         - sensor.cellar_temperature
-        - sensor.pentair_air_temperature
-        - climate.pool
-        - climate.spa
-        - switch.pentair_spa_pump
-        - switch.pentair_spa_jets
-        - switch.pentair_waterfall
-        - switch.pentair_spa_lights
-        - switch.pentair_pool_pump
-        - switch.pentair_pool_lights
-#        - light.kitchen_left
+        - sensor.air_quality_index
+        - sensor.pentair_0d_ce_47_air_temperature
+        - climate.pentair_0d_ce_47_pool_heat
+        - climate.pentair_0d_ce_47_spa_heat
+        - switch.pentair_0d_ce_47_spa
+        - switch.pentair_0d_ce_47_jets
+        - switch.pentair_0d_ce_47_waterfall
+        - switch.pentair_0d_ce_47_spa_light
+        - switch.pentair_0d_ce_47_pool_light
+        - switch.pentair_0d_ce_47_pool
 #      include_domains:
 #        - switch
 #      exclude_entities:
 #        - switch.outside
     entity_config:
-      sensor.pentair_air_temperature:
+      climate.pentair_0d_ce_47_pool_heat:
+        name: "Pool"
+      climate.pentair_0d_ce_47_spa_heat:
+        name: "Spa"
+      sensor.pentair_0d_ce_47_air_temperature:
         name: "Patio"
         display_categories: TEMPERATURE_SENSOR
+      switch.pentair_0d_ce_47_waterfall:
+        name: "Waterfall"
+      switch.pentair_0d_ce_47_pool:
+        name: "Pool Pump"
+      switch.pentair_0d_ce_47_spa:
+        name: "Spa Pump"
+      switch.pentair_0d_ce_47_jets:
+        name: "Spa Jets"
+      switch.pentair_0d_ce_47_pool_light:
+        name: "Pool Lights"
+      switch.pentair_0d_ce_47_spa_light:
+        name: "Spa Lights"
       sensor.garage_temperature:
-        name: "Garage Temperature"
+        name: "Garage"
+        display_categories: TEMPERATURE_SENSOR
+      sensor.air_quality_index:
+        name: "Air Quality"
+        display_categories: TEMPERATURE_SENSOR
 #      light.kitchen:
 #        name: "Custom Name for Alexa"
 #        description: "The light in the kitchen"
@@ -97,13 +116,13 @@ logger:
   logs:
 #    custom_components.unifiprotect: info
 #    homeassistant.components.automation: debug
-    homeassistant.components.fan: debug
-    custom_components.vesync: debug
+#    homeassistant.components.fan: debug
+#    custom_components.vesync: debug
 #    homeassistant.components.mqtt: debug
 #    homeassistant.components.homekit: debug
-#    homeassistant.components.alexa: debug
+    homeassistant.components.alexa: debug
 #    homeassistant.components.sensor: debug
-#    homeassistant.components.climate: debug
+    homeassistant.components.climate: debug
 #    homeassistant.helpers.entity: debug
 
 device_tracker:
@@ -137,32 +156,32 @@ climate:
     host: !secret venstar_host2
     ssl: false
     humidifier: false
-  - platform: mqtt
-    name: "Pool"
-    min_temp: 40
-    max_temp: 85
-    modes:
-      - "off"
-      - "heat"
-    current_temperature_topic: pentair/pooltemp/state
+#  - platform: mqtt
+#    name: "Pool"
+#    min_temp: 40
+#    max_temp: 85
+#    modes:
+#      - "off"
+#      - "heat"
+#    current_temperature_topic: pentair/pooltemp/state
 #    action_topic: pentair/circuit/505/state
-    mode_command_topic: pentair/heater/pool/mode/set
-    mode_state_topic: pentair/heater/pool/mode/state
-    temperature_command_topic: pentair/heater/pool/temperature/set
-    temperature_state_topic: pentair/heater/pool/setpoint/state
-  - platform: mqtt
-    name: "Spa"
-    min_temp: 40
-    max_temp: 104
-    modes:
-      - "off"
-      - "heat"
-    current_temperature_topic: pentair/spatemp/state
+#    mode_command_topic: pentair/heater/pool/mode/set
+#    mode_state_topic: pentair/heater/pool/mode/state
+#    temperature_command_topic: pentair/heater/pool/temperature/set
+#    temperature_state_topic: pentair/heater/pool/setpoint/state
+#  - platform: mqtt
+#    name: "Spa"
+#    min_temp: 40
+#    max_temp: 104
+#    modes:
+#      - "off"
+#      - "heat"
+#    current_temperature_topic: pentair/spatemp/state
 #    action_topic: pentair/circuit/500/state
-    mode_command_topic: pentair/heater/spa/mode/set
-    mode_state_topic: pentair/heater/spa/mode/state
-    temperature_command_topic: pentair/heater/spa/temperature/set
-    temperature_state_topic: pentair/heater/spa/setpoint/state
+#    mode_command_topic: pentair/heater/spa/mode/set
+#    mode_state_topic: pentair/heater/spa/mode/state
+#    temperature_command_topic: pentair/heater/spa/temperature/set
+#    temperature_state_topic: pentair/heater/spa/setpoint/state
 
 #schluter:
 #  username: !secret schluter_username
@@ -284,60 +303,60 @@ sensor:
   - platform: mqtt
     name: "Room Assistant Garage"
     state_topic: room-assistant/status/garage-hv
-  - platform: mqtt
-    name: pentair_pool_temperature
-    state_topic: pentair/pooltemp/state
-    unit_of_measurement: "°F"
-  - platform: mqtt
-    name: pentair_spa_temperature
-    state_topic: pentair/spatemp/state
-    unit_of_measurement: "°F"
-  - platform: mqtt
-    name: pentair_air_temperature
-    state_topic: pentair/airtemp/state
-    unit_of_measurement: "°F"
-  - platform: mqtt                                                              
-    name: pentair_pump_power
-    state_topic: pentair/pump/0/watts/state                         
-    unit_of_measurement: "W"                                
-  - platform: mqtt                                                              
-    name: pentair_pump_speed
-    state_topic: pentair/pump/0/rpm/state                         
-    unit_of_measurement: "RPM"                                
-  - platform: mqtt                                                              
-    name: pentair_pump_flow
-    state_topic: pentair/pump/0/gpm/state                         
-    unit_of_measurement: "GPM"                                
-  - platform: mqtt
-    name: "Familyroom Temperature"
-    state_topic: "environment/horizonview"
-    unit_of_measurement: '°F'
-    value_template: "{{ value_json.temperature }}"
-  - platform: mqtt
-    name: "Familyroom Humidity"
-    state_topic: "environment/horizonview"
+#  - platform: mqtt
+#    name: pentair_pool_temperature
+#    state_topic: pentair/pooltemp/state
+#    unit_of_measurement: "°F"
+#  - platform: mqtt
+#    name: pentair_spa_temperature
+#    state_topic: pentair/spatemp/state
+#    unit_of_measurement: "°F"
+#  - platform: mqtt
+#    name: pentair_air_temperature
+#    state_topic: pentair/airtemp/state
+#    unit_of_measurement: "°F"
+#  - platform: mqtt                                                              
+#    name: pentair_pump_power
+#    state_topic: pentair/pump/0/watts/state                         
+#    unit_of_measurement: "W"                                
+#  - platform: mqtt                                                              
+#    name: pentair_pump_speed
+#    state_topic: pentair/pump/0/rpm/state                         
+#    unit_of_measurement: "RPM"                                
+#  - platform: mqtt                                                              
+#    name: pentair_pump_flow
+#    state_topic: pentair/pump/0/gpm/state                         
+#    unit_of_measurement: "GPM"                                
+#  - platform: mqtt
+#    name: "Familyroom Temperature"
+#    state_topic: "environment/horizonview"
+#    unit_of_measurement: '°F'
+#    value_template: "{{ value_json.temperature }}"
+#  - platform: mqtt
+#    name: "Familyroom Humidity"
+#    state_topic: "environment/horizonview"
 # tasmota_1E2E6F
-  - platform: mqtt           
-    name: 'Office CO2'   
-    state_topic: "tele/tasmota_1E2E6F/SENSOR"
-    value_template: "{{ value_json['CCS811'].eCO2 }}"
-    json_attributes_topic: "tele/tasmota_1E2E6F/SENSOR"
-    availability_topic: "tele/tasmota_1E2E6F/LWT"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    unit_of_measurement: 'ppm'
-    icon: mdi:molecule-co2
-  - platform: mqtt           
-    name: 'Tasomta Node1 State'
-    state_topic: "tele/tasmota_1E2E6F/STATE"
-    value_template: "{{ value_json['Wifi'].RSSI }}"
-    json_attributes_topic: "tele/tasmota_1E2E6F/STATE"
-    availability_topic: "tele/tasmota_1E2E6F/LWT"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    unit_of_measurement: '%' 
-    icon: mdi:wifi           
-    device_class: signal_strength
+#  - platform: mqtt           
+#    name: 'Office CO2'   
+#    state_topic: "tele/tasmota_1E2E6F/SENSOR"
+#    value_template: "{{ value_json['CCS811'].eCO2 }}"
+#    json_attributes_topic: "tele/tasmota_1E2E6F/SENSOR"
+#    availability_topic: "tele/tasmota_1E2E6F/LWT"
+#    payload_available: "Online"
+#    payload_not_available: "Offline"
+#    unit_of_measurement: 'ppm'
+#    icon: mdi:molecule-co2
+#  - platform: mqtt           
+#    name: 'Tasomta Node1 State'
+#    state_topic: "tele/tasmota_1E2E6F/STATE"
+#    value_template: "{{ value_json['Wifi'].RSSI }}"
+#    json_attributes_topic: "tele/tasmota_1E2E6F/STATE"
+#    availability_topic: "tele/tasmota_1E2E6F/LWT"
+#    payload_available: "Online"
+#    payload_not_available: "Offline"
+#    unit_of_measurement: '%' 
+#    icon: mdi:wifi           
+#    device_class: signal_strength
 #  - platform: xfinity
 #    username: !secret xfinity_email
 #    password: !secret xfinity_password
@@ -387,6 +406,14 @@ sensor:
     unit_of_measurement: " °C"
   - platform: template
     sensors:
+      pentair_pool_temperature:
+        friendly_name: "Pentair Pool Temperature"
+        value_template: "{{ state_attr('climate.pentair_0d_ce_47_pool_heat', 'current_temperature') }}"
+        unit_of_measurement: "..F"                                                          
+      pentair_spa_temperature:
+        friendly_name: "Pentair Spa Temperature"
+        value_template: "{{ state_attr('climate.pentair_0d_ce_47_spa_heat', 'current_temperature') }}"
+        unit_of_measurement: "..F"                                                          
       internet_in_mbps:
         friendly_name: "Internet WAN In"
         unit_of_measurement: 'Mbps'
@@ -606,42 +633,42 @@ sensor:
 
 switch:
   - platform: hydrawise
-  - platform: mqtt
-    name: pentair_pool_pump
-    command_topic: pentair/circuit/505/command
-    state_topic: pentair/circuit/505/state
-  - platform: mqtt
-    name: pentair_spa_pump
-    command_topic: pentair/circuit/500/command
-    state_topic: pentair/circuit/500/state
-  - platform: mqtt
-    name: pentair_spa_jets
-    command_topic: pentair/circuit/504/command
-    state_topic: pentair/circuit/504/state
-  - platform: mqtt
-    name: pentair_waterfall
-    command_topic: pentair/circuit/506/command
-    state_topic: pentair/circuit/506/state
-  - platform: mqtt
-    name: pentair_pool_cleaner
-    command_topic: pentair/circuit/501/command
-    state_topic: pentair/circuit/501/state
-  - platform: mqtt
-    name: pentair_pool_lights
-    command_topic: pentair/circuit/502/command
-    state_topic: pentair/circuit/502/state
-  - platform: mqtt
-    name: pentair_spa_lights
-    command_topic: pentair/circuit/503/command
-    state_topic: pentair/circuit/503/state
-
-light:
-  - platform: switch
-    name: Pool Lights
-    entity_id: switch.pentair_pool_lights
-  - platform: switch
-    name: Spa Lights
-    entity_id: switch.pentair_spa_lights
+#  - platform: mqtt
+#    name: pentair_pool_pump
+#    command_topic: pentair/circuit/505/command
+#    state_topic: pentair/circuit/505/state
+#  - platform: mqtt
+#    name: pentair_spa_pump
+#    command_topic: pentair/circuit/500/command
+#    state_topic: pentair/circuit/500/state
+#  - platform: mqtt
+#    name: pentair_spa_jets
+#    command_topic: pentair/circuit/504/command
+#    state_topic: pentair/circuit/504/state
+#  - platform: mqtt
+#    name: pentair_waterfall
+#    command_topic: pentair/circuit/506/command
+#    state_topic: pentair/circuit/506/state
+#  - platform: mqtt
+#    name: pentair_pool_cleaner
+#    command_topic: pentair/circuit/501/command
+#    state_topic: pentair/circuit/501/state
+#  - platform: mqtt
+#    name: pentair_pool_lights
+#    command_topic: pentair/circuit/502/command
+#    state_topic: pentair/circuit/502/state
+#  - platform: mqtt
+#    name: pentair_spa_lights
+#    command_topic: pentair/circuit/503/command
+#    state_topic: pentair/circuit/503/state
+#
+#light:
+#  - platform: switch
+#    name: Pool Lights
+#    entity_id: switch.pentair_pool_lights
+#  - platform: switch
+#    name: Spa Lights
+#    entity_id: switch.pentair_spa_lights
 
 # Example configuration.yaml entry
 utility_meter:

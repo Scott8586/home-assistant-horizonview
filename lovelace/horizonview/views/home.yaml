@@ -252,7 +252,7 @@ cards:
       cards:
       - type: 'custom:flex-horseshoe-card'
         entities:
-        - entity: sensor.pentair_air_temperature
+        - entity: sensor.pentair_0d_ce_47_air_temperature
           decimals: 1
           unit: '°F'
           area: "Air Temp"

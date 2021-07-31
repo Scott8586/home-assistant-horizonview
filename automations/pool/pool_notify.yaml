@@ -4,11 +4,11 @@ alias: 'N: Pool Ops Notify'
 trigger:
   platform: state
   entity_id: >
-    switch.pentair_spa_pump, switch.pentair_spa_jets,
-    switch.pentair_pool_pump, switch.pentair_pool_cleaner,
-    switch.pentair_waterfall,
-    switch.pentair_pool_lights, switch.pentair_spa_lights,
-    climate.pool, climate.spa
+    switch.pentair_0d_ce_47_spa, switch.pentair_0d_ce_47_jets,
+    switch.pentair_0d_ce_47_pool, switch.pentair_0d_ce_47_cleaner,
+    switch.pentair_0d_ce_47_waterfall,
+    switch.pentair_0d_ce_47_pool_light, switch.pentair_0d_ce_47_spa_light,
+    climate.pentair_0d_ce_47_pool_heat, climate.pentair_0d_ce_47_spa_heat
 condition:
 - condition: template
   value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"

@@ -1,0 +1,13 @@
+use_include_order: true
+include:
+  entities:
+    - person.scott
+    - device_tracker.scotts_iphone
+    - person.stephanie
+    - device_tracker.stephs_iphone
+    - sensor.weewx_outside_temperature
+    - sensor.weewx_inside_temperature
+    - sensor.processor_use
+    - sensor.load_1m
+    - sensor.memory_use_percent
+    - sensor.eagle_200_meter_power_demand

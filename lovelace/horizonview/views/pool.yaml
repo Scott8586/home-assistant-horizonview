@@ -12,7 +12,7 @@ cards:
       cards:
       - type: 'custom:flex-horseshoe-card'
         entities:
-        - entity: sensor.pentair_air_temperature
+        - entity: sensor.pentair_0d_ce_47_air_temperature
           decimals: 1
           unit: '°F'
           area: "Air Temp"
@@ -152,20 +152,20 @@ cards:
             padding: 0px 0px 0px;
           }
   - entities:
-      - entity: switch.pentair_pool_pump
-      - entity: switch.pentair_pool_cleaner
-      - entity: switch.pentair_spa_pump
-      - entity: switch.pentair_spa_jets
-      - entity: switch.pentair_waterfall
-      - entity: switch.pentair_pool_lights
-      - entity: switch.pentair_spa_lights
+      - entity: switch.pentair_0d_ce_47_pool
+      - entity: switch.pentair_0d_ce_47_cleaner
+      - entity: switch.pentair_0d_ce_47_spa
+      - entity: switch.pentair_0d_ce_47_jets
+      - entity: switch.pentair_0d_ce_47_waterfall
+      - entity: switch.pentair_0d_ce_47_pool_light
+      - entity: switch.pentair_0d_ce_47_spa_light
       - entity: automation.daily_pool_temp
       - entity: automation.spa_pump_notify
     show_header_toggle: false
     title: Pool Controls
     type: entities
   - type: thermostat
-    entity: climate.pool
+    entity: climate.pentair_0d_ce_47_pool_heat
   - type: thermostat
-    entity: climate.spa
+    entity: climate.pentair_0d_ce_47_spa_heat
 

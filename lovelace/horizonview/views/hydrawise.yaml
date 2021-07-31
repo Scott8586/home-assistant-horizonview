@@ -1,0 +1,87 @@
+title: Watering
+icon: mdi:sprinkler
+path: watering
+theme: default
+badges: []
+cards:
+  - entities:
+      - sensor.front_side_ma_next_cycle
+      - sensor.front_side_ma_watering_time
+      - binary_sensor.front_side_ma_watering
+      - switch.front_side_ma_automatic_watering
+      - switch.front_side_ma_manual_watering
+    title: Front, Side, Master Pots
+    show_header_toggle: false
+    type: entities
+  - entities:
+      - sensor.vegetable_plant_next_cycle
+      - sensor.vegetable_plant_watering_time
+      - binary_sensor.vegetable_plant_watering
+      - switch.vegetable_plant_automatic_watering
+      - switch.vegetable_plant_manual_watering
+    title: Vegetable Planters
+    show_header_toggle: false
+    type: entities
+  - entities:
+      - sensor.front_yard_land_next_cycle
+      - sensor.front_yard_land_watering_time
+      - binary_sensor.front_yard_land_watering
+      - switch.front_yard_land_automatic_watering
+      - switch.front_yard_land_manual_watering
+    title: Front Yard Landscape
+    show_header_toggle: false
+    type: entities
+  - entities:
+      - sensor.front_yard_tree_next_cycle
+      - sensor.front_yard_tree_watering_time
+      - binary_sensor.front_yard_tree_watering
+      - switch.front_yard_tree_automatic_watering
+      - switch.front_yard_tree_manual_watering
+    title: Front Yard Trees
+    show_header_toggle: false
+    type: entities
+  - entities:
+      - sensor.fruit_trees_next_cycle
+      - sensor.fruit_trees_watering_time
+      - binary_sensor.fruit_trees_watering
+      - switch.fruit_trees_automatic_watering
+      - switch.fruit_trees_manual_watering
+    title: Fruit Trees
+    show_header_toggle: false
+    type: entities
+  - entities:
+      - sensor.hedge_and_japan_next_cycle
+      - sensor.hedge_and_japan_watering_time
+      - binary_sensor.hedge_and_japan_watering
+      - switch.hedge_and_japan_automatic_watering
+      - switch.hedge_and_japan_manual_watering
+    title: Wax Myrtle Hedge and Japanese Maples
+    show_header_toggle: false
+    type: entities
+  - entities:
+      - sensor.pool_slope_land_next_cycle
+      - sensor.pool_slope_land_watering_time
+      - binary_sensor.pool_slope_land_watering
+      - switch.pool_slope_land_automatic_watering
+      - switch.pool_slope_land_manual_watering
+    title: Pool Slope Landscape
+    show_header_toggle: false
+    type: entities
+  - entities:
+      - sensor.poolside_pots_next_cycle
+      - sensor.poolside_pots_watering_time
+      - binary_sensor.poolside_pots_watering
+      - switch.poolside_pots_automatic_watering
+      - switch.poolside_pots_manual_watering
+    title: Poolside Pots
+    show_header_toggle: false
+    type: entities
+  - entities:
+      - sensor.wax_myrtles_acr_next_cycle
+      - sensor.wax_myrtles_acr_watering_time
+      - binary_sensor.wax_myrtles_acr_watering
+      - switch.wax_myrtles_acr_automatic_watering
+      - switch.wax_myrtles_acr_manual_watering
+    title: Wax Myrtles Across Street
+    show_header_toggle: false
+    type: entities
