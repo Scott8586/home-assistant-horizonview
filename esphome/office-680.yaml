@@ -1,0 +1,65 @@
+esphome:
+  name: office-680
+  platform: ESP8266
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "97227dc994b3deee471d9821c8cf358d"
+
+wifi:
+  ssid: "srp-horizonview"
+  password: "kicker87"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Office-680 Fallback Hotspot"
+    password: "lpU59OjqaTQz"
+
+captive_portal:
+
+# Example configuration entry
+web_server:
+
+# Activates prometheus /metrics endpoint
+prometheus:
+
+# Example configuration entry
+time:
+  - platform: sntp
+    id: sntp_time
+    servers:
+      - 192.168.35.157
+      
+i2c:
+  sda: 4
+  scl: 5
+  scan: True
+
+bme680_bsec:
+  address: 0x77
+  
+sensor:
+  - platform: bme680_bsec
+    temperature:
+      name: "Office Temperature"
+    pressure:
+      name: "Office Pressure"
+    humidity:
+      name: "Office Humidity"
+    iaq:
+      name: "Office IAQ"
+    co2_equivalent:
+      name: "Office eCO2"
+    breath_voc_equivalent:
+      name: "Office eVOC"
+
+text_sensor:
+  - platform: bme680_bsec
+    iaq_accuracy:
+      name: "Office IAQ Accuracy"

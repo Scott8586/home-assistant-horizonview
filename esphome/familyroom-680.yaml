@@ -1,0 +1,65 @@
+esphome:
+  name: familyroom-680
+  platform: ESP8266
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "3a207f5af558d2bb8de0ca1edbea043e"
+
+wifi:
+  ssid: "srp-horizonview"
+  password: "kicker87"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Familyroom-680 Fallback Hotspot"
+    password: "XseH4dKXavSQ"
+
+captive_portal:
+
+# Example configuration entry
+web_server:
+
+# Activates prometheus /metrics endpoint
+prometheus:
+
+# Example configuration entry
+time:
+  - platform: sntp
+    id: sntp_time
+    servers:
+      - 192.168.35.157
+      
+i2c:
+  sda: 4
+  scl: 5
+  scan: True
+
+bme680_bsec:
+  address: 0x77
+  
+sensor:
+  - platform: bme680_bsec
+    temperature:
+      name: "Family Room Temperature"
+    pressure:
+      name: "Family Room Pressure"
+    humidity:
+      name: "Family Room Humidity"
+    iaq:
+      name: "Family Room IAQ"
+    co2_equivalent:
+      name: "Family Room eCO2"
+    breath_voc_equivalent:
+      name: "Family Room eVOC"
+
+text_sensor:
+  - platform: bme680_bsec
+    iaq_accuracy:
+      name: "Family Room IAQ Accuracy"

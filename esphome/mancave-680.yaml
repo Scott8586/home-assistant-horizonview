@@ -1,0 +1,65 @@
+esphome:
+  name: mancave-680
+  platform: ESP32
+  board: esp32dev
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "53faef08b9d5e762354a4afc7f8bd493"
+
+wifi:
+  ssid: "srp-horizonview"
+  password: "kicker87"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Mancave-680 Fallback Hotspot"
+    password: "K0ZyH5Se88PA"
+
+captive_portal:
+
+# Example configuration entry
+web_server:
+
+# Activates prometheus /metrics endpoint
+prometheus:
+
+# Example configuration entry
+time:
+  - platform: sntp
+    id: sntp_time
+    servers:
+      - 192.168.35.157
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: True
+
+bme680_bsec:
+  address: 0x77
+  
+sensor:
+  - platform: bme680_bsec
+    temperature:
+      name: "ManCave Temperature"
+    pressure:
+      name: "ManCave Pressure"
+    humidity:
+      name: "ManCave Humidity"
+    iaq:
+      name: "ManCave IAQ"
+    co2_equivalent:
+      name: "ManCave eCO2"
+    breath_voc_equivalent:
+      name: "ManCave eVOC"
+
+text_sensor:
+  - platform: bme680_bsec
+    iaq_accuracy:
+      name: "ManCave IAQ Accuracy"
