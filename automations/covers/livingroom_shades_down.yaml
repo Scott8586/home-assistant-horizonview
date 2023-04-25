@@ -1,0 +1,11 @@
+id: 'livingroomshadesdownazimuth'
+alias: "A: Sunrise Livingroom Shades Down"
+trigger:
+  - platform: state
+    entity_id: binary_sensor.all_shades_down
+    from: "off"
+    to: "on"
+action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.living_room_shades_down
