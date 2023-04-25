@@ -1,0 +1,12 @@
+#title: Alarm Panel
+icon: mdi:alarm-panel
+path: alarm_panel
+theme: default
+cards:
+  - type: alarm-panel                           
+    entity: alarm_control_panel.house_alarm     
+  - type: entities              
+    title: House Alarm Panel
+    entities:
+      - entity: sensor.house_alarm_keypad
+

@@ -23,12 +23,12 @@ cards:
       type: entities                               
       entities:                                    
         - type: custom:multiple-entity-row
-          entity: sensor.machine_room_humidity 
-          name: Machine Room
+          entity: sensor.closet_humidity 
+          name: Wiring Closet
           icon: mdi:home-thermometer
           state_header: Humid
           entities:
-            - entity: sensor.machine_room_temperature
+            - entity: sensor.closet_temperature
               name: Temp
         - type: custom:multiple-entity-row         
           entity: sensor.installed_version         
@@ -57,7 +57,7 @@ cards:
                 --paper-item-icon-color: rgb(255, 165, 0);                                                           
               {% endif %};                                                                                           
             }                                                                                                        
-        - entity: sensor.home_assistant_v2_db                                                                        
+        - entity: sensor.home_assistant_v2_db_size
           icon: mdi:database                              
         - type: custom:bar-card           
           columns: 2                      
@@ -99,7 +99,7 @@ cards:
             bar-card-value {                              
               text-shadow: 1px 1px 5px black;             
             }                
-    type: 'custom:vertical-style-card'                    
+    type: vertical-stack
     style:                                                
       font_size: 24px                                     
       border: true                                        
@@ -110,73 +110,137 @@ cards:
         tap_action:
           action: url
           url_path: http://hub.tworoads.net/gpsd.php?host=192.168.35.157
-      - entity: sensor.raspi_familyroom_hv_cpu_temperature
-      - entity: sensor.raspi_retreat_hv_cpu_temperature
-      - entity: sensor.raspi_garage_hv_cpu_temperature
-      - entity: sensor.room_assistant_familyroom
-      - entity: sensor.familyroom_hv_cluster_leader
-      - entity: sensor.room_assistant_gameroom
-      - entity: sensor.gameroom_hv_cluster_leader
-      - entity: sensor.room_assistant_retreat
-      - entity: sensor.retreat_hv_cluster_leader
-      - entity: sensor.room_assistant_garage
-      - entity: sensor.garage_hv_cluster_leader
-  - entities:
-      - binary_sensor.quail_security_status
-      - sensor.quail_cpu_load_total
-      - sensor.quail_memory_usage_real
-      - sensor.quail_drive_1_status
-      - sensor.quail_drive_1_temperature
-      - binary_sensor.quail_drive_1_exceeded_max_bad_sectors
-      - sensor.quail_drive_2_status                                        
-      - sensor.quail_drive_2_temperature                                   
-      - binary_sensor.quail_drive_2_exceeded_max_bad_sectors
-    title: Synology NAS (quail)
-    type: entities
-  - type: gauge
-    entity: sensor.tasmota7_energy_power
-    title: Circ Pump Power
-    min: 0
-    max: 10
-    unit_of_measurement: "W"
-  - title: HorizonView1 Pi-hole
+      - type: custom:secondaryinfo-entity-row
+        entity: sensor.room_assistant_familyroom
+        secondary_info: "Cluster: [[ sensor.familyroom_cluster_leader ]]"
+      - type: custom:secondaryinfo-entity-row
+        entity: sensor.room_assistant_gameroom
+        secondary_info: "Cluster: [[ sensor.gameroom_cluster_leader ]]"
+      - type: custom:secondaryinfo-entity-row
+        entity: sensor.room_assistant_retreat
+        secondary_info: "Cluster: [[ sensor.retreat_cluster_leader ]]"
+      - type: custom:secondaryinfo-entity-row
+        entity: sensor.room_assistant_garage
+        secondary_info: "Cluster: [[ sensor.garage_cluster_leader ]]"
+#      - entity: sensor.gameroom_cluster_leader
+#      - entity: binary_sensor.family_room_presense
+#      - entity: binary_sensor.retreat_presense
+#      - entity: binary_sensor.garage_presense
+  - title: Wifi Status
     type: entities
     entities:
-        - entity: switch.horizonview1_pi_hole
-          name: Pi-hole operation
-        - entity: sensor.horizonview1_pi_hole_ads_percentage_blocked_today
+      - entity: sensor.2g_wifi_count
+      - entity: sensor.5g_wifi_count
+      - entity: sensor.guest_wifi_count
+  - title: Xfinity Usage
+    type: entities
+    entities:
+      - entity: sensor.xfinity_wan_usage_gb
+  - title: Pi-hole Console
+    show_header_toggle: false       
+    type: entities
+    entities:
+        - entity: switch.pi_hole1
+          name: Pi-hole1 operation
+          tap_action:
+              action: url              
+              url_path: http://192.168.35.157:8080/admin/index.php
+        - entity: sensor.pi_hole1_ads_percentage_blocked_today
           name: Percentage ads blocked today
           type: "custom:secondaryinfo-entity-row"
-          secondary_info: "[[ sensor.horizonview1_pi_hole_dns_unique_clients ]] unique clients"
-        - entity: sensor.horizonview1_pi_hole_dns_queries_today
+          secondary_info: "[[ sensor.pi_hole1_dns_unique_clients ]] unique clients"
+        - entity: sensor.pi_hole1_dns_queries_today
           name: Number of DNS requests today
+        - entity: switch.pi_hole2
+          name: Pi-hole2 operation
+          tap_action:
+              action: url              
+              url_path: http://192.168.35.167:8080/admin/index.php
+        - entity: sensor.pi_hole2_ads_percentage_blocked_today
+          name: Percentage ads blocked today
           type: "custom:secondaryinfo-entity-row"
-  - entities:
-      - sensor.closet_ups_status
-      - sensor.closet_ups_load
-      - sensor.closet_ups_input_voltage
-      - sensor.closet_ups_battery_minutes
-    title: Network Operations
-    type: entities
-  - title: Host Control
-    show_name: true
-    show_state: true
-    type: glance
+          secondary_info: "[[ sensor.pi_hole2_dns_unique_clients ]] unique clients"
+        - entity: sensor.pi_hole2_dns_queries_today
+          name: Number of DNS requests today
+  - type: vertical-stack
+    title: Closet UPS
+    cards:
+    - type: horizontal-stack
+      cards:                                               
+        - entity: sensor.closet_ups_battery_minutes               
+          max: 100                                         
+          min: 0                                           
+          name: Closet Battery Minutes                        
+          severity:                         
+            red: 0                          
+            yellow: 10                       
+            green: 60                       
+          theme: default                      
+          type: gauge                              
+        - entity: sensor.closet_ups_load                                       
+          max: 100                                        
+          min: 0                                      
+          name: UPS Load                             
+          severity:                            
+            green: 0                                                     
+            yellow: 25                         
+            red: 50                           
+          theme: default                                               
+          type: gauge                          
+    - type: entities
+      entities:                                                      
+        - sensor.closet_ups_status                  
+        - sensor.closet_ups_input_voltage                 
+  - type: vertical-stack
+    title: Retreat UPS
+    cards:
+    - type: horizontal-stack
+      cards:                                               
+        - entity: sensor.retreat_ups_battery_minutes               
+          max: 100                                         
+          min: 0                                           
+          name: Retreat Battery Minutes                        
+          severity:                         
+            red: 0                          
+            yellow: 10                       
+            green: 60                       
+          theme: default                      
+          type: gauge                              
+        - entity: sensor.retreat_ups_load                                       
+          max: 100                                        
+          min: 0                                      
+          name: UPS Load                             
+          severity:                            
+            green: 0                                                     
+            yellow: 25                         
+            red: 50                           
+          theme: default                                               
+          type: gauge                          
+    - type: entities
+      entities:                                                      
+        - sensor.retreat_ups_status                  
+        - sensor.retreat_ups_input_voltage                 
+  - type: entities
+    title: Chilly Brown Owl
     entities:
-      - entity: sensor.uptime
-        icon: 'mdi:restart'
-        name: Home Assistant
-        tap_action:
-          action: call-service
-          service: automation.trigger
-          service_data:
-            entity_id: automation.home_assistant_restart_command
-      - entity: sensor.last_boot
-        icon: 'mdi:restart'
-        name: HA Server
-        tap_action:
-          action: call-service
-          service: automation.trigger
-          service_data:
-            entity_id: automation.home_assistant_reboot_command
-
+#      - entity: sensor.chilly_brown_owl_state
+#        style: |                                                     
+#          :host {                          
+#          --paper-item-icon-color:             
+#            {% if states("sensor.chilly_brown_owl_state") == 'running' %} green                              
+#            {% else %} red              
+#            {% endif %}                                   
+#          ;                             
+#          }                                 
+      - entity: sensor.chilly_brown_owl_led
+        style: |        
+          :host {                           
+          --paper-item-icon-color:           
+            {% if states("sensor.chilly_brown_owl_led") == 'lime' %} green
+            {% else %} red                                            
+            {% endif %}                                                 
+          ;                                        
+          }                                                                                
+#      - sensor.chilly_brown_owl_temperature
+#      - sensor.chilly_brown_owl_ota_version
+#      - sensor.chilly_brown_owl_miner_image_version

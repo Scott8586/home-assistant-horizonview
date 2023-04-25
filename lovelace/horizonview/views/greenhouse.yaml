@@ -1,0 +1,79 @@
+title: Greenhouse
+icon: mdi:greenhouse
+path: greenhouse
+theme: default
+badges: []
+cards:
+  - type: 'custom:mini-graph-card'
+    entities:
+      - entity: sensor.greenhouse_mijia_temperature
+        name: Temperature
+      - entity: sensor.greenhouse_mijia_humidity
+        name: Humidity
+        y_axis: secondary
+    name: Greenhouse Environment
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: false
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+  - type: statistics-graph
+    title: 'Greenhouse'
+    stat_types: mean
+    entities:
+      - sensor.greenhouse_mijia_temperature
+      - sensor.greenhouse_mijia_humidity
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+  - type: 'custom:mini-graph-card'                 
+    entities:                                  
+      - entity: sensor.growroom_mijia_temperature
+        name: Temperature                          
+      - entity: sensor.growroom_mijia_humidity   
+        name: Humidity                             
+        y_axis: secondary                          
+    name: Growroom Environment                   
+    group: false                                   
+    hour24: true                                 
+    line_width: 4                                
+    points_per_hour: 1                             
+    align_icon: left                               
+    align_header: left                             
+    show:                                        
+      extrema: false                             
+      average: false            
+      fill: fade                 
+      icon: true                                       
+      labels: true      
+      name: true                           
+      state: true       
+    style: |              
+      ha-card {                                    
+        border: solid 2px var(--primary-color);
+      }                                        
+  - type: statistics-graph                         
+    title: 'Growroom'                        
+    stat_types: mean                           
+    entities:                                  
+      - sensor.growroom_mijia_temperature     
+      - sensor.growroom_mijia_humidity       
+    style: |                                   
+      ha-card {                                
+        border: solid 2px var(--primary-color);
+      }                                        
+

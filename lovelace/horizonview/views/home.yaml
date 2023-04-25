@@ -6,9 +6,9 @@ badges:
   - entity: person.stephanie
   - entity: device_tracker.audi_a6_gps
   - entity: device_tracker.audi_q7_gps
-  - entity: device_tracker.rav4_bt
+  - entity: device_tracker.toyota_rav4_gps
 cards:
-  - type: 'vertical-stack'                     
+  - type: vertical-stack                     
     cards:                              
     - type: 'custom:button-card'
       entity: sensor.current_date_time
@@ -24,46 +24,168 @@ cards:
       card:
       - border: '1px solid rgb(255, 255, 255)'
       - height: 50px
-    - entity: weather.dark_sky
+    - entity: weather.pirateweather
       theme: default  
       type: weather-forecast        
-    - type: 'custom:sun-card'       
-  - type: 'vertical-stack'                     
+#    - type: 'custom:sun-card'       
+  - type: entity-filter
+    entities:
+      - entity: sensor.room_assistant_familyroom
+        secondary_info: last-changed
+        state_filter:
+          - operator: '!='
+            value: 'online'
+      - entity: sensor.room_assistant_gameroom
+        secondary_info: last-changed
+        state_filter:
+          - operator: '!='
+            value: 'online'
+      - entity: sensor.room_assistant_retreat
+        secondary_info: last-changed
+        state_filter:
+          - operator: '!='
+            value: 'online'
+      - entity: sensor.room_assistant_garage
+        secondary_info: last-changed
+        state_filter:
+          - operator: '!='
+            value: 'online'
+      - entity: sensor.garage_cluster_leader  
+        secondary_info: last-changed          
+        state_filter:                       
+          - operator: '!='                  
+            value: 'gameroom'               
+      - entity: sensor.familyroom_cluster_leader   
+        secondary_info: last-changed        
+        state_filter:                       
+          - operator: '!='                  
+            value: 'gameroom'               
+      - entity: sensor.retreat_cluster_leader   
+        secondary_info: last-changed        
+        state_filter:                       
+          - operator: '!='                  
+            value: 'gameroom'               
+      - entity: sensor.gameroom_cluster_leader
+        secondary_info: last-changed          
+        state_filter:                         
+          - operator: '!='                    
+            value: 'gameroom'                 
+      - entity: device_tracker.unifi_00_bb_c1_29_49_dd_kxfoeiei
+        secondary_info: last-changed
+        state_filter:
+          - operator: '!='
+            value: 'home'
+#      - entity: device_tracker.canon_laser_printer
+#        secondary_info: last changed
+#        state_filter:
+#          - operator: '!='
+#            value: 'home'
+#      - entity: sensor.horizonview_gps
+#        secondary_info: last-changed
+#        state_filter:       
+#          - operator: '!='  
+#            value: '3D Fix' 
+
+    show_empty: false     
+    card:                   
+      type: entities        
+      title: Alerts  
+      show_empty: false     
+      style: |              
+        ha-card {           
+          color: red;       
+        }                   
+  - type: entity-filter
+    entities:
+      - entity: sensor.weewx_rain_day
+        state_filter:
+           - operator: '!='
+             value: 0
+    show_empty: false     
+    card:                   
+      type: entities        
+      title: Info
+      style: |              
+        ha-card {           
+          color: orange;       
+        }                   
+    
+  - type: vertical-stack                     
     cards:                              
-    - entity: camera.hv_front_yard
+    - entity: camera.hv_front_yard_high
       type: picture-entity
-    - entity: camera.hv_back_yard
+    - entity: camera.hv_back_yard_high
       type: picture-entity
-    - entity: camera.hv_side_yard
+    - entity: camera.hv_side_yard_high
       type: picture-entity
-  - type: 'vertical-stack'
+    - type: picture-elements           
+      elements: []                     
+      entity: binary_sensor.hv_front_yard_motion
+      camera_image: camera.front_yard_snapshot  
+  - type: vertical-stack
     name: HVAC
     cards:
     - type: custom:simple-thermostat
       entity: climate.main_floor
-      icon: false
-      step_layout: row
+      decimals: 0
+      step_size: 1
+      layout:                                                  
+#        step: row                                              
+        mode:
+          icons: false
+      header: true
       control:                        
-        hvac: true
+        hvac:
+          _name: "Mode:"
         preset:                       
-          away: true                  
-          temperature:                    
-            name: Hold                    
+          _name: "Preset:"
+          away:
+            name: Away
+          temperature:
+            name: Hold
           none:                            
             name: Home                     
+      style: |
+        ha-card {
+          --st-font-size-xl: 20px;
+          --st-font-size-m: 20px;
+          --st-font-size-title: 20px;
+          --st-spacing: 1px;
+        }
+    - type: entities      
+      entities:            
+        - sensor.upstairs_hvac_duty_cycle
     - type: custom:simple-thermostat
       entity: climate.downstairs
-      icon: false
-      step_layout: row
-      control:                        
-        hvac: true
-        preset:                       
-          away: true                  
-          temperature:                    
-            name: Hold                    
-          none:                            
-            name: Home                     
-#  - type: 'vertical-stack'
+      decimals: 0                                              
+      step_size: 1                                             
+      layout:                                                  
+#        step: row                                              
+        mode:
+          icons: false
+      header: true                                             
+      control:                                                 
+        hvac:                                                  
+          _name: "Mode:"                                       
+        preset:                                                
+          _name: "Preset:"                                     
+          away:                                                
+            name: Away                                         
+          temperature:                                         
+            name: Hold                                         
+          none:                                                
+            name: Home                                         
+      style: |                                                 
+        ha-card {                                              
+          --st-font-size-xl: 20px;                             
+          --st-font-size-m: 20px;                              
+          --st-font-size-title: 20px;                          
+          --st-spacing: 1px;                                   
+        }                                         
+    - type: entities      
+      entities:            
+        - sensor.downstairs_hvac_duty_cycle
+#  - type: vertical-stack
 #    name: Floors
 #    cards:
 #    - type: custom:simple-thermostat
@@ -81,40 +203,40 @@ cards:
 #      icon: false
 #      step_layout: row
 #      control: false
-  - type: custom:canvas-gauge-card
-    card_height: 220
-    entity: sensor.air_quality_index
+#  - type: custom:canvas-gauge-card
+#    card_height: 220
+#    entity: sensor.air_quality_index
 #    name: AQI reading
 #    style:
 #      top: 50%
 #      left: 50%
-    gauge:
-      type: "radial-gauge"
-      title: AQI
-      width: 200
-      height: 200
-      minValue: 0
-      maxValue: 500
-      startAngle: 40
-      ticksAngle: 280
-      valueBox: true
-      majorTicks: ["0", "50", "100", "150", "200", "250", "300", "350", "400", "450", "500"]
-      minorTicks: 10
-      strokeTicks: true
-      highlights: [{"from": 0, "to": 50,"color": "rgba(104, 225, 67, .75)"},{"from": 50, "to": 100,"color": "rgba(255, 255, 85, .75)"},{"from": 100, "to": 150,"color": "rgba(239, 133, 51, .75)"},{"from": 150, "to": 200,"color": "rgba(234, 51, 36, .75)"},{"from": 200, "to": 300,"color": "rgba(140, 26, 75, .75)"},{"from": 300, "to": 500,"color": "rgba(115, 20, 37, .75)"}]
-      borders: true
-      needleType: "arrow"
-      needleWidth: 4
-      needleCircleSize: 7
-      needleCircleOuter: true
-      needleCircleInner: false
-      animationDuration: 1500
-      animationRule: "linear"
-      valueBoxBorderRadius: 10
-      colorValueBoxRect: "#222"
-      colorValueBoxRectEnd: "#333"
-      valueDec: 2
-      valueInt: 2
+#    gauge:
+#      type: "radial-gauge"
+#      title: AQI
+#      width: 200
+#      height: 200
+#      minValue: 0
+#      maxValue: 500
+#      startAngle: 40
+#      ticksAngle: 280
+#      valueBox: true
+#      majorTicks: ["0", "50", "100", "150", "200", "250", "300", "350", "400", "450", "500"]
+#      minorTicks: 10
+#      strokeTicks: true
+#      highlights: [{"from": 0, "to": 50,"color": "rgba(104, 225, 67, .75)"},{"from": 50, "to": 100,"color": "rgba(255, 255, 85, .75)"},{"from": 100, "to": 150,"color": "rgba(239, 133, 51, .75)"},{"from": 150, "to": 200,"color": "rgba(234, 51, 36, .75)"},{"from": 200, "to": 300,"color": "rgba(140, 26, 75, .75)"},{"from": 300, "to": 500,"color": "rgba(115, 20, 37, .75)"}]
+#      borders: true
+#      needleType: "arrow"
+#      needleWidth: 4
+#      needleCircleSize: 7
+#      needleCircleOuter: true
+#      needleCircleInner: false
+#      animationDuration: 1500
+#      animationRule: "linear"
+#      valueBoxBorderRadius: 10
+#      colorValueBoxRect: "#222"
+#      colorValueBoxRectEnd: "#333"
+#      valueDec: 2
+#      valueInt: 2
   - type: horizontal-stack
     cards:
     - color: '#FFFFFF'
@@ -222,7 +344,7 @@ cards:
       value: 0
     color_thresholds_transition: hard
     entities:
-      - sensor.tasmota62_ccs811_eco2
+      - sensor.family_room_eco2
     group: false
     hour24: true
     line_width: 5
@@ -242,268 +364,279 @@ cards:
         border: solid 2px var(--primary-color);
       }                     
     type: 'custom:mini-graph-card'
-  - type: 'custom:vertical-style-card'
+  - type: horizontal-stack
     title: Pool
-    style:
-      font_size: 24px
-      border: true
     cards:
-    - type: horizontal-stack
-      cards:
-      - type: 'custom:flex-horseshoe-card'
-        entities:
-        - entity: sensor.pentair_0d_ce_47_air_temperature
+    - type: 'custom:flex-horseshoe-card'
+      entities:
+      - entity: sensor.pentair_0d_ce_47_air_temperature
+        decimals: 1
+        unit: '°F'
+        area: "Air Temp"
+      show:
+        horseshoe_style: 'colorstop'
+      layout:
+        hlines:
+        - id: 0
+          entity_index: 0
+          xpos: 50
+          ypos: 50
+          length: 40
+          styles:
+          - stroke: var(--primary-text-color);
+          - stroke-width: 5;
+          - stroke-linecap: round;
+          - opacity: 0.7;
+        states:
+        - id: 0
+          entity_index: 0
+          xpos: 50
+          ypos: 42
+          styles:
+          - font-size: 3em;
+          - stroke: var(--primary-text-color);
+        areas:
+        - id: 0
+          entity_index: 0
+          xpos: 50
+          ypos: 85
+          styles:
+          - font-size: 1.2em;
+      horseshoe_scale:
+        min: 20
+        max: 110
+      color_stops:
+        0: 'lightblue'
+        38: 'skyblue'
+        48: 'purple'
+        58: 'blue'
+        68: 'green'
+        78: 'orange'
+        88: 'red'
+    - type: 'custom:flex-horseshoe-card'
+      entities:
+        - entity: sensor.pentair_pool_temperature
           decimals: 1
           unit: '°F'
-          area: "Air Temp"
-        show:
-          horseshoe_style: 'colorstop'
-        layout:
-          hlines:
-          - id: 0
-            entity_index: 0
-            xpos: 50
-            ypos: 50
-            length: 40
-            styles:
-            - stroke: var(--primary-text-color);
-            - stroke-width: 5;
-            - stroke-linecap: round;
-            - opacity: 0.7;
-          states:
-          - id: 0
-            entity_index: 0
-            xpos: 50
-            ypos: 42
-            styles:
-            - font-size: 3em;
-            - stroke: var(--primary-text-color);
-          areas:
+          area: "Pool Temp"
+      show:
+        horseshoe_style: 'colorstop'
+      layout:
+        hlines:
+        - id: 0
+          xpos: 50
+          ypos: 50
+          length: 40
+          styles:
+          - stroke: var(--primary-text-color);
+          - stroke-width: 5;
+          - stroke-linecap: round;
+          - opacity: 0.7;
+        states:
+        - id: 0
+          entity_index: 0
+          xpos: 50
+          ypos: 42
+          styles:
+          - font-size: 3em;
+          - stroke: var(--primary-text-color);
+        areas:
           - id: 0
             entity_index: 0
             xpos: 50
             ypos: 85
-            styles:
-            - font-size: 1.2em;
-        horseshoe_scale:
-          min: 20
-          max: 110
-        color_stops:
-          0: 'lightblue'
-          38: 'skyblue'
-          48: 'purple'
-          58: 'blue'
-          68: 'green'
-          78: 'orange'
-          88: 'red'
-      - type: 'custom:flex-horseshoe-card'
-        entities:
-          - entity: sensor.pentair_pool_temperature
-            decimals: 1
-            unit: '°F'
-            area: "Pool Temp"
-        show:
-          horseshoe_style: 'colorstop'
-        layout:
-          hlines:
-          - id: 0
-            xpos: 50
-            ypos: 50
-            length: 40
-            styles:
-            - stroke: var(--primary-text-color);
-            - stroke-width: 5;
-            - stroke-linecap: round;
-            - opacity: 0.7;
-          states:
-          - id: 0
-            entity_index: 0
-            xpos: 50
-            ypos: 42
-            styles:
-            - font-size: 3em;
-            - stroke: var(--primary-text-color);
-          areas:
-            - id: 0
-              entity_index: 0
-              xpos: 50
-              ypos: 85
-              styles:
-                - font-size: 1.2em;
-        horseshoe_scale:
-          min: 50
-          max: 90
-        color_stops:
-          0: 'grey'
-          64: 'blue'
-          80: 'green'
-          85: 'red'
-        style: |
-          ha-card {
-            box-shadow: none;
-            padding: 0px 0px 0px;
-          }
-      - type: 'custom:flex-horseshoe-card'
-        entities:
-          - entity: sensor.pentair_spa_temperature
-            decimals: 1
-            unit: '°F'
-            area: "Spa Temp"
-        show:
-          horseshoe_style: 'colorstop'
-        layout:
-          hlines:
-          - id: 0
-            xpos: 50
-            ypos: 50
-            length: 40
-            styles:
-            - stroke: var(--primary-text-color);
-            - stroke-width: 5;
-            - stroke-linecap: round;
-            - opacity: 0.7;
-          states:
-          - id: 0
-            entity_index: 0
-            xpos: 50
-            ypos: 42
-            styles:
-            - font-size: 3em;
-            - stroke: var(--primary-text-color);
-          areas:
-            - id: 0
-              entity_index: 0
-              xpos: 50
-              ypos: 85
-              styles:
-                - font-size: 1.2em;
-        horseshoe_scale:
-          min: 50
-          max: 110
-        color_stops:
-          50: 'grey'
-          80: 'yellow'
-          90: 'green'
-          100: 'yellow'
-          104: 'red'
-        style: |
-          ha-card {
-            box-shadow: none;
-            padding: 0px 0px 0px;
-          }
-  - type: 'custom:vertical-style-card'
-    title: Power
-    style:
-      font_size: 24px
-      border: true
-    cards:
-    - type: horizontal-stack
-      cards:
-      - type: 'custom:flex-horseshoe-card'
-        entities:
-        - entity: sensor.eagle_200_meter_power_demand
-          decimals: 2
-          unit: 'kW'
-          area: "KiloWatts"
-          name: "House Eletricity"
-        - entity: sensor.daily_energy
-          decimals: 1
-          unit: 'kWh'
-          name: 'Today'
-        - entity: sensor.daily_energy
-          attribute: last_period
-          decimals: 1
-          unit: 'kWh'
-          name: 'Yesterday'
-        show:
-          horseshoe_style: 'colorstop'
-        layout:
-          hlines:
-          - id: 0
-            entity_index: 0
-            xpos: 50
-            ypos: 40
-            length: 40
-            styles:
-            - stroke: var(--primary-text-color);
-            - stroke-width: 5;
-            - stroke-linecap: round;
-            - opacity: 0.7;
-          states:
-          - id: 0
-            entity_index: 0
-            xpos: 50
-            ypos: 34
-            styles:
-            - font-size: 3em;
-            - stroke: var(--primary-text-color);
-          - id: 1
-            entity_index: 1
-            xpos: 46
-            ypos: 54
-            styles:
-              - text-anchor: end;
-              - font-size: 1.6em;
-          - id: 2
-            entity_index: 2
-            xpos: 54
-            ypos: 54
-            styles:
-              - text-anchor: start;
-              - font-size: 1.6em;
-          names:
-          - id: 0
-            entity_index: 0
-            xpos: 50
-            ypos: 100
             styles:
               - font-size: 1.2em;
-          - id: 1
-            entity_index: 1
-            xpos: 40
-            ypos: 62
-            styles:
-              - font-size: 0.8em;
-              - text-anchor: end;
-              - opacity: 0.7;
-          - id: 2
-            entity_index: 2
-            xpos: 54
-            ypos: 62
-            styles:
-              - font-size: 0.8em;
-              - text-anchor: start;
-              - opacity: 0.7;
-          areas:
+      horseshoe_scale:
+        min: 50
+        max: 90
+      color_stops:
+        0: 'grey'
+        64: 'blue'
+        80: 'green'
+        85: 'red'
+      style: |
+        ha-card {
+          box-shadow: none;
+          padding: 0px 0px 0px;
+        }
+    - type: 'custom:flex-horseshoe-card'
+      entities:
+        - entity: sensor.pentair_spa_temperature
+          decimals: 1
+          unit: '°F'
+          area: "Spa Temp"
+      show:
+        horseshoe_style: 'colorstop'
+      layout:
+        hlines:
+        - id: 0
+          xpos: 50
+          ypos: 50
+          length: 40
+          styles:
+          - stroke: var(--primary-text-color);
+          - stroke-width: 5;
+          - stroke-linecap: round;
+          - opacity: 0.7;
+        states:
+        - id: 0
+          entity_index: 0
+          xpos: 50
+          ypos: 42
+          styles:
+          - font-size: 3em;
+          - stroke: var(--primary-text-color);
+        areas:
           - id: 0
             entity_index: 0
             xpos: 50
             ypos: 85
             styles:
+              - font-size: 1.2em;
+      horseshoe_scale:
+        min: 50
+        max: 110
+      color_stops:
+        50: 'grey'
+        80: 'yellow'
+        90: 'green'
+        100: 'yellow'
+        104: 'red'
+      style: |
+        ha-card {
+          box-shadow: none;
+          padding: 0px 0px 0px;
+        }
+  - type: horizontal-stack
+    title: Power
+    cards:
+    - type: 'custom:flex-horseshoe-card'
+      entities:
+      - entity: sensor.eagle_200_meter_power_demand
+        decimals: 2
+        unit: 'kW'
+        area: "KiloWatts"
+        name: "House Eletricity"
+      - entity: sensor.daily_energy
+        decimals: 1
+        unit: 'kWh'
+        name: 'Today'
+      - entity: sensor.daily_energy
+        attribute: last_period
+        decimals: 1
+        unit: 'kWh'
+        name: 'Yesterday'
+      show:
+        horseshoe_style: 'colorstop'
+      layout:
+        hlines:
+        - id: 0
+          entity_index: 0
+          xpos: 50
+          ypos: 40
+          length: 40
+          styles:
+          - stroke: var(--primary-text-color);
+          - stroke-width: 5;
+          - stroke-linecap: round;
+          - opacity: 0.7;
+        states:
+        - id: 0
+          entity_index: 0
+          xpos: 50
+          ypos: 34
+          styles:
+          - font-size: 3em;
+          - stroke: var(--primary-text-color);
+        - id: 1
+          entity_index: 1
+          xpos: 46
+          ypos: 54
+          styles:
+            - text-anchor: end;
+            - font-size: 1.6em;
+        - id: 2
+          entity_index: 2
+          xpos: 54
+          ypos: 54
+          styles:
+            - text-anchor: start;
+            - font-size: 1.6em;
+        names:
+        - id: 0
+          entity_index: 0
+          xpos: 50
+          ypos: 100
+          styles:
             - font-size: 1.2em;
-        horseshoe_scale:
-          min: 0
-          max: 8
-        color_stops:
-          0: 'green'
-          2: 'blue'
-          4: 'orange'
-          6: 'red'
-  - entities:
-      - switch.cellar_ac
-      - switch.sonos_amp
-      - switch.family_room_a_v
-      - switch.game_room_a_v
-      - switch.master_retreat_a_v
-    show_header_toggle: false
+        - id: 1
+          entity_index: 1
+          xpos: 40
+          ypos: 62
+          styles:
+            - font-size: 0.8em;
+            - text-anchor: end;
+            - opacity: 0.7;
+        - id: 2
+          entity_index: 2
+          xpos: 54
+          ypos: 62
+          styles:
+            - font-size: 0.8em;
+            - text-anchor: start;
+            - opacity: 0.7;
+        areas:
+        - id: 0
+          entity_index: 0
+          xpos: 50
+          ypos: 85
+          styles:
+          - font-size: 1.2em;
+      horseshoe_scale:
+        min: -8
+        max: 8
+      color_stops:
+        0: 'green'
+        1: 'blue'
+        2: 'yellow'
+        4: 'orange'
+        6: 'red'
+  - type: entities
     title: Switches
-    type: entities
-  - entities:
+    state_color: true
+    show_header_toggle: false
+    entities:
       - switch.fountain_10
       - switch.frontyard_lights_69
       - switch.lower_path_lights_44
+      - switch.party_lights_84
       - switch.living_room_lamp_57
       - switch.retreat_lamp_58
+      - switch.grow_lights
+      - switch.hot_water_circ_pump
+  - type: entities
+    title: Bathroom Floors
+    state_color: true
     show_header_toggle: false
-    title: Vera Z-Wave
-    type: entities
+    entities:
+      - binary_sensor.guest1_bath_status
+      - binary_sensor.guest2_bath_status
+      - binary_sensor.master_bath_status
+  - type: entities
+    title: Guest Mode
+    state_color: true
+    show_header_toggle: false
+    entities:
+      - input_boolean.guest_mode
+      - sensor.guest_wifi_count
+  - type: entities
+    title: Motion
+    state_color: color
+    show_header_toggle: false
+    entities:
+      - binary_sensor.motion_home
+      - binary_sensor.entry_hall_motion
+      - binary_sensor.lower_hall_motion
+      - binary_sensor.kitchen_motion
+      - binary_sensor.master_bed_motion

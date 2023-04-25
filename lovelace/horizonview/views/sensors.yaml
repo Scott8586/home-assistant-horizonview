@@ -3,16 +3,105 @@ icon: mdi:thermometer-lines
 path: sensors
 cards:
   - entities:
-      - entity: sensor.pentair_air_temperature
+      - entity: sensor.closet_temperature
+      - entity: sensor.closet_humidity
+    title: Machine Room BME280
+    type: entities
+  - entities:
+      - entity: sensor.pentair_0d_ce_47_air_temperature
       - entity: sensor.pentair_pool_temperature
       - entity: sensor.pentair_spa_temperature
     title: Pool Temps
     type: entities
   - entities:
-    - entity: sensor.garage_temperature
-    - entity: sensor.garage_humidity
-    - entity: sensor.garage_pressure
-    - entity: sensor.garage_sealevel_pressure
+      - entity: sensor.mancave_temperature
+      - entity: sensor.mancave_humidity
+      - entity: sensor.mancave_eco2
+      - entity: sensor.mancave_iaq
+    title: Man Cave BME680
+    type: entities
+  - entities:
+      - entity: sensor.office_temperature
+      - entity: sensor.office_humidity
+      - entity: sensor.office_eco2
+      - entity: sensor.office_iaq
+    title: Office BME680
+    type: entities
+  - entities:
+      - entity: sensor.family_room_temperature
+      - entity: sensor.family_room_humidity
+      - entity: sensor.family_room_eco2
+      - entity: sensor.family_room_iaq
+    title: Family Room BME680
+    type: entities
+  - entities:
+      - entity: sensor.garage_temperature
+      - entity: sensor.garage_humidity
+      - entity: sensor.garage_pressure
+      - entity: sensor.garage_sealevel_pressure
     title: Garage BME280
     type: entities
-
+  - entities:
+      - entity: switch.familyroom_left_red_led
+      - entity: switch.familyroom_left_yellow_led
+      - entity: switch.familyroom_left_green_led
+    title: Familyroom Pool LED
+    type: entities
+  - entities:
+      - entity: switch.familyroom_right_red_led
+      - entity: switch.familyroom_right_yellow_led
+      - entity: switch.familyroom_right_green_led
+    title: Familyroom Power LED
+    type: entities
+  - type: entities
+    title: Greenhouse Mijia
+    entities:
+      - entity: sensor.greenhouse_mijia_temperature
+      - entity: sensor.greenhouse_mijia_humidity
+  - type: entities
+    title: Growroom Mijia
+    entities:
+      - entity: sensor.growroom_mijia_temperature
+      - entity: sensor.growroom_mijia_humidity
+  - type: entities
+    title: Livingroom Flower
+    entities:
+      - entity: sensor.gameroom_flower_temperature
+      - entity: sensor.gameroom_flower_illuminance
+  - type: entities
+    title: Growroom Flower
+    entities:
+      - entity: sensor.greenhouse_flower_temperature
+      - entity: sensor.greenhouse_flower_illuminance
+  - type: entities
+    title: Beverage Cooler
+    entities:
+      - entity: sensor.beverage_cooler_temperature
+      - entity: sensor.beverage_cooler_humidity
+  - type: entities
+    title: Kitchen Fridge
+    entities:
+      - entity: sensor.kitchen_fridge_temperature
+      - entity: sensor.kitchen_fridge_humidity
+  - type: entities
+    title: Downstairs Minifridge
+    entities:
+      - entity: sensor.downstairs_minifridge_temperature
+      - entity: sensor.downstairs_minifridge_humidity
+  - type: entities
+    title: Pool Room Exhaust
+    entities:
+      - entity: sensor.pool_room_temperature
+      - entity: sensor.pool_room_humidity
+  - type: custom:battery-state-card                                                    
+    title: Battery Levels                                                              
+    color_gradient:                                                                    
+      - red                                                                            
+      - yellow                                                                         
+      - green                                                                          
+    entities:                                                                          
+      - entity: sensor.kitchen_fridge_battery                                         
+      - entity: sensor.beverage_cooler_battery                                       
+      - entity: sensor.downstairs_minifridge_battery                                     
+      - entity: sensor.greenhouse_mijia_battery                                       
+      - entity: sensor.growroom_mijia_battery                                         

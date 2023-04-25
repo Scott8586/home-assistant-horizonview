@@ -1,0 +1,53 @@
+title: Cellar
+icon: mdi:bottle-wine
+path: cellar
+cards:
+  - type: entities
+    title: Wine Cellar
+    state_color: true
+    show_header_toggle: false
+    entities:
+      - binary_sensor.chiller_status
+      - sensor.chiller_duty_cycle
+      - sensor.chiller_cycle_length
+      - sensor.weewx_cellar_temperature
+      - sensor.weewx_cellar_humidity
+      - switch.cellar_ac
+  - entities:
+      - sensor.weewx_cellar_temperature
+      - sensor.weewx_cellar_humidity
+    name: Wine Cellar Temperature
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: true
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    type: 'custom:mini-graph-card'
+  - type: entities
+    title: Man Cave 680
+    show_header_toggle: false
+    entities:
+      - sensor.mancave_temperature
+      - sensor.mancave_humidity
+      - sensor.mancave_dewpoint
+      - sensor.mancave_comfort_level
+      - sensor.mancave_iaq
+  - type: entities
+    title: Man Cave Sensor
+    show_header_toggle: false
+    entities:
+      - sensor.mc_temperature_47
+      - sensor.mc_humidity_49

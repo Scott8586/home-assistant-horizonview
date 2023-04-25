@@ -1,0 +1,51 @@
+title: Media
+icon: mdi:music
+path: media
+cards:
+  - type: entities
+    title: A/V Power
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - switch.zb_office_a_v
+      - switch.zb_familyroom_a_v
+      - switch.zb_gameroom_a_v
+      - switch.zb_retreat_a_v
+      - switch.zb_closet_amps_a_v
+  - type: 'custom:mini-media-player'
+    entity: media_player.kitchen_bar
+    hide:
+      power: true
+    speaker_group:
+      platform: sonos
+      show_group_count: true
+      entities:
+        - entity_id: media_player.family_room
+          name: Sonos Family Room
+        - entity_id: media_player.dining_room
+          name: Sonos Dining Room
+    entities:
+      - type: 'custom:mini-media-player'
+        entity: media_player.multiroom_player
+        group: true
+        source: icon
+        artwork: cover
+        info: short
+        hide:
+          volume: true
+          power: true
+      - type: 'custom:mini-media-player'
+        entity: media_player.kitchen_bar
+        group: true
+        hide:
+          controls: true
+      - type: 'custom:mini-media-player'
+        entity: media_player.family_room
+        group: true
+        hide:
+          controls: true
+      - type: 'custom:mini-media-player'
+        entity: media_player.dining_room
+        group: true
+        hide:
+          controls: true

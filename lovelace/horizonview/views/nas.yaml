@@ -1,0 +1,22 @@
+title: NAS
+icon: mdi:nas
+path: nas
+cards:
+  - type: entities
+    title: Synology DS920+ (dirt)
+    entities:
+      - binary_sensor.dirt_security_status
+      - sensor.dirt_cpu_utilization_total
+      - sensor.dirt_memory_usage_real
+      - sensor.dirt_status
+      - sensor.dirt_temperature
+      - binary_sensor.dirt_exceeded_max_bad_sectors
+      - sensor.dirt_status_2
+      - sensor.dirt_temperature_2
+      - binary_sensor.dirt_exceeded_max_bad_sectors_2
+      - sensor.dirt_status_3
+      - sensor.dirt_temperature_3
+      - binary_sensor.dirt_exceeded_max_bad_sectors_3
+      - sensor.dirt_status_4          
+      - sensor.dirt_temperature_4
+      - binary_sensor.dirt_exceeded_max_bad_sectors_4
