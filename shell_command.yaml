@@ -1,0 +1,2 @@
+# Here is where we would put shell command that act like services
+systemctl: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /config/ssh/id_rsa srp@'{{ remote_ipaddr }}' "/bin/systemctl '{{ systemd_command }}' '{{ systemd_service }}'"

@@ -1,5 +1,5 @@
-purge_keep_days: 7
-#purge_keep_days: 30
+#purge_keep_days: 14
+purge_keep_days: 30
 #commit_interval: 5
 exclude:
   domains:
@@ -7,10 +7,14 @@ exclude:
   - weblink
   - updater
   - media_player
+  entity_globs:
+  - sensor.*time
+  - binary_sensor.*_on
+  - switch.*_led
+
   entities:
   - sensor.last_boot # Comes from 'systemmonitor' sensor platform
   - sun.sun
   - sensor.moon
-  - sensor.time
   - sensor.erx_wan_in
   - sensor.erx_wan_out

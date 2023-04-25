@@ -1,4 +1,3 @@
-use_include_order: true
 include:
   entities:
     - person.scott

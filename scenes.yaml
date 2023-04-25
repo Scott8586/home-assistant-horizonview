@@ -1,0 +1,19 @@
+- name: Home
+  entities:
+    switch.zb_office_a_v: "on"
+    switch.zb_familyroom_a_v: "on"
+    switch.zb_gameroom_a_v: "on"
+    switch.zb_retreat_a_v: "on"
+    switch.zb_closet_amps_a_v: "on"
+    switch.hot_water_circ_pump: "on"
+- name: Away
+  entities:
+    switch.hot_water_circ_pump: "on"
+- name: Vacation
+  entities:
+    switch.zb_office_a_v: "off"
+    switch.zb_familyroom_a_v: "off"
+    switch.zb_gameroom_a_v: "off"  
+    switch.zb_retreat_a_v: "off"
+    switch.zb_closet_amps_a_v: "off"
+    switch.hot_water_circ_pump: "off"

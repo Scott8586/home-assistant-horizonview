@@ -4,8 +4,6 @@ person.stephanie:
   entity_picture: https://www.gravatar.com/avatar/608e3038b8dd7098729f71371af81d14.jpg?s=80&d=wavatar
 sensor.memory_use_percent:
   friendly_name: Memory use
-weather.dark_sky:
-  friendly_name: 'Dark Sky: Santa Rosa'
 sensor.load_1m:
   icon: mdi:memory
 sensor.closet_ups_status:
@@ -56,12 +54,8 @@ switch.pentair_pool_lights:
   friendly_name: Pool Lights
 switch.pentair_spa_lights:
   friendly_name: Spa Lights
-#device_tracker.audi_a6_bt:
-#  friendly_name: Audi A6(l)
-#device_tracker.audi_a6_gps:
-#  friendly_name: Audi A6
-#device_tracker.audi_q7_bt:
-#  friendly_name: Audi Q7(l)
-#device_tracker.audi_q7_gps:
-#  friendly_name: Audi Q7
-
+sensor.pentair_0d_ce_47_pool_pump_current_energy:
+  unit_of_measurement: kWh
+  friendly_name: Pool Pump Energy
+  icon: mdi:chart-histogram
+  Area: Pool

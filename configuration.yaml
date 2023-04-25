@@ -8,8 +8,15 @@ homeassistant:
   elevation: 100
   # metric for Metric, imperial for Imperial
   unit_system: imperial
+  # Country
+  country: US
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: America/Los_Angeles
+  # Currency:
+  currency: USD
+  # URLS
+  external_url: "https://hass-vs.tworoads.net:8123"
+  internal_url: "http://192.168.35.161:8123"
   # Customization file
   customize: !include customize.yaml
   customize_glob: !include customize_glob.yaml
@@ -28,7 +35,6 @@ default_config:
 
 #api:
 #config:
-#frontend:
 #logbook:
 #sun:
 #system_health:
@@ -51,15 +57,18 @@ alexa:
         - sensor.garage_temperature
         - sensor.cellar_temperature
         - sensor.air_quality_index
+        - sensor.upstairs_temperature
+        - sensor.downstairs_temperature
         - sensor.pentair_0d_ce_47_air_temperature
         - climate.pentair_0d_ce_47_pool_heat
         - climate.pentair_0d_ce_47_spa_heat
         - switch.pentair_0d_ce_47_spa
         - switch.pentair_0d_ce_47_jets
         - switch.pentair_0d_ce_47_waterfall
-        - switch.pentair_0d_ce_47_spa_light
-        - switch.pentair_0d_ce_47_pool_light
+        - light.pentair_0d_ce_47_spa_light
+        - light.pentair_0d_ce_47_pool_light
         - switch.pentair_0d_ce_47_pool
+        - switch.pentair_0d_ce_47_cleaner
 #      include_domains:
 #        - switch
 #      exclude_entities:
@@ -76,6 +85,8 @@ alexa:
         name: "Waterfall"
       switch.pentair_0d_ce_47_pool:
         name: "Pool Pump"
+      switch.pentair_0d_ce_47_cleaner:
+        name: "Pool Cleaner"
       switch.pentair_0d_ce_47_spa:
         name: "Spa Pump"
       switch.pentair_0d_ce_47_jets:
@@ -84,6 +95,15 @@ alexa:
         name: "Pool Lights"
       switch.pentair_0d_ce_47_spa_light:
         name: "Spa Lights"
+      sensor.upstairs_temperature:
+        name: "Upstairs"
+        display_categories: TEMPERATURE_SENSOR
+      sensor.downstairs_temperature:
+        name: "Downstairs"
+        display_categories: TEMPERATURE_SENSOR
+      sensor.cellar_temperature:
+        name: "Wine Cellar"
+        display_categories: TEMPERATURE_SENSOR
       sensor.garage_temperature:
         name: "Garage"
         display_categories: TEMPERATURE_SENSOR
@@ -96,6 +116,14 @@ alexa:
 #      switch.stairs:
 #        display_categories: LIGHT
 
+influxdb:
+  api_version: 2
+  ssl: false
+  host: !secret influxdb_host
+  port: !secret influxdb_port
+  organization: !secret influxdb_org
+  bucket: !secret influxdb_bucket
+  token: !secret influxdb_token
 
 telegram_bot:
   - platform: polling # polling or broadcast
@@ -111,82 +139,44 @@ notify:
     api_key: !secret telegram_apikey
     chat_id: !secret telegram_chatid
 
+camera:                                                         
+  - platform: local_file                                        
+    name: Front Yard Snapshot            
+    file_path: /config/www/snapshots/hv_front_yard.png
+
 logger:
   default: info
   logs:
-#    custom_components.unifiprotect: info
+    hole: warning
+    pyunifiprotect.api: warning
 #    homeassistant.components.automation: debug
-#    homeassistant.components.fan: debug
-#    custom_components.vesync: debug
 #    homeassistant.components.mqtt: debug
 #    homeassistant.components.homekit: debug
-    homeassistant.components.alexa: debug
+#    homeassistant.components.integration: debug
+#    homeassistant.components.alexa: debug
 #    homeassistant.components.sensor: debug
-    homeassistant.components.climate: debug
+#    homeassistant.components.climate: debug
+    homeassistant.components.shell_command: debug
 #    homeassistant.helpers.entity: debug
+    charset_normalizer: warning
 
 device_tracker:
-#  - platform: mqtt
-#    source_type: bluetooth
-#    devices:
-#      scotts_iphone_bt: 'monitor/horizonview_family/scotts_iphone_bt/device_tracker'
-#      stephs_iphone_bt: 'monitor/horizonview_family/stephs_iphone_bt/device_tracker'
-#      scotts_ipad_bt: 'monitor/horizonview_family/scotts_ipad_bt/device_tracker'
-#      stephs_ipad_bt: 'monitor/horizonview_family/stephs_ipad_bt/device_tracker'
-#      scotts_g645_bt: 'monitor/horizonview_family/scotts_g645_bt/device_tracker'
-#      stephs_apwa_bt: 'monitor/horizonview_family/stephs_apwa_bt/device_tracker'
-#      audi_q7_bt: 'monitor/horizonview_family/audi_q7_bt/device_tracker'
-#      audi_a6_bt: 'monitor/horizonview_family/audi_a6_bt/device_tracker'
-#      toyota_rav4_bt: 'monitor/horizonview_family/toyota_rav4_bt/device_tracker'
   - platform: mqtt_json
     devices:
       srp_iphone_ios: 'location/phone/srp_iphone_ios'
       audi_a6_gps: 'location/car/audi_a6_gps'
       audi_q7_gps: 'location/car/audi_q7_gps'
+      toyota_rav4_gps: 'location/car/toyota_rav4_gps'
+ 
 
-hydrawise:
-  access_token: !secret hydrawise_api
+#hydrawise:
+#  access_token: !secret hydrawise_api
 
-climate:
-  - platform: venstar
-    host: !secret venstar_host1
-    ssl: false
-    humidifier: false
-  - platform: venstar
-    host: !secret venstar_host2
-    ssl: false
-    humidifier: false
-#  - platform: mqtt
-#    name: "Pool"
-#    min_temp: 40
-#    max_temp: 85
-#    modes:
-#      - "off"
-#      - "heat"
-#    current_temperature_topic: pentair/pooltemp/state
-#    action_topic: pentair/circuit/505/state
-#    mode_command_topic: pentair/heater/pool/mode/set
-#    mode_state_topic: pentair/heater/pool/mode/state
-#    temperature_command_topic: pentair/heater/pool/temperature/set
-#    temperature_state_topic: pentair/heater/pool/setpoint/state
-#  - platform: mqtt
-#    name: "Spa"
-#    min_temp: 40
-#    max_temp: 104
-#    modes:
-#      - "off"
-#      - "heat"
-#    current_temperature_topic: pentair/spatemp/state
-#    action_topic: pentair/circuit/500/state
-#    mode_command_topic: pentair/heater/spa/mode/set
-#    mode_state_topic: pentair/heater/spa/mode/state
-#    temperature_command_topic: pentair/heater/spa/temperature/set
-#    temperature_state_topic: pentair/heater/spa/setpoint/state
+schluter:     
+  username: !secret schluter_username
+  password: !secret schluter_password
 
-#schluter:
-#  username: !secret schluter_username
-#  password: !secret schluter_password
-  
+
 envisalink:
   host: !secret envisalink_host
   panel_type: HONEYWELL      
@@ -242,129 +232,66 @@ envisalink:
     1:
       name: 'House Alarm'
 
+input_boolean:
+  guest_mode:
+    name: Guest Mode
+  disable_stairs_cover_down_automation:
+    name: Disable Stairs Cover Down Automation
+    initial: false
+  disable_retreat_cover_down_automation:
+    name: Disable Retreat Cover Down Automation
+    initial: false
+  disable_livingroom_cover_down_automation:
+    name: Disable Livingroom Cover Down Automation
+    initial: false
+  disable_stairs_cover_up_automation:
+    name: Disable Stairs Cover Up Automation
+    initial: false
+  disable_retreat_cover_up_automation:
+    name: Disable Retreat Cover Up Automation
+    initial: false
+  disable_livingroom_cover_up_automation:
+    name: Disable Livingroom Cover Up Automation
+    initial: false
+#  bright_light:
+#    name: Bright Light Outside
+#    initial: false
+
+mqtt:
+  sensor:
+    - state_topic: room-assistant/status/familyroom
+      unique_id: room_assistant_familyroom
+      name: "Room Assistant Familyroom"
+    - state_topic: room-assistant/status/gameroom
+      unique_id: room_assistant_gameroom
+      name: "Room Assistant Gameroom"
+    - state_topic: room-assistant/status/retreat
+      unique_id: room_assistant_retreat
+      name: "Room Assistant Retreat"
+    - state_topic: room-assistant/status/garage
+      unique_id: room_assistant_garage
+      name: "Room Assistant Garage"
+    - state_topic: environment/horizonview_garage/BME280_temperature
+      unique_id: garage_temperature
+      name: 'Garage Temperature'                                                   
+    - state_topic: 'environment/horizonview_garage/BME280_humidity'                   
+      unique_id: garage_humidity
+      name: 'Garage Humidity'
+    - state_topic: 'environment/horizonview_garage/BME280_pressure'                   
+      unique_id: garage_pressure
+      name: 'Garage Pressure'                                                      
+      unit_of_measurement: 'hPa'                                                   
+    - state_topic: 'environment/horizonview_garage/BME280_sealevel_pressure'          
+      unique_id: garage_sealevel_pressure
+      name: 'Garage Sealevel Pressure'                                             
+      unit_of_measurement: 'hPa'                                                   
+    
 sensor:
-  - platform: bme280
-    name: Machine Room
-    monitored_conditions:
-      - temperature
-      - humidity
-      - pressure
-#  - platform: enphase_envoy
-#    ip_address: 192.168.35.221
-#    monitored_conditions:
-#      - production
-#      - daily_production
-#      - consumption
-#      - daily_consumption
   - platform: gpsd           
     name: HorizonView GPS
     host: 192.168.35.157
     scan_interval: 300
-  - platform: hydrawise
-  - platform: mqtt           
-    state_topic: 'environment/horizonview_garage/bme280_temperature'
-    name: 'Garage Temperature'
-    unit_of_measurement: '°F'
-  - platform: mqtt           
-    state_topic: 'environment/horizonview_garage/bme280_humidity'
-    name: 'Garage Humidity'    
-  - platform: mqtt           
-    state_topic: 'environment/horizonview_garage/bme280_pressure'
-    unit_of_measurement: 'hPa'
-    name: 'Garage Pressure'  
-  - platform: mqtt           
-    state_topic: 'environment/horizonview_garage/bme280_sealevel_pressure'
-    unit_of_measurement: 'hPa'
-    name: 'Garage Sealevel Pressure'
-  - platform: mqtt
-    state_topic: 'room-assistant/sensor/ble-audi-a6-ibeacon/attributes'
-    value_template: '{{ value_json.rssi }}'
-    unit_of_measurement: 'm'
-    name: 'Audi A6'
-  - platform: mqtt
-    state_topic: 'room-assistant/sensor/ble-audi-q7-ibeacon/attributes'
-    value_template: '{{ value_json.distance }}'
-    unit_of_measurement: 'm'
-    name: 'Audi Q7'
-  - platform: mqtt
-    state_topic: 'room-assistant/sensor/ble-toyota-rav4-ibeacon/attributes'
-    value_template: '{{ value_json.distance }}'
-    unit_of_measurement: 'm'
-    name: 'Toyota Rav4'
-  - platform: mqtt
-    name: "Room Assistant Familyroom"
-    state_topic: room-assistant/status/familyroom-hv
-  - platform: mqtt
-    name: "Room Assistant Retreat"
-    state_topic: room-assistant/status/retreat-hv
-  - platform: mqtt
-    name: "Room Assistant Gameroom"
-    state_topic: room-assistant/status/gameroom-hv
-  - platform: mqtt
-    name: "Room Assistant Garage"
-    state_topic: room-assistant/status/garage-hv
-#  - platform: mqtt
-#    name: pentair_pool_temperature
-#    state_topic: pentair/pooltemp/state
-#    unit_of_measurement: "°F"
-#  - platform: mqtt
-#    name: pentair_spa_temperature
-#    state_topic: pentair/spatemp/state
-#    unit_of_measurement: "°F"
-#  - platform: mqtt
-#    name: pentair_air_temperature
-#    state_topic: pentair/airtemp/state
-#    unit_of_measurement: "°F"
-#  - platform: mqtt                                                              
-#    name: pentair_pump_power
-#    state_topic: pentair/pump/0/watts/state                         
-#    unit_of_measurement: "W"                                
-#  - platform: mqtt                                                              
-#    name: pentair_pump_speed
-#    state_topic: pentair/pump/0/rpm/state                         
-#    unit_of_measurement: "RPM"                                
-#  - platform: mqtt                                                              
-#    name: pentair_pump_flow
-#    state_topic: pentair/pump/0/gpm/state                         
-#    unit_of_measurement: "GPM"                                
-#  - platform: mqtt
-#    name: "Familyroom Temperature"
-#    state_topic: "environment/horizonview"
-#    unit_of_measurement: '°F'
-#    value_template: "{{ value_json.temperature }}"
-#  - platform: mqtt
-#    name: "Familyroom Humidity"
-#    state_topic: "environment/horizonview"
-# tasmota_1E2E6F
-#  - platform: mqtt           
-#    name: 'Office CO2'   
-#    state_topic: "tele/tasmota_1E2E6F/SENSOR"
-#    value_template: "{{ value_json['CCS811'].eCO2 }}"
-#    json_attributes_topic: "tele/tasmota_1E2E6F/SENSOR"
-#    availability_topic: "tele/tasmota_1E2E6F/LWT"
-#    payload_available: "Online"
-#    payload_not_available: "Offline"
-#    unit_of_measurement: 'ppm'
-#    icon: mdi:molecule-co2
-#  - platform: mqtt           
-#    name: 'Tasomta Node1 State'
-#    state_topic: "tele/tasmota_1E2E6F/STATE"
-#    value_template: "{{ value_json['Wifi'].RSSI }}"
-#    json_attributes_topic: "tele/tasmota_1E2E6F/STATE"
-#    availability_topic: "tele/tasmota_1E2E6F/LWT"
-#    payload_available: "Online"
-#    payload_not_available: "Offline"
-#    unit_of_measurement: '%' 
-#    icon: mdi:wifi           
-#    device_class: signal_strength
-#  - platform: xfinity
-#    username: !secret xfinity_email
-#    password: !secret xfinity_password
-  - platform: rainforest_eagle
-    ip_address: !secret eagle_host
-    cloud_id: !secret eagle_cloud_id
-    install_code: !secret eagle_install_code
-    scan_interval: 20
+#  - platform: hydrawise
   # Weewx Weather
   - platform: rest
     resource: http://192.168.35.157/weewx/daily.json
@@ -372,6 +299,7 @@ sensor:
     scan_interval: 150
     force_update: true
     json_attributes:
+      - time
       - current
       - almanac
     value_template: '{{ value_json.location }}'
@@ -387,6 +315,12 @@ sensor:
         '3' : 'Night',
         '4' : 'Vacation' } %}
       {{ mapper[value] }}
+  - platform: rest
+    name: "Chilly Brown Owl LED"
+    unique_id: chilly_brown_owl_led
+    scan_interval: 300 # 5 min
+    resource: !secret bobcat_led
+    value_template: "{{value_json.led}}"
   - platform: systemmonitor
     resources:
       - type: memory_use_percent
@@ -401,175 +335,17 @@ sensor:
     name: CPU Temperature
     command: "cat /sys/class/thermal/thermal_zone0/temp"
     # If errors occur, remove degree symbol below
-#    value_template: "{{ (value | multiply(0.0018) + 32) | float | round(0) }}"
-    value_template: "{{ value | multiply(0.001) | float | round(1) }}"
+#    value_template: "{{ (value | multiply(0.0018) + 32) | float(default=0) | round(0) }}"
+    value_template: "{{ value | multiply(0.001) | float(default=0) | round(1) }}"
     unit_of_measurement: " °C"
-  - platform: template
-    sensors:
-      pentair_pool_temperature:
-        friendly_name: "Pentair Pool Temperature"
-        value_template: "{{ state_attr('climate.pentair_0d_ce_47_pool_heat', 'current_temperature') }}"
-        unit_of_measurement: "..F"                                                          
-      pentair_spa_temperature:
-        friendly_name: "Pentair Spa Temperature"
-        value_template: "{{ state_attr('climate.pentair_0d_ce_47_spa_heat', 'current_temperature') }}"
-        unit_of_measurement: "..F"                                                          
-      internet_in_mbps:
-        friendly_name: "Internet WAN In"
-        unit_of_measurement: 'Mbps'
-        value_template: "{{ [((states('sensor.erx_wan_in_derivative') | float * 8) / 1000000) | round(2), 0] | max }}"
-        icon_template: mdi:download-network
-      internet_out_mbps:
-        friendly_name: "Internet WAN Out"
-        unit_of_measurement: 'Mbps'
-        value_template: "{{ [((states('sensor.erx_wan_out_derivative') | float * 8) / 1000000) | round(2), 0] | max }}"
-        icon_template: mdi:upload-network
-      closet_ups_battery_minutes:
-        friendly_name: "Closet UPS Battery Minutes"
-        value_template: "{{ states('sensor.closet_ups_battery_runtime') | multiply(0.0167) | float | round(0) }}"
-        unit_of_measurement: "min"
-      downstairs_thermostat_temperature:
-        friendly_name: Downstairs Temperature
-        value_template: "{{ state_attr('climate.downstairs', 'current_temperature') }}"
-        unit_of_measurement: "°F"                                                                              
-      upstairs_thermostat_temperature:
-        friendly_name: Upstairs Temperature
-        value_template: "{{ state_attr('climate.main_floor', 'current_temperature') }}"
-        unit_of_measurement: "°F"                                                                              
-      weewx_outside_temperature:                                                                                 
-        friendly_name: Outside Temperature                                                                       
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"                        
-        unit_of_measurement: "°F"                                                                              
-      weewx_outside_dewpoint:                                                                                 
-        friendly_name: Outside Dewpoint                                                                       
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['dewpoint'] }}"                        
-        unit_of_measurement: "°F"                                                                             
-      weewx_outside_windchill:                                                                                 
-        friendly_name: Outside Windchill
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['windchill'] }}"                        
-        unit_of_measurement: "°F"                                                                              
-      weewx_outside_heat_index:                                                                                 
-        friendly_name: Outside Heat Index
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['heatindex'] }}"                        
-        unit_of_measurement: "°F"                                                                              
-      weewx_inside_temperature:                                                                                  
-        friendly_name: Office Temperature                                                                        
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['inTemp'] }}"                     
-        unit_of_measurement: "°F"                                                                              
-      weewx_garage_temperature:                                                                                 
-        friendly_name: Garage Temperature                                                                       
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['extraTemp1'] }}"                        
-        unit_of_measurement: "°F"                                                                              
-      weewx_cellar_temperature:                                                                                 
-        friendly_name: Cellar Temperature                                                                       
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['extraTemp2'] }}"                        
-        unit_of_measurement: "°F"                                                                              
-      weewx_master_temperature:                                                                                 
-        friendly_name: Master Temperature                                                                       
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['extraTemp3'] }}"                        
-        unit_of_measurement: "°F"                                                                              
-      weewx_guest_temperature:                                                                                 
-        friendly_name: Guest Temperature                                                                       
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['extraTemp4'] }}"                        
-        unit_of_measurement: "°F"                                                                              
-      weewx_outside_humidity:                                                                                    
-        friendly_name: Outside Humidity                                                                          
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['outHumidity'] }}"                       
-      weewx_inside_humidity:                                                                                     
-        friendly_name: Office Humidity                                                                           
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['inHumidity'] }}"                 
-      weewx_garage_humidity:                                                                                     
-        friendly_name: Garage Humidity                                                                           
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['extraHumid1'] }}"                 
-      weewx_cellar_humidity:                                                                                     
-        friendly_name: Cellar Humidity                                                                           
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['extraHumid2'] }}"                 
-      weewx_master_humidity:                                                                                     
-        friendly_name: Master Humidity                                                                           
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['extraHumid3'] }}"                 
-      weewx_guest_humidity:                                                                                     
-        friendly_name: Guest Humidity                                                                           
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['extraHumid4'] }}"                 
-      weewx_wind_speed:                                                                                          
-        friendly_name: Wind Speed                                                                                
-        icon_template: mdi:weather-windy                                                                         
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['windSpeed'] }}"     
-        unit_of_measurement: 'mph'                                                              
-      weewx_wind_direction_ordinal:                                                             
-        friendly_name: Wind Direction                                                           
-        icon_template: mdi:weather-windy                                                        
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['windDirText'] }}"   
-      weewx_solar_radiation:                                                             
-        friendly_name: Solar Radiation                                                           
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['solarRadiation'] }}"   
-        unit_of_measurement: "Wpm2"
-      weewx_uv_radiation:                                                             
-        friendly_name: Ultra Violet Radiation                                                           
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['UV'] }}"   
-      weewx_pm25:                                                             
-        friendly_name: PM 2_5
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['pm2_5'] }}"   
-        unit_of_measurement: "ug/m3"
-      weewx_cloudbase:                                                             
-        friendly_name: Cloudbase
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['cloudbase'] }}"   
-        unit_of_measurement: "ft"
-      solar_azimuth:
-        friendly_name: "Solar Azimuth"
-        value_template: "{{ state_attr('sun.sun', 'azimuth') }}"
-#        value_template: "{{ states.sun.sun.attributes.azimuth }}"
-        unit_of_measurement: "°"
-      solar_elevation:
-        friendly_name: "Solar Elevation"
-        value_template: "{{ state_attr('sun.sun', 'elevation') }}"
-#        value_template: "{{ states.sun.sun.attributes.elevation }}"
-        unit_of_measurement: "°"
-      last_boot_date_time:
-        friendly_name: "Last Boot"
-        value_template: '{{ states.sensor.last_boot.state.split("T")[0] }}'
-      current_date_time:
-        friendly_name: "Current Date/Time"
-        value_template: >
-          {% set x = states('sensor.time') %}
-          {{ now().strftime("%A, %B %e") + now().strftime(", %-I:%M %p")}}
-      air_quality_index:
-        friendly_name: Air Quality Index
-        unit_of_measurement: "AQI"
-        value_template: >
-          {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
-            {{ (((Ih - Il)/(BPh - BPl)) * (Cp - BPl) + Il)|round }}
-          {%- endmacro %}
-          {% if (states.sensor.weewx_weather.attributes.current['pm2_5']|float) > 1000 %}
-            invalid
-          {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float) > 350.5 %}
-            {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float), 500.0, 401.0, 500.0, 350.5) }}
-          {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float) > 250.5 %}
-            {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float), 400.0, 301.0, 350.4, 250.5) }}
-          {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float) > 150.5 %}
-            {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float), 300.0, 201.0, 250.4, 150.5) }}
-          {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float) > 55.5 %}
-            {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float), 200.0, 151.0, 150.4, 55.5) }}
-          {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float) > 35.5 %}
-            {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float), 150.0, 101.0, 55.4, 35.5) }}
-          {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float) > 12.1 %}
-            {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float), 100.0, 51.0, 35.4, 12.1) }}
-          {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float) >= 0.0 %}
-            {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float), 50.0, 0.0, 12.0, 0.0) }}
-          {% else %}
-            invalid
-          {% endif %}
-  - platform: filesize
-    file_paths:              
-      - /config/home-assistant_v2.db
-#  - platform: command_line
-#    name: installed_version_2
-#    command: "cat .HA_VERSION"
-  - platform: version
-    name: latest_available_version
-    source: hassio
-  - platform: version
-    name: installed_version
-  - platform: uptime
+#  - platform: filesize
+#    file_paths:              
+#      - /config/home-assistant_v2.db
+#  - platform: version
+#    name: latest_available_version
+#    source: hassio
+#  - platform: version
+#    name: installed_version
   - platform: time_date
     display_options:        
       - 'time'              
@@ -595,14 +371,14 @@ sensor:
     accept_errors: true
     value_template: "{{ value }}"
     unit_of_measurement: " °C"
-  - platform: snmp
-    host: 192.168.35.164
-    baseoid: 1.3.6.1.2.1.25.1.8.1
-    name: raspi_retreat_hv_cpu_temperature
-    scan_interval: 300
-    accept_errors: true
-    value_template: "{{ value }}"
-    unit_of_measurement: " °C"
+#  - platform: snmp
+#    host: 192.168.35.164
+#    baseoid: 1.3.6.1.2.1.25.1.8.1
+#    name: raspi_retreat_hv_cpu_temperature
+#    scan_interval: 300
+#    accept_errors: true
+#    value_template: "{{ value }}"
+#    unit_of_measurement: " °C"
   - platform: snmp
     name: erx_wan_in
     host: 192.168.35.254
@@ -629,39 +405,132 @@ sensor:
     source: sensor.erx_wan_out
     unit_time: s
     unit: B
-  - platform: moon
+  - platform: snmp                                                
+    host: 192.168.35.254                                                                        
+    version: 2c                   
+    name: Xfinity WAN Usage
+    scan_interval: 23                        
+    unit_of_measurement: 'MiB'    
+    baseoid: 1.3.6.1.4.1.8072.1.3.2.4.1.2.10.119.97.110.95.117.115.97.103.101.0.1                  
+    accept_errors: true   
+    value_template: '{{value | float(default=0) }}'
+  - platform: statistics                                                    
+    name: Xfinity WAN Statistics
+    entity_id: sensor.xfinity_wan_usage
+    state_characteristic: change                                
+    sampling_size: 28800 
+    max_age: 24:00:00                        
+  - platform: history_stats
+    name: Upstairs HVAC Duty Cycle
+    entity_id: binary_sensor.upstairs_hvac_status
+    state: "on"
+    type: ratio                                                   
+    #start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+    duration:
+      hours: 24                      
+  - platform: history_stats
+    name: Downstairs HVAC Duty Cycle
+    entity_id: binary_sensor.downstairs_hvac_status
+    state: "on"
+    type: ratio                                                   
+    #start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+    duration:
+      hours: 24                      
+  - platform: history_stats
+    name: Chiller Duty Cycle
+    entity_id: binary_sensor.chiller_status
+    state: "on"
+    type: ratio
+    #start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+    duration:
+      hours: 24
+  - platform: history_stats
+    name: Water Heater Duty Cycle
+    entity_id: binary_sensor.water_heater_status
+    state: "on"
+    type: ratio
+    #start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+    duration:
+      hours: 24
+  - platform: history_stats
+    name: Chiller Time On
+    entity_id: binary_sensor.chiller_status
+    state: "on"
+    type: time
+    #start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+    duration:
+      hours: 24
+  - platform: history_stats
+    name: Chiller On Count
+    entity_id: binary_sensor.chiller_status
+    state: "on"                                                   
+    type: count
+    #start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+    duration:
+      hours: 24
+  - platform: integration
+    source: sensor.pentair_0d_ce_47_pool_pump_current_watts 
+    name: 'Pentair: 0D-CE-47 Pool Pump Current Energy'
+    unit_prefix: k
+    unit_time: h
+    method: left
+    round: 2
+  - platform: integration
+    name: Grid Import Energy
+    source: sensor.grid_import_power
+    unit_prefix: k
+    unit_time: h
+    method: left
+  - platform: integration
+    name: Grid Export Energy
+    source: sensor.grid_export_power
+    unit_prefix: k
+    unit_time: h
+    method: left
+  - platform: integration 
+    source: sensor.closet_ups_current_power                                                                                   
+    name: Closet UPS Energy
+    unit_prefix: k                           
+    unit_time: h                                                                       
+    round: 2                      
+  - platform: integration 
+    source: sensor.retreat_ups_current_power                                                                                   
+    name: Retreat UPS Energy
+    unit_prefix: k                           
+    unit_time: h                                                                       
+    round: 2                      
+  - platform: integration 
+    source: sensor.guest1_floor_power
+    name: Guest1 Floor Energy
+    unit_prefix: k                           
+    unit_time: h                                                                       
+    round: 2                      
+  - platform: integration 
+    source: sensor.guest2_floor_power
+    name: Guest2 Floor Energy
+    unit_prefix: k                           
+    unit_time: h                                                                       
+    round: 2                      
+  - platform: integration 
+    source: sensor.master_floor_power
+    name: Master Floor Energy
+    unit_prefix: k                           
+    unit_time: h                                                                       
+    round: 2                      
+  - platform: derivative
+    source: sensor.pool_room_temperature
+    name: Pool Room Change per Minute
+    round: 1
+    unit_time: min
+#switch:
+#  - platform: hydrawise
 
-switch:
-  - platform: hydrawise
-#  - platform: mqtt
-#    name: pentair_pool_pump
-#    command_topic: pentair/circuit/505/command
-#    state_topic: pentair/circuit/505/state
-#  - platform: mqtt
-#    name: pentair_spa_pump
-#    command_topic: pentair/circuit/500/command
-#    state_topic: pentair/circuit/500/state
-#  - platform: mqtt
-#    name: pentair_spa_jets
-#    command_topic: pentair/circuit/504/command
-#    state_topic: pentair/circuit/504/state
-#  - platform: mqtt
-#    name: pentair_waterfall
-#    command_topic: pentair/circuit/506/command
-#    state_topic: pentair/circuit/506/state
-#  - platform: mqtt
-#    name: pentair_pool_cleaner
-#    command_topic: pentair/circuit/501/command
-#    state_topic: pentair/circuit/501/state
-#  - platform: mqtt
-#    name: pentair_pool_lights
-#    command_topic: pentair/circuit/502/command
-#    state_topic: pentair/circuit/502/state
-#  - platform: mqtt
-#    name: pentair_spa_lights
-#    command_topic: pentair/circuit/503/command
-#    state_topic: pentair/circuit/503/state
-#
 #light:
 #  - platform: switch
 #    name: Pool Lights
@@ -676,20 +545,34 @@ utility_meter:
     source: sensor.eagle_200_net_meter_energy_delivered_minus_received
     cycle: daily
     net_consumption: true
-  monthly_energy:
-    source: sensor.eagle_200_net_meter_energy_delivered_minus_received
-    cycle: monthly
+  daily_envoy_energy:
+    source: sensor.envoy_net_meter_energy_consumption_minus_production
+    cycle: daily
     net_consumption: true
+  daily_home_delivered:
+    source: sensor.eagle_200_total_meter_energy_delivered
+    cycle: daily
+  daily_home_received:
+    source: sensor.eagle_200_total_meter_energy_received
+    cycle: daily
+  daily_energy_import:
+    source: sensor.grid_import_energy
+    name: Daily Import Meter
+    cycle: daily
+  daily_energy_export:
+    source: sensor.grid_export_energy
+    name: Daily Export Meter
+    cycle: daily
 
 #iqvia:
 #  zip_code: "95404"
 
-weather:
-  - platform: darksky
-    api_key: !secret darksky_api
-    mode: daily
-    scan_interval:
-      minutes: 15
+#weather:
+#  - platform: darksky
+#    api_key: !secret darksky_api
+#    mode: daily
+#    scan_interval:
+#      minutes: 15
 
 # Text to speech
 #tts:
@@ -700,8 +583,6 @@ lovelace:
   resources:
     - url: /hacsfiles/bignumber-card/bignumber-card.js
       type: module
-#    - url: /hacsfiles/custom-header/custom-header.js
-#      type: module
     - url: /hacsfiles/lovelace-card-tools/card-tools.js
       type: module
     - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
@@ -726,16 +607,27 @@ lovelace:
       type: module
     - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
       type: module
-    - url: /local/vertical-style-card.js
-      type: js
+    - url: /hacsfiles/compass-card/compass-card.js
+      type: module
+    - url: /hacsfiles/battery-state-card/battery-state-card.js
+      type: module
+
+frontend:                              
+  extra_module_url:                                                  
+    - /hacsfiles/lovelace-card-mod/card-mod.js
+
 
 history: !include history.yaml
 recorder: !include recorder.yaml
 automation: !include automations.yaml
 automation split: !include_dir_list automations
 binary_sensor: !include binary_sensors.yaml
-#group: !include groups.yaml
+group: !include groups.yaml
 #homekit: !include homekit.yaml
+scene: !include scenes.yaml
 script: !include scripts.yaml
+script split: !include_dir_list scripts
+template: !include templates.yaml
 rest_command: !include rest.yaml
+shell_command: !include shell_command.yaml
 zone: !include zones.yaml

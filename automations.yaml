@@ -1,91 +1,45 @@
-- id: 'republishAudiA6Away'                                
-  alias: 'audi_a6_away_to_mqtt'                            
-  initial_state: 'on'                                      
-  trigger:                                                 
-    platform: state                                        
-    entity_id: device_tracker.audi_a6_ibeacon_tracker
-    to: 'not_home'                                         
-  action:                                           
-    - service: mqtt.publish             
-      data_template:                      
-        topic: 'location/car/audi_a6_gps'
-        retain: false                        
-        payload:                         
-                '                        
-                    {"battery_level":100,
-                    "longitude":0.0,     
-                    "latitude":0.0,      
-                    "gps_accuracy":100,  
-                    "tst": {{ as_timestamp(now()) | int }},                        
-                    "_type":"location",                                          
-                    "tid":"sc"}                            
-                '                                          
-                                                           
-- id: 'republishAudiA6Home'                                
-  alias: 'audi_a6_home_to_mqtt'                            
-  initial_state: 'on'                                      
-  trigger:                                                 
-    platform: state                                        
-    entity_id: device_tracker.audi_a6_ibeacon_tracker                   
-    to: 'home'                          
-  action:                               
-    - service: mqtt.publish             
-      data_template:                      
-        topic: 'location/car/audi_a6_gps'
-        retain: false                    
-        payload:                                          
-                '                                          
-                    {"battery_level":100,           
-                    "longitude":{{ states.zone.horizonview.attributes.longitude }},
-                    "latitude":{{ states.zone.horizonview.attributes.latitude }},  
-                    "gps_accuracy":100,                                            
-                    "tst": {{ as_timestamp(now()) | int }},                        
-                    "_type":"location",                                            
-                    "tid":"sc"}                                                    
-                '                                                                  
-
-- id: 'republishAudiQ7Away'                                                                                                                 
-  alias: 'audi_q7_away_to_mqtt'                                                                                                             
-  initial_state: 'off'                                                                                                                       
-  trigger:                                                                                                                                  
-    platform: state                                                                                                                         
-    entity_id: device_tracker.audi_q7_ibeacon_tracker                                                                                                    
-    to: 'not_home'                                                                                                                          
-  action:                                                                                                                                   
-    - service: mqtt.publish                                                                                                                 
-      data_template:                                                                                                                        
-        topic: 'location/car/audi_q7_gps'                                                                                                   
-        retain: false                                                                                                                       
-        payload:                                                                                                                            
-                '                                                                                                                           
-                    {"battery_level":100,                                                                                                   
-                    "longitude":0.0,                                                                                                        
-                    "latitude":0.0,                                                                                                         
-                    "gps_accuracy":100,                                                                                                     
-                    "tst": {{ as_timestamp(now()) | int }},                                                                                 
-                    "_type":"location",                                                                                                     
-                    "tid":"sc"}                                                                                                             
-                '                                                                                                                           
-                                                                                                                                            
-- id: 'republishAudiQ7Home'                                                                                                                 
-  alias: 'audi_q7_home_to_mqtt'                                                                                                            
-  initial_state: 'off'                                                                                                                       
-  trigger:                                                                                                                                  
-    platform: state                                                                                                                         
-    entity_id: device_tracker.audi_q7_ibeacon_tracker                                                                                                    
-    to: 'home'                                                                                                                              
-  action:                                                                                                                                   
-    - service: mqtt.publish                                                                                                                 
-      data_template:                                                                                                                        
-        topic: 'location/car/audi_q7_gps'                                                                                                   
-        retain: false                                                                                                                       
-        payload:                                                                                                                            
-                '                                                                                                                           
-                    {"battery_level":100,                                                                                                   
-                    "longitude":{{ states.zone.horizonview.attributes.longitude }},                                                            
-                    "latitude":{{ states.zone.horizonview.attributes.latitude }},                                                              
-                    "gps_accuracy":100,                                                                                                     
-                    "tst": {{ as_timestamp(now()) | int }},                                                                                 
-                    "_type":"location",                                                                                                     
-                    "tid":"sc"}                                                                                                             
-                '                                                                                                                           
+- id: '1644898440052'
+  alias: Stairs Pico On
+  description: Raise/On button pressed on Stairs Pico
+  trigger:
+  - platform: device
+    device_id: 7bfe7df82baff4d1d90b6dd8cd1c9a7c
+    domain: lutron_caseta
+    type: press
+    subtype: 'on'
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disable_stairs_cover_down_automation
+  mode: single
+- id: '1645033913099'
+  alias: Retreat Pico On
+  description: Raise/On button pressed on Retreat Pico
+  trigger:
+  - platform: device
+    device_id: 70602769804d30452cd91fa3d2776165
+    domain: lutron_caseta
+    type: press
+    subtype: 'on'
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disable_retreat_cover_down_automation
+  mode: single
+- id: '1645034115630'
+  alias: Livingroom Pico On
+  description: Raise/On button pressed on Livingroom Pico
+  trigger:
+  - platform: device
+    device_id: ffe90c1393bab182ceba5d98abef289e
+    domain: lutron_caseta
+    type: press
+    subtype: 'on'
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disable_livingroom_cover_down_automation
+  mode: single

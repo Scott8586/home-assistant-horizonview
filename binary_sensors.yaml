@@ -1,10 +1,22 @@
-- platform: hydrawise
-- platform: template
-  sensors:
-    both_home:
-      friendly_name: 'Both Home'
-      value_template: >-
-        {{ is_state('person.scott', 'home')
-           and is_state('person.stephanie', 'home')
-        }}
-
+#- platform: hydrawise
+#- platform: mqtt
+#  name: Family Room Presense
+#  state_topic: "espresense/rooms/familyroom/status"
+#  json_attributes_topic: "espresense/rooms/familyroom/telemetry"
+#  payload_on: online
+#  payload_off: offline
+#  device_class: connectivity
+#- platform: mqtt
+#  name: Retreat Presense
+#  state_topic: "espresense/rooms/retreat/status"
+#  json_attributes_topic: "espresense/rooms/retreat/telemetry"
+#  payload_on: online
+#  payload_off: offline
+#  device_class: connectivity
+#- platform: mqtt
+#  name: Garage Presense
+#  state_topic: "espresense/rooms/garage/status"
+#  json_attributes_topic: "espresense/rooms/garage/telemetry"
+#  payload_on: online
+#  payload_off: offline
+#  device_class: connectivity

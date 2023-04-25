@@ -3,7 +3,7 @@
   unit_of_measurement: "%"
   device_class: humidity
 "sensor.*_temperature":
-#  unit_of_measurement: '°F'
+  unit_of_measurement: '°F'
   device_class: temperature
 "cover.*_shade*":
   device_class: shade
