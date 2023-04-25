@@ -1,0 +1,24 @@
+{
+    "data": {
+        "allocations": {
+            "climate.main_floor": 1133053748,
+            "lutron_caseta_pro.switch.lutron_caseta_pro_switch_c4:f3:12:db:74:71_3": 3207007338,
+            "lutron_caseta_pro.switch.lutron_caseta_pro_switch_c4:f3:12:db:74:71_7": 1587808419,
+            "lutron_caseta_pro.switch.lutron_caseta_pro_switch_c4:f3:12:db:74:71_9": 1179256673,
+            "switch.cellar_a_c": 1031997110,
+            "switch.family_room_a_v": 1726089460,
+            "switch.game_room_a_v": 1420625932,
+            "switch.master_a_v": 1046349538,
+            "switch.pentair_cleaner": 1726220525,
+            "switch.pentair_pool": 1304561613,
+            "switch.pentair_pool_lights": 2411334327,
+            "switch.pentair_spa": 1173489495,
+            "switch.pentair_spa_jets": 1890716012,
+            "switch.pentair_spa_lights": 2226129473,
+            "switch.pentair_waterfall": 2059667925,
+            "switch.sonos_amps": 1057818371
+        }
+    },
+    "key": "homekit.aids",
+    "version": 1
+}

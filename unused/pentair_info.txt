@@ -1,0 +1,20 @@
+   circuitId: 500
+     name: Spa
+   circuitId: 501
+     name: Cleaner
+   circuitId: 502
+     name: Pool Light
+   circuitId: 503
+     name: Spa Light
+   circuitId: 504
+     name: Jets
+   circuitId: 505
+     name: Pool
+   circuitId: 506
+     name: Waterfall
+
+pentair/pump/0/watts/state 738
+pentair/pump/0/rpm/state 2350
+pentair/pump/0/gpm/state 42
+
+

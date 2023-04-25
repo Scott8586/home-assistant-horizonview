@@ -1,0 +1,38 @@
+name: Horizon View
+auto_start: false
+filter:                                                                   
+  include_domains:
+#    - media_player                 
+#    - sensor
+    - switch                               
+  include_entities:                
+    - camera.front_yard
+    - climate.main_floor
+    - climate.downstairs                 
+    - climate.pool
+    - climate.spa
+    - cover.hvw_main_door
+    - cover.hvw_side_door
+    - cover.great_room_shade_1
+    - cover.great_room_shade_2
+    - cover.great_room_shade_3
+    - cover.master_retreat_shade_1
+    - cover.stairs_shade_1
+    - light.pool_lights
+    - light.spa_lights
+    - sensor.pentair_air_temperature
+    - sensor.pentair_pool_temperature
+  exclude_entities:
+    - switch.stairs_pico
+    - switch.master_retreat
+    - switch.living_room_living_room
+    - switch.family_room_a_v
+    - switch.game_room_a_v
+    - switch.master_a_v
+    - switch.cellar_a_c
+    - switch.office_a_v
+#entity_config:
+#  switch.pentair_pool_light:
+#    type: light
+#  switch.pentair_spa_light:
+#    type: light

@@ -1,0 +1,13 @@
+# Familyroom LED On
+id: 'familyroomLEDOn'
+alias: 'FamilyRoom LED On'
+trigger:
+  platform: state
+  entity_id: binary_sensor.familyroom_red_on, binary_sensor.familyroom_yellow_on, binary_sensor.familyroom_green_on
+  to: 'on'
+action:
+  - service: switch.turn_on
+    target:
+      entity_id: >
+        {{ expand('group.familyroom_led') | selectattr('state','eq','on')                                       
+           | map(attribute='parent_entity_id') | join(',') }}
