@@ -1,0 +1,21 @@
+id: 'republishToyotaRav4Home'
+alias: 'L: Toyota Rav4 Home to MQTT'
+trigger:
+  platform: state
+  entity_id: device_tracker.toyota_rav4_ibeacon_tracker
+  to: 'home'
+action:
+  - service: mqtt.publish
+    data_template:
+      topic: 'location/car/toyota_rav4_gps'
+      retain: false
+      payload:
+              '
+                  {"battery_level":100,
+                  "longitude":{{ states.zone.horizon_view.attributes.longitude }},
+                  "latitude":{{ states.zone.horizon_view.attributes.latitude }},
+                  "gps_accuracy":100,
+                  "tst": {{ as_timestamp(now()) | int }},
+                  "_type":"location",
+                  "tid":"sc"}
+              '

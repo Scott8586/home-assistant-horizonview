@@ -1,0 +1,18 @@
+# Grow Light Control
+id: 'growlightcntrl'         
+alias: "A: Grow Light Control"
+trigger:        
+  platform: state
+  entity_id: schedule.grow_light
+condition: 
+  - condition: template 
+    value_template: "{{ trigger.to_state.state != 'unavailable' }}" 
+  - condition: template 
+    value_template: "{{ trigger.to_state.state != 'unknown' }}" 
+action:
+  - service: >
+      switch.turn_{{ trigger.to_state.state }}
+    entity_id: switch.grow_lights
+  - service: !secret telegram_notify
+    data_template:
+      message: "Grow Light is {{ trigger.to_state.state }}"

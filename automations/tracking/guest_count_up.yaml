@@ -1,0 +1,14 @@
+# Guest Count Up
+id: 'guestcountup'
+alias: "Guest Count Up"                                                                                                        
+trigger:
+  - platform: state
+    entity_id: sensor.guest_wifi_count
+    for: '00:00:05'
+condition:
+  - condition: template
+    value_template: '{{ trigger.from_state.state | int(0) < trigger.to_state.state | int(0) }}'
+action:                                                                                             
+  - service: !secret telegram_notify
+    data:                                                                     
+      message: "Guest Count: {{ states('sensor.guest_wifi_count') }}"                                      

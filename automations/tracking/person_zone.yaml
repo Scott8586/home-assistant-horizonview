@@ -1,0 +1,23 @@
+# person zone state
+id: 'personzone'
+alias: 'Person Zone Change'
+trigger:
+  platform: state
+  entity_id: person.scott, person.stephanie
+condition:
+  condition: and
+  conditions:
+    - condition: template
+      value_template: '{{ trigger.from_state.state != "unavailable" }}'
+    - condition: template
+      value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: >
+      {% if trigger.to_state.state == "not_home" %} 
+        P: {{ trigger.to_state.name }} is away
+      {% elif trigger.to_state.state == "home" %}
+        P: {{ trigger.to_state.name }} is home
+      {% endif %}
+

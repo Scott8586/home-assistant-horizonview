@@ -1,0 +1,23 @@
+# car zone state
+id: 'carzone'
+alias: 'Car Zone Change'
+trigger:
+  platform: state
+  entity_id: device_tracker.audi_a6_ibeacon_tracker, device_tracker.audi_q7_ibeacon_tracker, device_tracker.toyota_rav4_ibeacon_tracker
+condition:
+  condition: and
+  conditions:
+    - condition: template
+      value_template: '{{ trigger.from_state.state != "unavailable" }}'
+    - condition: template
+      value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: >
+      {% if trigger.to_state.state == "not_home" %} 
+        C: {{ trigger.to_state.name }} is away
+      {% elif trigger.to_state.state == "home" %}
+        C: {{ trigger.to_state.name }} is home
+      {% endif %}
+

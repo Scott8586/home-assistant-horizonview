@@ -1,0 +1,18 @@
+# Hot Water Recirc Control
+id: 'hotwaterrecirccntrl'         
+alias: "A: Hot Water Recirc Control"
+trigger:        
+  platform: state
+  entity_id: binary_sensor.hot_water_recirc_on
+condition: 
+  - condition: template 
+    value_template: "{{ trigger.to_state.state != 'unavailable' }}" 
+  - condition: template 
+    value_template: "{{ trigger.to_state.state != 'unknown' }}" 
+action:
+  - service: >
+      switch.turn_{{ trigger.to_state.state }}
+    entity_id: switch.hot_water_circ_pump
+  - service: !secret telegram_notify
+    data_template:
+      message: "Recirc Pump is {{ trigger.to_state.state }}"

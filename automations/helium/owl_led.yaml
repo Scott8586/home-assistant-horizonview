@@ -1,0 +1,21 @@
+# owl LED status
+id: 'owlstatus'
+alias: 'N: Owl LED Status'
+trigger:
+  platform: state
+  entity_id: sensor.chilly_brown_owl_led
+condition:
+  - condition: template
+    value_template: "{{ trigger.to_state.state != 'unavailable' }}"
+  - condition: template
+    value_template: "{{ trigger.to_state.state != 'unknown' }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: >
+      {% if trigger.to_state.state == "lime" %} 
+        N: {{ trigger.to_state.name }} is Green
+      {% else %}
+        N: {{ trigger.to_state.name }} is {{trigger.to_state.state}}
+      {% endif %}
+

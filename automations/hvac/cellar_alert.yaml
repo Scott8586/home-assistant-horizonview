@@ -1,0 +1,14 @@
+# Cellar Alert
+id: 'cellaralert'
+alias: "N: Cellar Alert"
+trigger:        
+  platform: state
+  to: "on"
+  entity_id: binary_sensor.cellar_alert
+action:
+  - service: !secret telegram_notify
+    data_template:
+      message: > 
+       Cellar Alert:
+       Temp: {{ states('sensor.weewx_cellar_temperature') }}F,
+       Humid: {{ states('sensor.weewx_cellar_humidity') }}%

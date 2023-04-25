@@ -1,0 +1,12 @@
+# Guest Count Zero
+id: 'guestcountzero'
+alias: "Guest Count Zero"                                                                                                        
+trigger:                                                                                            
+  platform: numeric_state                                                                              
+  entity_id: sensor.guest_wifi_count
+  below: 1
+action:                                                                                             
+  - service: !secret telegram_notify
+    data:                                                                     
+      message: "Guest Count: Zero"                                      
+

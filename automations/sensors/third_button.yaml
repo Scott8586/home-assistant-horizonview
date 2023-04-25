@@ -1,0 +1,13 @@
+id: 'thirdbutton'
+alias: thirdbutton - MQTT payload
+trigger:
+  - platform: mqtt
+    topic: 'zigbee2mqtt/Smart Button1'
+condition:
+  - condition: template
+    value_template: '{{ "single" == trigger.payload_json.action }}'
+action:
+  service: !secret telegram_notify
+  data_template:        
+    message: "N: Just testing - single button press"
+

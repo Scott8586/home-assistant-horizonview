@@ -1,0 +1,15 @@
+# Cellar Clear
+id: 'cellarclear'
+alias: "N: Cellar Clear"
+trigger:        
+  platform: state
+  from: "on"
+  to: "off"
+  entity_id: binary_sensor.cellar_alert
+action:
+  - service: !secret telegram_notify
+    data_template:
+      message: > 
+       Cellar Alert Cleared
+       Temp: {{ states('sensor.weewx_cellar_temperature') }}F,
+       Humid: {{ states('sensor.weewx_cellar_humidity') }}%

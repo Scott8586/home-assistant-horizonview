@@ -1,0 +1,25 @@
+# device zone change
+id: 'devicechange' 
+alias: 'Device Zone Change'
+initial_state: 'off'                                                                                                               
+trigger:                                                                                         
+  platform: state 
+  entity_id: >   
+    device_tracker.scotts_iphone, device_tracker.stephs_iphone, device_tracker.scotts_ipad2, device_tracker.stephsipadair
+condition:
+  condition: and
+  conditions:
+    - condition: template
+      value_template: '{{ trigger.from_state.state != "unavailable" }}'
+    - condition: template
+      value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: >
+      {% if trigger.to_state.state == "not_home" %} 
+        D: {{ trigger.to_state.name }} is away
+      {% elif trigger.to_state.state == "home" %}
+        D: {{ trigger.to_state.name }} is home
+      {% endif %}
+
