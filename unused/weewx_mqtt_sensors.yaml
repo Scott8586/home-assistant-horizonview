@@ -1,0 +1,71 @@
+  - platform: mqtt                                                                                                                                           
+    name: weewx_timestamp                                                                                                                                    
+    friendly_name: "Weather Timestamp"                                                                                                                       
+    state_topic: environment/horizonview_weewx/dateTime                                                                                                      
+    value_template: "{{ (value | int) | timestamp_local }}"                                                                                                  
+  - platform: mqtt                                                                                                                                           
+    name: weewx_garage_humidity                                                                                                                              
+    friendly_name: "Garage Humidity"                                                                                                                         
+    state_topic: environment/horizonview_weewx/extraHumid1                                                                                                   
+  - platform: mqtt                                                                                                                                           
+    name: "Garage Temperature"                                                                                                                               
+    state_topic: environment/horizonview_weewx/extraTemp1_F                                                                                                  
+    value_template: "{{ value | round(1) }}"                                                                                                                 
+    #unit_of_measurement: "..F"                                                                                                                              
+  - platform: mqtt                                                                                                                                           
+    name: "Cellar Humidity"                                                                                                                                  
+    state_topic: environment/horizonview_weewx/extraHumid2                                                                                                   
+  - platform: mqtt                                                                                                                                           
+    name: "Cellar Temperature"                                                                                                                               
+    state_topic: environment/horizonview_weewx/extraTemp2_F                                                                                                  
+    value_template: "{{ value | round(1) }}"                                                                                                                 
+    #unit_of_measurement: "..F"                                                                                                                              
+  - platform: mqtt                                                                                                                                           
+    name: "Outside Humidity"                                                                                                                                 
+    state_topic: environment/horizonview_weewx/outHumidity                                                                                                   
+  - platform: mqtt                                                                                                                                           
+    name: "Outside Temperature"                                                                                                                              
+    state_topic: environment/horizonview_weewx/outTemp_F                                                                                                     
+    value_template: "{{ value | round(1) }}"                                                                                                                 
+    #unit_of_measurement: "..F"                                                                                                                              
+  - platform: mqtt                                                                                                                                           
+    name: "Outside Dewpoint"                                                                                                                                 
+    state_topic: environment/horizonview_weewx/dewpoint_F                                                                                                    
+    value_template: "{{ value | round(1) }}"                                                                                                                 
+    unit_of_measurement: "..F"                                                                                                                               
+  - platform: mqtt                                                                                                                                           
+    name: "Outside Heat Index"                                                                                                                               
+    state_topic: environment/horizonview_weewx/heatindex_F                                                                                                   
+    value_template: "{{ value | round(1) }}"                                                                                                                 
+    unit_of_measurement: "..F"                                                                                                                               
+  - platform: mqtt                                                                                                                                           
+    name: "Office Humidity"                                                                                                                                  
+    state_topic: environment/horizonview_weewx/inHumidity                                                                                                    
+  - platform: mqtt                                                                                                                                           
+    name: "Office Temperature"                                                                                                                               
+    state_topic: environment/horizonview_weewx/inTemp_F                                                                                                      
+    value_template: "{{ value | round(1) }}"                                                                                                                 
+    #unit_of_measurement: "..F"                                                                                                                              
+  - platform: mqtt                                                                                                                                           
+    name: "Wind Speed"                                                                                                                                       
+    state_topic: environment/horizonview_weewx/windSpeed_mph                                                                                                 
+    value_template: "{{ value | round(1) }}"                                                                                                                 
+    unit_of_measurement: mph             
+  - platform: mqtt                                                                  
+    name: "Wind Direction"                                                          
+    state_topic: environment/horizonview_weewx/windDir                          
+    value_template: "{{ value | round(0) }}"                                    
+    unit_of_measurement: ".."                                                   
+
+      wind_compass_direction:                                                                   
+        friendly_name: Wind Compass Direction                                                   
+        value_template: >                                                                       
+          {% set degrees = states('sensor.wind_direction')|float %}                             
+          {% set abbr = ['N','NNNE','NNE','ENNE','NO','NENE','ENE','EENE',                      
+                         'E','EESE','ESE','SESE','SE','ESSE','SSE','SSSE',                      
+                         'S','SSSW','SSW','SSW','SW','SWSW','WSW','WWSW',                       
+                         'W','WWNW','WNW','NWNW','NW','WNNW','NNW','NNNW' ] %}                  
+          {%- set i = ((degrees / 11.25) | round(0)) | int %}                                   
+          {%- set i = 0 if i == 32 else i %}                                                 
+          {{ abbr[i] }}                                                                      
+

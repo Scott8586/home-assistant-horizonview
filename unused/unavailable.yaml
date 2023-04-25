@@ -1,0 +1,14 @@
+
+Hunt4Beer
+May 14
+I had exactly the same issue, that I get a notification when the state goes from “unavailable” to “0”.
+
+I made a condition for the automation:
+
+Copy to clipboard
+- condition: template
+    value_template: '{{ trigger.from_state.state != "unavailable" }}'
+Maybe this is also a solution for your problem.
+
+
+Reply

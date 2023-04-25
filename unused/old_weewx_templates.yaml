@@ -1,0 +1,28 @@
+      weewx_outside_temperature:                                                                                 
+        friendly_name: Outside Temperature                                                                       
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"                        
+        #unit_of_measurement: '..F'                                                                              
+      weewx_inside_temperature:                                                                                  
+        friendly_name: Inside Temperature                                                                        
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['insideTemp'] }}"                     
+        #unit_of_measurement: '..F'                                                                              
+      weewx_outside_humidity:                                                                                    
+        friendly_name: Outside Humidity                                                                          
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['humidity'] }}"                       
+      weewx_inside_humidity:                                                                                     
+        friendly_name: Inside Humidity                                                                           
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['insideHumidity'] }}"                 
+      weewx_wind_speed:                                                                                          
+        friendly_name: Wind Speed                                                                                
+        icon_template: mdi:weather-windy                                                                         
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['windSpeed'] }}"     
+        unit_of_measurement: 'mph'                                                              
+      weewx_wind_direction_ordinal:                                                             
+        friendly_name: Wind Direction                                                           
+        icon_template: mdi:weather-windy                                                        
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['windDirText'] }}"   
+      weewx_solar_altitude:                                                                                      
+        friendly_name: Solar Altitude                                                           
+        value_template: "{{ states.sensor.weewx_weather.attributes.almanac.sun['altitude'] }}"  
+        unit_of_measurement: '..'                                                               
+

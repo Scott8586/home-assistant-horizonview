@@ -1,0 +1,9 @@
+# Grow Lights on
+id: 'growlightson'         
+alias: "Grow Lights On"
+trigger:        
+  platform: time
+  at: '06:00:00'
+action:
+  service: switch.turn_on
+  entity_id: switch.grow_lights

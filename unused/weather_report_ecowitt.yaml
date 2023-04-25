@@ -1,0 +1,21 @@
+# Weather Report
+id: 'weatherreport'
+alias: "Weather Report"
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/weather'
+action:
+  - service: !secret telegram_notify
+    data_template:
+      message: > 
+       Temp: {{ states('sensor.ecowitt_outdoor_temperature') }}F,
+       {% if (states('sensor.ecowitt_outdoor_temperature') | int) != (states('sensor.ecowitt_windchill') | int) %}
+       Chill: {{ states('sensor.ecowitt_windchill') }}F,
+       {% endif %}
+       Humid: {{ states('sensor.ecowitt_outdoor_humidity') }}%,
+       Dewpt: {{ states('sensor.ecowitt_outdoor_dewpoint') }}F,
+       {% if states('sensor.ecowitt_outdoor_temperature') | float - states('sensor.ecowitt_outdoor_dewpoint') | float < 1.0 and states('sensor.ecowitt_outdoor_humidity') | int > 95 %}         
+       Fog possible!
+       {% endif %}
