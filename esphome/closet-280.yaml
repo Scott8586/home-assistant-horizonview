@@ -1,0 +1,107 @@
+esphome:
+  name: closet-280
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "feb155b8bb68bc53f623a74692d1212d"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Closet-280 Fallback Hotspot"
+    password: "UQHGg7HuQ7jv"
+
+captive_portal:
+
+# Example configuration entry
+web_server:
+
+# Activates prometheus /metrics endpoint
+prometheus:
+
+# Example configuration entry
+time:
+  - platform: sntp
+    id: sntp_time
+    servers:
+      - 192.168.35.157
+      
+i2c:
+  sda: 4
+  scl: 5
+  scan: True
+
+# Example configuration entry
+sensor:
+  - platform: wifi_signal
+    name: "Closet 280 WiFi Signal"
+    update_interval: 60s
+    
+  - platform: uptime
+    name:  CLoset 280 Uptime Second
+    id: uptime_sensor
+    update_interval: 60s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+              int seconds = round(id(uptime_sensor).raw_state);
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              seconds = seconds % 60;
+              return (
+                (days ? String(days) + "d " : "") +
+                (hours ? String(hours) + "h " : "") +
+                (minutes ? String(minutes) + "m " : "") +
+                (String(seconds) + "s")
+              ).c_str();
+  - platform: bme280
+    address: 0x76
+    update_interval: 60s
+    temperature:
+      name: "Closet Temperature"
+      id: closet_temperature
+    pressure:
+      name: "Closet Pressure"
+      id: closet_pressure
+    humidity:
+      name: "Closet Humidity"
+      id: closet_humidity
+
+  - platform: template
+    name: "Closet Dewpoint"
+    lambda: |-
+      return (243.5*(log(id(closet_humidity).state/100)+((17.67*id(closet_temperature).state)/
+      (243.5+id(closet_temperature).state)))/(17.67-log(id(closet_humidity).state/100)-
+      ((17.67*id(closet_temperature).state)/(243.5+id(closet_temperature).state))));
+    unit_of_measurement: °C
+    update_interval: 60s
+    icon: 'mdi:thermometer-alert'
+    
+# Example configuration entry
+button:
+  - platform: restart
+    name: "Closet 280 Restart"
+    
+    # Example configuration entry
+text_sensor:
+  - platform: template
+    name: Closet 280 Uptime
+    id: uptime_human
+    icon: mdi:clock-start
+

@@ -1,7 +1,8 @@
 esphome:
-  name: familyroom-680
-  platform: ESP8266
-  board: nodemcuv2
+  name: gameroom-680
+
+esp8266:
+  board: d1_mini
 
 # Enable logging
 logger:
@@ -10,7 +11,7 @@ logger:
 api:
 
 ota:
-  password: "3a207f5af558d2bb8de0ca1edbea043e"
+  password: "5441f39603d4ccd8337698cc58bec690"
 
 wifi:
   ssid: "srp-horizonview"
@@ -18,8 +19,8 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Familyroom-680 Fallback Hotspot"
-    password: "XseH4dKXavSQ"
+    ssid: "Gameroom-680 Fallback Hotspot"
+    password: "3cknLWmpiBfP"
 
 captive_portal:
 
@@ -35,7 +36,7 @@ time:
     id: sntp_time
     servers:
       - 192.168.35.157
-      
+
 i2c:
   sda: 4
   scl: 5
@@ -46,7 +47,7 @@ bme680_bsec:
   
 sensor:
   - platform: uptime
-    name: Family Room 680 Uptime Second
+    name: Game Room 680 Uptime Second
     id: uptime_sensor
     update_interval: 60s
     on_raw_value:
@@ -68,64 +69,64 @@ sensor:
                 (String(seconds) + "s")
               ).c_str();
 
-
   - platform: bme680_bsec
     temperature:
-      id: family_room_temperature
-      name: "Family Room Temperature"
+      name: "Game Room Temperature"
+      id: game_room_temperature
     pressure:
-      name: "Family Room Pressure"
+      name: "Game Room Pressure"
+      id: game_room_pressure
     humidity:
-      id: family_room_humidity
-      name: "Family Room Humidity"
+      name: "Game Room Humidity"
+      id: game_room_humidity
     iaq:
-      name: "Family Room IAQ"
+      name: "Game Room IAQ"
     co2_equivalent:
-      name: "Family Room eCO2"
+      name: "Game Room eCO2"
     breath_voc_equivalent:
-      name: "Family Room eVOC"
+      name: "Game Room eVOC"
 
   - platform: template
-    name: "Family Room DewPoint"
-    id: family_room_dewpoint
+    name: "Game Room DewPoint"
+    id: game_room_dewpoint
     lambda: |-
-      return (243.5*(log(id(family_room_humidity).state/100)+((17.67*id(family_room_temperature).state)/
-      (243.5+id(family_room_temperature).state)))/(17.67-log(id(family_room_humidity).state/100)-
-      ((17.67*id(family_room_temperature).state)/(243.5+id(family_room_temperature).state))));
+      return (243.5*(log(id(game_room_humidity).state/100)+((17.67*id(game_room_temperature).state)/
+      (243.5+id(game_room_temperature).state)))/(17.67-log(id(game_room_humidity).state/100)-
+      ((17.67*id(game_room_temperature).state)/(243.5+id(game_room_temperature).state))));
     unit_of_measurement: °C
     update_interval: 60s
     icon: 'mdi:water-thermometer'
 
   - platform: wifi_signal
-    name: "Family Room 680 WiFi Signal"
+    name: "Game Room 680 WiFi Signal"
     update_interval: 60s
 
 # Example configuration entry
 button:
   - platform: restart
-    name: "Family Room 680 Restart"
+    name: "Game Room 680 Restart"
 
 text_sensor:
   - platform: bme680_bsec
     iaq_accuracy:
-      name: "Family Room IAQ Accuracy"
+      name: "Game Room IAQ Accuracy"
       
   - platform: template
-    name: Family Room Comfort Level
+    name: Game Room Comfort Level
     lambda: |-
-      if (id(family_room_dewpoint).state > 23.9) {
+      if (id(game_room_dewpoint).state > 23.9) {
         return {"Miserable"};
-      } else if (id(family_room_dewpoint).state > 21.1) {
+      } else if (id(game_room_dewpoint).state > 21.1) {
         return {"Oppresive"};
-      } else if (id(family_room_dewpoint).state > 18.3) {
+      } else if (id(game_room_dewpoint).state > 18.3) {
         return {"Uncomfortable"};
-      } else if (id(family_room_dewpoint).state > 15.6) {
+      } else if (id(game_room_dewpoint).state > 15.6) {
         return {"Sticky"};
-      } else if (id(family_room_dewpoint).state > 12.8) {
+      } else if (id(game_room_dewpoint).state > 12.8) {
         return {"Comfortable"};
-      } else if (id(family_room_dewpoint).state > 10.0) {
+      } else if (id(game_room_dewpoint).state > 10.0) {
         return {"Pleasant"};
-      } else if (id(family_room_dewpoint).state > 0) {
+      } else if (id(game_room_dewpoint).state > 0) {
         return {"Dry"};
       } else {
         return {"Undefined"};
@@ -134,23 +135,6 @@ text_sensor:
     update_interval: 60s
 
   - platform: template
-    name: Family Room 680 Uptime
+    name: Game Room 680 Uptime
     id: uptime_human
     icon: mdi:clock-start
-
-switch:
-  - platform: gpio
-    name: ESP Familyroom Red LED
-    icon: mdi:led-on
-    pin: GPIO12
-  - platform: gpio
-    name: ESP Familyroom Yellow LED
-    icon: mdi:led-on
-    pin: GPIO13
-  - platform: gpio
-    name: ESP Familyroom Green LED
-    icon: mdi:led-on
-    pin: GPIO14
-
-
-

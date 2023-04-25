@@ -1,0 +1,96 @@
+esphome:
+  name: familyroom-vindrikt
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "2058174e669b0241bf3fc81d796c9745"
+
+wifi:
+  ssid: "srp-horizonview"
+  password: "kicker87"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Familyroom-Vindrikt"
+    password: "J0ertFjI7STY"
+
+captive_portal:
+
+# Example configuration entry
+web_server:
+
+# Activates prometheus /metrics endpoint
+prometheus:
+
+# Example configuration entry
+time:
+  - platform: sntp
+    id: sntp_time
+    servers:
+      - 192.168.32.157
+
+i2c:
+  sda: D6
+  scl: D5
+  scan: True
+ 
+# Ikea Vindriktning PM2.5 sensor
+uart:
+  rx_pin: D2
+  baud_rate: 9600
+  
+
+sensor:
+  - platform: uptime
+    name: Family Room Vindrikt Uptime Second
+    id: uptime_sensor
+    update_interval: 60s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+              int seconds = round(id(uptime_sensor).raw_state);
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              seconds = seconds % 60;
+              return (
+                (days ? String(days) + "d " : "") +
+                (hours ? String(hours) + "h " : "") +
+                (minutes ? String(minutes) + "m " : "") +
+                (String(seconds) + "s")
+              ).c_str();
+  - platform: pm1006
+    pm_2_5:
+      name: "Family Room PM25"
+      filters:
+        - sliding_window_moving_average:
+            window_size: 10
+            send_every: 10
+
+  - platform: wifi_signal
+    name: "Family Room Vindrikt WiFi Signal"
+    update_interval: 60s
+
+# Example configuration entry
+button:
+  - platform: restart
+    name: "Family Room Vindrikt Restart"
+
+text_sensor:
+  - platform: template
+    name: Family Room Vindrikt Uptime
+    id: uptime_human
+    icon: mdi:clock-start
+

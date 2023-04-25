@@ -45,13 +45,38 @@ bme680_bsec:
   address: 0x77
   
 sensor:
+  - platform: uptime
+    name: Office 680 Uptime Second
+    id: uptime_sensor
+    update_interval: 60s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+              int seconds = round(id(uptime_sensor).raw_state);
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              seconds = seconds % 60;
+              return (
+                (days ? String(days) + "d " : "") +
+                (hours ? String(hours) + "h " : "") +
+                (minutes ? String(minutes) + "m " : "") +
+                (String(seconds) + "s")
+              ).c_str();
+
   - platform: bme680_bsec
     temperature:
       name: "Office Temperature"
+      id: office_temperature
     pressure:
       name: "Office Pressure"
     humidity:
       name: "Office Humidity"
+      id: office_humidity
     iaq:
       name: "Office IAQ"
     co2_equivalent:
@@ -59,7 +84,58 @@ sensor:
     breath_voc_equivalent:
       name: "Office eVOC"
 
+  - platform: template
+    name: "Office DewPoint"
+    id: office_dewpoint
+    lambda: |-
+      return (243.5*(log(id(office_humidity).state/100)+((17.67*id(office_temperature).state)/
+      (243.5+id(office_temperature).state)))/(17.67-log(id(office_humidity).state/100)-
+      ((17.67*id(office_temperature).state)/(243.5+id(office_temperature).state))));
+    unit_of_measurement: °C
+    update_interval: 60s
+    icon: 'mdi:water-thermometer'
+
+  - platform: wifi_signal
+    name: "Office 680 WiFi Signal"
+    update_interval: 60s
+
+# Example configuration entry
+button:
+  - platform: restart
+    name: "Office 680 Restart"
+
 text_sensor:
   - platform: bme680_bsec
     iaq_accuracy:
       name: "Office IAQ Accuracy"
+
+  - platform: template
+    name: Office Comfort Level
+    lambda: |-
+      if (id(office_dewpoint).state > 23.9) {
+        return {"Miserable"};
+      } else if (id(office_dewpoint).state > 21.1) {
+        return {"Oppresive"};
+      } else if (id(office_dewpoint).state > 18.3) {
+        return {"Uncomfortable"};
+      } else if (id(office_dewpoint).state > 15.6) {
+        return {"Sticky"};
+      } else if (id(office_dewpoint).state > 12.8) {
+        return {"Comfortable"};
+      } else if (id(office_dewpoint).state > 10.0) {
+        return {"Pleasant"};
+      } else if (id(office_dewpoint).state > 0) {
+        return {"Dry"};
+      } else {
+        return {"Undefined"};
+      }
+    icon: "mdi:water-percent"
+    update_interval: 60s
+
+  - platform: template
+    name: Office 680 Uptime
+    id: uptime_human
+    icon: mdi:clock-start
+
+
+
