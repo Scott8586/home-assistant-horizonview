@@ -11,7 +11,11 @@ action:
   - service: !secret telegram_notify
     data_template:
       message: > 
-        Mode: {{states('climate.pentair_0d_ce_47_pool_heat')}}
+        Pool: {{states('switch.pentair_0d_ce_47_pool')}}
+         Spa: {{states('switch.pentair_0d_ce_47_spa')}}
+        Jets: {{states('switch.pentair_0d_ce_47_jets')}}
+        Fall: {{states('switch.pentair_0d_ce_47_waterfall')}},  
+        Mode: {{states('climate.pentair_0d_ce_47_pool_heat')}},  
          Set: {{state_attr('climate.pentair_0d_ce_47_pool_heat', 'temperature')}}F, 
          Now: {{state_attr('climate.pentair_0d_ce_47_pool_heat', 'current_temperature')}}F,
-         Air: {{states('sensor.pentair_air_temperature')}}F
+         Air: {{states('sensor.pentair_0d_ce_47_air_temperature')}}F

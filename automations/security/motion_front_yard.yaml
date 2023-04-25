@@ -1,0 +1,16 @@
+id: 'frontyardmotion'
+alias: 'Front Yard Motion'
+mode: single
+max_exceeded: silent
+trigger:
+  platform: state
+  entity_id: binary_sensor.hv_front_yard_motion
+  to: 'on'
+action:
+  - service: camera.snapshot
+    data:
+      entity_id: camera.hv_front_yard_high
+      filename: "/config/www/snapshots/hv_front_yard.png"
+#  - service: !secret telegram_notify
+#    data:
+#      message: "Front Yard Motion"

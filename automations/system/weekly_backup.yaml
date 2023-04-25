@@ -14,5 +14,5 @@ action:
   data:                                
     addon: 36883ed7_remote_backup  
 - service: !secret telegram_notify                  
-  data:                                
+  data_template:                                
     message: "Home Assistant backed up"

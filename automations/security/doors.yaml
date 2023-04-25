@@ -4,10 +4,10 @@ alias: "N: Door Opening"
 initial_state: 'on'
 trigger:
   platform: state
-  entity_id: >
-    binary_sensor.entry_doors,
-    binary_sensor.upper_doors,
-    binary_sensor.lower_doors
+  entity_id: 
+    - binary_sensor.entry_doors
+    - binary_sensor.upper_doors
+    - binary_sensor.lower_doors
 condition:
   condition: and
   conditions:

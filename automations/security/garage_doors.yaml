@@ -1,6 +1,6 @@
 # Check Garage doors
 id: 'checkgaragedoors'
-alias: "N: Check Garage Doors"
+alias: "S: Check Garage Doors"
 initial_state: 'on'
 trigger:
   platform: time
@@ -16,5 +16,5 @@ condition:
       state: "open"
 action:
   - service: !secret telegram_notify
-    data:
+    data_template:
       message: "A garage door is open"

@@ -16,4 +16,5 @@ action:
       /restart - restart the HA container.
       /pool - request pool status.
       /weather - request a weather report.
+      /usage - rolling 24hr internet usage.
 

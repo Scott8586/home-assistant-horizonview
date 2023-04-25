@@ -1,20 +1,29 @@
 # Pool Notifications
 id: 'spapumpnotify'
 alias: 'N: Pool Ops Notify'
+mode: queued
 trigger:
   platform: state
-  entity_id: >
-    switch.pentair_0d_ce_47_spa, switch.pentair_0d_ce_47_jets,
-    switch.pentair_0d_ce_47_pool, switch.pentair_0d_ce_47_cleaner,
-    switch.pentair_0d_ce_47_waterfall,
-    switch.pentair_0d_ce_47_pool_light, switch.pentair_0d_ce_47_spa_light,
-    climate.pentair_0d_ce_47_pool_heat, climate.pentair_0d_ce_47_spa_heat
+  entity_id:
+    - switch.pentair_0d_ce_47_spa
+    - switch.pentair_0d_ce_47_jets
+    - switch.pentair_0d_ce_47_pool
+    - switch.pentair_0d_ce_47_cleaner
+    - switch.pentair_0d_ce_47_waterfall
+    - light.pentair_0d_ce_47_pool_light
+    - light.pentair_0d_ce_47_spa_light
+    - climate.pentair_0d_ce_47_pool_heat
+    - climate.pentair_0d_ce_47_spa_heat
 condition:
-- condition: template
-  value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  condition: and
+  conditions:
+    - condition: template
+      value_template: '{{ trigger.from_state.state != "unavailable" }}'
+    - condition: template
+      value_template: '{{ trigger.to_state.state != "unavailable" }}'
+    - condition: template
+      value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
 action:
   service: !secret telegram_notify
   data_template:
     message: "{{ trigger.to_state.name }} is {{ trigger.to_state.state }}"
-
-

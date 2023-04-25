@@ -1,5 +1,5 @@
 # UPS Shutdown                                                                                           
-alias: "A: UPS based shutdown"                                                                                                        
+alias: "UPS based shutdown"                                                                                                        
 initial_state: 'off'                                                                                
 trigger:                                                                                            
   platform: numeric_state                                                                              

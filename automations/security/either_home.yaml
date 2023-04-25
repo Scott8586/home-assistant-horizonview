@@ -1,0 +1,13 @@
+id: 'eitherhome'                                                    
+alias: "Home Mode"       
+trigger:
+  - platform: state
+    entity_id: binary_sensor.both_away
+    to: 'off'
+action:                                                                   
+  - service: rest_command.hm_command
+    data_template:                                                           
+      mode: 1
+  - service: !secret telegram_notify
+    data_template:                                                             
+      message: "Enter Home mode"

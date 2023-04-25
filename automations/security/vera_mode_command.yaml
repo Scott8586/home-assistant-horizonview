@@ -1,6 +1,6 @@
 # Vera mode command
 id: 'veramodecommand'                                                                    
-alias: "C: Vera Mode Command"       
+alias: "Vera Mode Command"       
 initial_state: 'on'                 
 trigger:                                                  
   platform: event                                                                 
@@ -24,5 +24,4 @@ action:
   # everything else will just report status                                    
   - service: !secret telegram_notify
     data_template:                                                             
-      message: Vera House Mode command received
-
+      message: "Vera House Mode command received"

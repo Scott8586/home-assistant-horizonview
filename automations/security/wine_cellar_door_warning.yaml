@@ -1,0 +1,15 @@
+# Wine Cellar Door
+id: 'winecellardoorwarning'
+alias: "Wine Cellar Door Warning"
+initial_state: 'on'
+trigger:
+  platform: state
+  entity_id: binary_sensor.wine_cellar_93
+  from: 'off'
+  to: 'on'
+  for:
+    minutes: 5
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: "W: Wine Cellar Door Open 5 minutes"

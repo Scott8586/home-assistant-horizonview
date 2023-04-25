@@ -1,0 +1,15 @@
+id: 'awaymode1hr'                                                    
+alias: "S: Away Mode, after 1hr"       
+trigger:
+  - platform: state
+    entity_id: binary_sensor.both_away
+    to: 'on'
+    for:
+      hours: 1
+action:                                                                   
+  - service: rest_command.hm_command
+    data_template:                                                           
+      mode: 2
+  - service: !secret telegram_notify
+    data_template:                                                             
+      message: "Enter Away mode, 1hr inactive"

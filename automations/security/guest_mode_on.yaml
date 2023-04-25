@@ -1,0 +1,20 @@
+id: 'guestmodeon'                                                                    
+alias: "Guest Mode On"
+trigger:
+  - platform: state
+    entity_id: input_boolean.guest_mode
+    from: 'off'
+    to: 'on'
+action:                                                                   
+  - service: rest_command.hm_command
+    data_template:                                                           
+      mode: 1
+  - service: automation.turn_off
+    entity_id: automation.hot_water_recirc_control
+  - service: automation.turn_off
+    entity_id: automation.away_mode_after_1hr
+  - service: automation.turn_off
+    entity_id: automation.vacation_mode_after_16hrs
+  - service: !secret telegram_notify
+    data_template:                                                             
+      message: "Guest mode on, enter Home mode"

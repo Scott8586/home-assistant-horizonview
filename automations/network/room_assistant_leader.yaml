@@ -4,12 +4,12 @@ alias: 'N: Room Assistant Leader Change'
 trigger:
   platform: state
   entity_id: >
-    sensor.familyroom_hv_cluster_leader,
-    sensor.gameroom_hv_cluster_leader,
-    sensor.retreat_hv_cluster_leader
+    sensor.familyroom_cluster_leader,
+    sensor.gameroom_cluster_leader,
+    sensor.retreat_cluster_leader
 condition:
 - condition: template
-  value_template: "{{ trigger.to_state.state != 'gameroom-hv' }}"
+  value_template: "{{ trigger.to_state.state != 'gameroom' }}"
 action:
   service: !secret telegram_notify
   data_template:

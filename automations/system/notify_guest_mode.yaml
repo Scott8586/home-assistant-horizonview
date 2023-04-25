@@ -1,0 +1,11 @@
+id: 'notifyguestmode'
+alias: Notify Guest Mode
+trigger:
+  platform: state
+  entity_id: input_boolean.guest_mode
+action:                                                                                             
+  - service: !secret telegram_notify
+    data_template:                                                                     
+      message: "Guest mode {{ trigger.to_state.state }}"
+
+  

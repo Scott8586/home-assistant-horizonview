@@ -7,4 +7,4 @@ trigger:
 action:
   service: notify.telegram_horizonview # or telegram_bot.send_message
   data_template:
-    message: "Pool Temperature {{ states('sensor.pentair_pool_temperature') }}F"
+    message: "Pool Temperature is {{ states('sensor.pentair_pool_temperature') }}F"

@@ -1,0 +1,12 @@
+id: 'voltagecheck'                                                                    
+alias: "Raspi Voltage Check"
+trigger:
+  - platform: state
+    entity_id: binary_sensor.rpi_power_status
+    from: 'off'
+    to: 'on'
+action:                                                                   
+  - service: !secret telegram_notify
+    data_template:                                                             
+      message: "Warning: Low Pi Voltage"
+
