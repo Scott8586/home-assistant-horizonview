@@ -46,8 +46,8 @@ alexa:
   smart_home:
     locale: en-US
     endpoint: https://api.amazonalexa.com/v3/events
-    client_id: !secret amazon_client_id
-    client_secret: !secret amazon_client_secret
+    client_id: !secret alexa_client_id
+    client_secret: !secret alexa_client_secret
     filter:
       include_entities:
         - sensor.gw1000_temp1
