@@ -1,0 +1,12 @@
+id: 'adsbsensorzero'                                                    
+alias: "ADSB Sensor Zero"       
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.nearby_aircraft
+    below: 1
+    for:
+      hours: 1
+action:
+  service: !secret telegram_notify
+  data:        
+    message: "W: ADS-B Sensor Zero"

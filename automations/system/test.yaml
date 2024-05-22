@@ -8,6 +8,6 @@ trigger:
     command: '/ping'
 action:
   service: !secret telegram_notify
-  data_template:
+  data:
     message: "pong"
 

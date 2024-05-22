@@ -3,7 +3,7 @@ id: 'upsstatus'
 alias: 'N: UPS Status'
 trigger:                                                                                         
   platform: state                      
-  entity_id: sensor.closet_ups_status                                   
+  entity_id: sensor.closet_ups_status, sensor.retreat_ups_status                                  
 condition:                         
   condition: template                                                                
   value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"      

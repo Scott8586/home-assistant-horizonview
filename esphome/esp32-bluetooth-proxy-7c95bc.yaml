@@ -1,0 +1,22 @@
+substitutions:
+  name: esp32-bluetooth-proxy-7c95bc
+  friendly_name: Family Room BTLE Proxy
+packages:
+  esphome.bluetooth-proxy: github://esphome/bluetooth-proxies/esp32-generic.yaml@main
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: 2gCoBEkwNJle1+unbcaIn9nmBBHsOaqGi7K6B+2IZD8=
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+esp32_ble_tracker:
+  scan_parameters:
+    interval: 1000ms
+    window: 900ms
+    active: true

@@ -1,0 +1,9 @@
+id,x,y,brightness,transition
+light.kitchen_sink_lights.default,1,1,128,1
+light.kitchen_cooktop_lights.default,1,1,128,1
+light.kitchen_main_lights.default,1,1,128,1
+light.family_room_lights.default,1,1,50,1
+light.stairs_art_lights.default,1,1,25,1
+light.hallway_left_lights.default,1,1,191,1
+light.hallway_right_lights.default,1,1,191,1
+light.zb_upper_night_light.default,0.1355,0.04,64,1

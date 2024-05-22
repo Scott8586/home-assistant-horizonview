@@ -4,29 +4,36 @@ path: default_view
 badges:
   - entity: person.scott
   - entity: person.stephanie
-  - entity: device_tracker.audi_a6_gps
+# - entity: device_tracker.audi_a6_gps
   - entity: device_tracker.audi_q7_gps
-  - entity: device_tracker.toyota_rav4_gps
+  - entity: device_tracker.bmw_ix_gps
+  - entity: sensor.envoy_net_meter_power_demand
+  - entity: sensor.nearby_aircraft
 cards:
-  - type: vertical-stack                     
-    cards:                              
-    - type: 'custom:button-card'
-      entity: sensor.current_date_time
-      show_icon: false
-      show_label: false
-      show_name: false
-      show_state: true
-      styles:
-        state:
-        - font-size: 1.5em
-        - font-weight: bold
-        - text-transform: uppercase
-      card:
-      - border: '1px solid rgb(255, 255, 255)'
-      - height: 50px
-    - entity: weather.pirateweather
-      theme: default  
-      type: weather-forecast        
+  # - type: vertical-stack                     
+  #   cards:                              
+  #   - type: 'custom:button-card'
+  #     entity: sensor.current_date_time
+  #     show_icon: false
+  #     show_label: false
+  #     show_name: false
+  #     show_state: true
+  #     styles:
+  #       state:
+  #       - font-size: 1.5em
+  #       - font-weight: bold
+  #       - text-transform: uppercase
+  #     card:
+  #     - border: '1px solid rgb(255, 255, 255)'
+  #     - height: 50px
+  - type: 'custom:clock-weather-card'
+    entity: weather.pirateweather
+    date_pattern: cccc, DDD. 'Week:' WW
+    # - entity: weather.pirateweather
+    #   theme: default
+    #   show_forecast: true
+    #   forecast_type: daily
+    #   type: weather-forecast        
 #    - type: 'custom:sun-card'       
   - type: entity-filter
     entities:
@@ -35,41 +42,46 @@ cards:
         state_filter:
           - operator: '!='
             value: 'online'
-      - entity: sensor.room_assistant_gameroom
-        secondary_info: last-changed
-        state_filter:
-          - operator: '!='
-            value: 'online'
-      - entity: sensor.room_assistant_retreat
-        secondary_info: last-changed
-        state_filter:
-          - operator: '!='
-            value: 'online'
-      - entity: sensor.room_assistant_garage
-        secondary_info: last-changed
-        state_filter:
-          - operator: '!='
-            value: 'online'
-      - entity: sensor.garage_cluster_leader  
-        secondary_info: last-changed          
-        state_filter:                       
-          - operator: '!='                  
-            value: 'gameroom'               
-      - entity: sensor.familyroom_cluster_leader   
-        secondary_info: last-changed        
-        state_filter:                       
-          - operator: '!='                  
-            value: 'gameroom'               
-      - entity: sensor.retreat_cluster_leader   
-        secondary_info: last-changed        
-        state_filter:                       
-          - operator: '!='                  
-            value: 'gameroom'               
-      - entity: sensor.gameroom_cluster_leader
+      # - entity: sensor.room_assistant_gameroom
+      #   secondary_info: last-changed
+      #   state_filter:
+      #     - operator: '!='
+      #       value: 'online'
+      # - entity: sensor.room_assistant_retreat
+      #   secondary_info: last-changed
+      #   state_filter:
+      #     - operator: '!='
+      #       value: 'online'
+      # - entity: sensor.room_assistant_garage
+      #   secondary_info: last-changed
+      #   state_filter:
+      #     - operator: '!='
+      #       value: 'online'
+      # - entity: sensor.garage_cluster_leader  
+      #   secondary_info: last-changed          
+      #   state_filter:                       
+      #     - operator: '!='                  
+      #       value: 'gameroom'               
+      # - entity: sensor.familyroom_cluster_leader   
+      #   secondary_info: last-changed        
+      #   state_filter:                       
+      #     - operator: '!='                  
+      #       value: 'gameroom'               
+      # - entity: sensor.retreat_cluster_leader   
+      #   secondary_info: last-changed        
+      #   state_filter:                       
+      #     - operator: '!='                  
+      #       value: 'gameroom'               
+      # - entity: sensor.gameroom_cluster_leader
+      #   secondary_info: last-changed          
+      #   state_filter:                         
+      #     - operator: '!='                    
+      #       value: 'gameroom'
+      - entity: binary_sensor.dirt_security_status
         secondary_info: last-changed          
         state_filter:                         
           - operator: '!='                    
-            value: 'gameroom'                 
+            value: 'off'                 
       - entity: device_tracker.unifi_00_bb_c1_29_49_dd_kxfoeiei
         secondary_info: last-changed
         state_filter:
@@ -97,7 +109,7 @@ cards:
         }                   
   - type: entity-filter
     entities:
-      - entity: sensor.weewx_rain_day
+      - entity: sensor.gw1000_dailyrain
         state_filter:
            - operator: '!='
              value: 0
@@ -109,7 +121,6 @@ cards:
         ha-card {           
           color: orange;       
         }                   
-    
   - type: vertical-stack                     
     cards:                              
     - entity: camera.hv_front_yard_high
@@ -123,199 +134,124 @@ cards:
       entity: binary_sensor.hv_front_yard_motion
       camera_image: camera.front_yard_snapshot  
   - type: vertical-stack
-    name: HVAC
     cards:
-    - type: custom:simple-thermostat
-      entity: climate.main_floor
-      decimals: 0
-      step_size: 1
-      layout:                                                  
-#        step: row                                              
-        mode:
-          icons: false
-      header: true
-      control:                        
-        hvac:
-          _name: "Mode:"
-        preset:                       
-          _name: "Preset:"
-          away:
-            name: Away
-          temperature:
-            name: Hold
-          none:                            
-            name: Home                     
-      style: |
-        ha-card {
-          --st-font-size-xl: 20px;
-          --st-font-size-m: 20px;
-          --st-font-size-title: 20px;
-          --st-spacing: 1px;
-        }
-    - type: entities      
-      entities:            
-        - sensor.upstairs_hvac_duty_cycle
-    - type: custom:simple-thermostat
-      entity: climate.downstairs
-      decimals: 0                                              
-      step_size: 1                                             
-      layout:                                                  
-#        step: row                                              
-        mode:
-          icons: false
-      header: true                                             
-      control:                                                 
-        hvac:                                                  
-          _name: "Mode:"                                       
-        preset:                                                
-          _name: "Preset:"                                     
-          away:                                                
-            name: Away                                         
-          temperature:                                         
-            name: Hold                                         
-          none:                                                
-            name: Home                                         
-      style: |                                                 
-        ha-card {                                              
-          --st-font-size-xl: 20px;                             
-          --st-font-size-m: 20px;                              
-          --st-font-size-title: 20px;                          
-          --st-spacing: 1px;                                   
-        }                                         
-    - type: entities      
-      entities:            
-        - sensor.downstairs_hvac_duty_cycle
-#  - type: vertical-stack
-#    name: Floors
-#    cards:
-#    - type: custom:simple-thermostat
-#      entity: climate.master_bath
-#      icon: false
-#      step_layout: row
-#      control: false
-#    - type: custom:simple-thermostat
-#      entity: climate.guest_1
-#      icon: false
-#      step_layout: row
-#      control: false
-#    - type: custom:simple-thermostat
-#      entity: climate.guest_2
-#      icon: false
-#      step_layout: row
-#      control: false
-#  - type: custom:canvas-gauge-card
-#    card_height: 220
-#    entity: sensor.air_quality_index
-#    name: AQI reading
-#    style:
-#      top: 50%
-#      left: 50%
-#    gauge:
-#      type: "radial-gauge"
-#      title: AQI
-#      width: 200
-#      height: 200
-#      minValue: 0
-#      maxValue: 500
-#      startAngle: 40
-#      ticksAngle: 280
-#      valueBox: true
-#      majorTicks: ["0", "50", "100", "150", "200", "250", "300", "350", "400", "450", "500"]
-#      minorTicks: 10
-#      strokeTicks: true
-#      highlights: [{"from": 0, "to": 50,"color": "rgba(104, 225, 67, .75)"},{"from": 50, "to": 100,"color": "rgba(255, 255, 85, .75)"},{"from": 100, "to": 150,"color": "rgba(239, 133, 51, .75)"},{"from": 150, "to": 200,"color": "rgba(234, 51, 36, .75)"},{"from": 200, "to": 300,"color": "rgba(140, 26, 75, .75)"},{"from": 300, "to": 500,"color": "rgba(115, 20, 37, .75)"}]
-#      borders: true
-#      needleType: "arrow"
-#      needleWidth: 4
-#      needleCircleSize: 7
-#      needleCircleOuter: true
-#      needleCircleInner: false
-#      animationDuration: 1500
-#      animationRule: "linear"
-#      valueBoxBorderRadius: 10
-#      colorValueBoxRect: "#222"
-#      colorValueBoxRectEnd: "#333"
-#      valueDec: 2
-#      valueInt: 2
+      - type: entities
+        title: Upstairs HVAC
+        entities:
+          - climate.main_floor
+          - sensor.upstairs_hvac_duty_cycle
+      - type: entities
+        title: Downstairs HVAC
+        entities:
+          - climate.downstairs
+          - sensor.downstairs_hvac_duty_cycle
+      - type: entities
+        title: Bathroom Floors
+        state_color: true
+        show_header_toggle: false
+        entities:
+      # - binary_sensor.guest1_bath_status
+      # - binary_sensor.guest2_bath_status
+      # - binary_sensor.master_bath_status
+          - climate.guest_1
+          - climate.guest_2
+          - climate.master_bath
   - type: horizontal-stack
+    title: House Mode
     cards:
-    - color: '#FFFFFF'
-      color_type: card
-      entity: sensor.vera_house_mode
-      hold_action:
-        action: more-info
-      icon: 'mdi:home'
-      name: Home
-      show_icon: true
-      show_name: true
-      state:
-        - color: '#006d47'
-          value: Home
-      tap_action:
-        action: call-service
-        service: rest_command.hm_command
-        service_data:
-          mode: 1
-      type: 'custom:button-card'
-    - color: '#FFFFFF'
-      color_type: card
-      entity: sensor.vera_house_mode
-      hold_action:
-        action: more-info
-      icon: 'mdi:car-side'
-      name: Away
-      show_icon: true
-      show_name: true
-      state:
-        - color: '#006d47'
-          value: Away
-      tap_action:
-        action: call-service
-        service: rest_command.hm_command
-        service_data:
-          mode: 2
-      type: 'custom:button-card'
-    - color: '#FFFFFF'
-      color_type: card
-      entity: sensor.vera_house_mode
-      hold_action:
-        action: more-info
-      icon: 'mdi:weather-night'
-      name: Night
-      show_icon: true
-      show_name: true
-      state:
-        - color: '#006d47'
-          value: Night
-      tap_action:
-        action: call-service
-        service: rest_command.hm_command
-        service_data:
-          mode: 3
-      type: 'custom:button-card'
-    - color: '#FFFFFF'
-      color_type: card
-      entity: sensor.vera_house_mode
-      hold_action:
-        action: more-info
-      icon: 'mdi:airplane'
-      name: Vacation
-      show_icon: true
-      show_name: true
-      state:
-        - color: '#006d47'
-          value: Vacation
-      tap_action:
-        action: call-service
-        service: rest_command.hm_command
-        service_data:
-          mode: 4
-      type: 'custom:button-card'
-  - entities:
-      - cover.hv_main_door
-      - cover.hv_side_door
-    title: Garage
-    type: entities
+      - type: 'custom:button-card'
+        color: '#ffffff'
+        color_type: card
+        entity: sensor.vera_house_mode
+        hold_action:
+          action: more-info
+        icon: 'mdi:home'
+        name: Home
+        show_icon: true
+        show_name: true
+        state:
+          - color: '#006d47'
+            value: Home
+        tap_action:
+          action: call-service
+          service: rest_command.hm_command
+          service_data:
+            mode: 1
+      - type: 'custom:button-card'
+        color: '#ffffff'
+        color_type: card
+        entity: sensor.vera_house_mode
+        hold_action:
+          action: more-info
+        icon: 'mdi:car-side'
+        name: Away
+        show_icon: true
+        show_name: true
+        state:
+          - color: '#006d47'
+            value: Away
+        tap_action:
+          action: call-service
+          service: rest_command.hm_command
+          service_data:
+            mode: 2
+      - type: 'custom:button-card'
+        color: '#ffffff'
+        color_type: card
+        entity: sensor.vera_house_mode
+        hold_action:
+          action: more-info
+        icon: 'mdi:weather-night'
+        name: Night
+        show_icon: true
+        show_name: true
+        state:
+          - color: '#006d47'
+            value: Night
+        tap_action:
+          action: call-service
+          service: rest_command.hm_command
+          service_data:
+            mode: 3
+      - type: 'custom:button-card'
+        color: '#ffffff'
+        color_type: card
+        entity: sensor.vera_house_mode
+        hold_action:
+          action: more-info
+        icon: 'mdi:airplane'
+        name: Vacation
+        show_icon: true
+        show_name: true
+        state:
+          - color: '#006d47'
+            value: 'Vacation'
+        tap_action:
+          action: call-service
+          service: rest_command.hm_command
+          service_data:
+            mode: 4
+      - type: 'custom:button-card'
+        color: '#FFFFFF'
+        entity: input_boolean.guest_mode
+        color_type: card
+        name: Guest
+        icon: 'mdi:account-multiple'    
+        show_icon: true                   
+        show_name: true   
+        hold_action:                         
+          action: more-info                                  
+        state:                      
+          - color: '#006d47'
+            value: 'on'
+          - color: '#ffffff'
+            value: 'off'
+        tap_action:                       
+          action: call-service
+          service: input_boolean.toggle
+          service_data:
+            entity_id: input_boolean.guest_mode  
+                
   - type: entities
     entities:
       - cover.living_room_shade_1
@@ -335,6 +271,49 @@ cards:
 #      - scene.stair_shade_down
 #      - scene.stair_shade_up
 #    title: Scenes
+  - type: entities
+    title: Enviromental Sensors
+    entities:
+      - type: custom:multiple-entity-row
+        name: Family Room
+        entity: sensor.family_room_temperature
+        entities:
+          - entity: sensor.family_room_comfort_level
+            name: " "
+          - entity: sensor.family_room_humidity
+            name: humidity
+          - entity: sensor.family_room_iaq
+            name: IAQ
+      - type: custom:multiple-entity-row
+        name: Office
+        entity: sensor.office_temperature
+        entities:
+          - entity: sensor.office_comfort_level
+            name: " "
+          - entity: sensor.office_humidity
+            name: humidity
+          - entity: sensor.office_iaq
+            name: IAQ
+      - type: custom:multiple-entity-row
+        name: Game Room
+        entity: sensor.game_room_temperature
+        entities:
+          - entity: sensor.game_room_comfort_level
+            name: " "
+          - entity: sensor.game_room_humidity
+            name: humidity
+          - entity: sensor.game_room_iaq
+            name: IAQ
+      - type: custom:multiple-entity-row
+        name: Man Cave
+        entity: sensor.mancave_temperature
+        entities:
+          - entity: sensor.mancave_comfort_level
+            name: " "
+          - entity: sensor.mancave_humidity
+            name: humidity
+          - entity: sensor.mancave_iaq
+            name: IAQ
   - color_thresholds:
     - color: '#e45e65'
       value: 2000
@@ -345,6 +324,7 @@ cards:
     color_thresholds_transition: hard
     entities:
       - sensor.family_room_eco2
+      - sensor.family_room_pm25
     group: false
     hour24: true
     line_width: 5
@@ -470,23 +450,23 @@ cards:
         horseshoe_style: 'colorstop'
       layout:
         hlines:
-        - id: 0
-          xpos: 50
-          ypos: 50
-          length: 40
-          styles:
-          - stroke: var(--primary-text-color);
-          - stroke-width: 5;
-          - stroke-linecap: round;
-          - opacity: 0.7;
+          - id: 0
+            xpos: 50
+            ypos: 50
+            length: 40
+            styles:
+              - stroke: var(--primary-text-color);
+              - stroke-width: 5;
+              - stroke-linecap: round;
+              - opacity: 0.7;
         states:
-        - id: 0
-          entity_index: 0
-          xpos: 50
-          ypos: 42
-          styles:
-          - font-size: 3em;
-          - stroke: var(--primary-text-color);
+          - id: 0
+            entity_index: 0
+            xpos: 50
+            ypos: 42
+            styles:
+              - font-size: 3em;
+              - stroke: var(--primary-text-color);
         areas:
           - id: 0
             entity_index: 0
@@ -508,135 +488,98 @@ cards:
           box-shadow: none;
           padding: 0px 0px 0px;
         }
-  - type: horizontal-stack
-    title: Power
-    cards:
-    - type: 'custom:flex-horseshoe-card'
-      entities:
-      - entity: sensor.eagle_200_meter_power_demand
-        decimals: 2
-        unit: 'kW'
-        area: "KiloWatts"
-        name: "House Eletricity"
-      - entity: sensor.daily_energy
-        decimals: 1
-        unit: 'kWh'
-        name: 'Today'
-      - entity: sensor.daily_energy
-        attribute: last_period
-        decimals: 1
-        unit: 'kWh'
-        name: 'Yesterday'
-      show:
-        horseshoe_style: 'colorstop'
-      layout:
-        hlines:
-        - id: 0
-          entity_index: 0
-          xpos: 50
-          ypos: 40
-          length: 40
-          styles:
-          - stroke: var(--primary-text-color);
-          - stroke-width: 5;
-          - stroke-linecap: round;
-          - opacity: 0.7;
-        states:
-        - id: 0
-          entity_index: 0
-          xpos: 50
-          ypos: 34
-          styles:
-          - font-size: 3em;
-          - stroke: var(--primary-text-color);
-        - id: 1
-          entity_index: 1
-          xpos: 46
-          ypos: 54
-          styles:
-            - text-anchor: end;
-            - font-size: 1.6em;
-        - id: 2
-          entity_index: 2
-          xpos: 54
-          ypos: 54
-          styles:
-            - text-anchor: start;
-            - font-size: 1.6em;
-        names:
-        - id: 0
-          entity_index: 0
-          xpos: 50
-          ypos: 100
-          styles:
-            - font-size: 1.2em;
-        - id: 1
-          entity_index: 1
-          xpos: 40
-          ypos: 62
-          styles:
-            - font-size: 0.8em;
-            - text-anchor: end;
-            - opacity: 0.7;
-        - id: 2
-          entity_index: 2
-          xpos: 54
-          ypos: 62
-          styles:
-            - font-size: 0.8em;
-            - text-anchor: start;
-            - opacity: 0.7;
-        areas:
-        - id: 0
-          entity_index: 0
-          xpos: 50
-          ypos: 85
-          styles:
-          - font-size: 1.2em;
-      horseshoe_scale:
-        min: -8
-        max: 8
-      color_stops:
-        0: 'green'
-        1: 'blue'
-        2: 'yellow'
-        4: 'orange'
-        6: 'red'
+  - type: entities
+    title: Power Details
+    entities:
+      - entity: sensor.envoy_current_power_production
+        type: 'custom:bar-card'
+        max: 10000
+        min: 0
+        limit_value: true
+        entity_row: true
+        severity:                                                                                                  
+          - from: 0                                                                                                
+            to: 2000                                                                                                 
+            color: purple                                                                                          
+          - from: 2001
+            to: 4000
+            color: blue                                                                                          
+          - from: 4001
+            to: 10000
+            color: green
+      - entity: sensor.envoy_current_power_consumption
+        type: 'custom:bar-card'
+        max: 10000
+        min: 0
+        limit_value: true
+        entity_row: true
+        severity:                                                                                                  
+          - from: 0                                                                                                
+            to: 2000                                                                                                 
+            color: green                                                                                          
+          - from: 2001
+            to: 4000
+            color: orange                                                                                         
+          - from: 4001
+            to: 10000
+            color: red
+  - type: entities
+    title: Security
+    state_color: color
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.door_open
+      - entity: binary_sensor.motion_home
+      - entity: binary_sensor.hv_front_yard_motion
+      - entity: binary_sensor.hv_back_yard_motion
   - type: entities
     title: Switches
     state_color: true
     show_header_toggle: false
     entities:
       - switch.fountain_10
-      - switch.frontyard_lights_69
-      - switch.lower_path_lights_44
-      - switch.party_lights_84
-      - switch.living_room_lamp_57
-      - switch.retreat_lamp_58
+      - switch.orchid_heaters
       - switch.grow_lights
-      - switch.hot_water_circ_pump
+      - switch.hot_water_circ_pump                                                                               
   - type: entities
-    title: Bathroom Floors
+    title: Outside Lights
     state_color: true
-    show_header_toggle: false
+    show_header_toggle: true
     entities:
-      - binary_sensor.guest1_bath_status
-      - binary_sensor.guest2_bath_status
-      - binary_sensor.master_bath_status
+      - light.porch_lights
+      - light.driveway_lights
+      - light.front_yard_lights
+      - light.back_yard_lights
+      - light.party_lights
   - type: entities
-    title: Guest Mode
+    title: Bedroom Lights
     state_color: true
-    show_header_toggle: false
+    show_header_toggle: true
     entities:
-      - input_boolean.guest_mode
-      - sensor.guest_wifi_count
+      - light.retreat_art_light_85
+      - light.retreat_lamp
+      - light.bedroom_lamps
   - type: entities
-    title: Motion
-    state_color: color
-    show_header_toggle: false
+    title: Great Room
+    state_color: true
+    show_header_toggle: true
     entities:
-      - binary_sensor.motion_home
-      - binary_sensor.entry_hall_motion
-      - binary_sensor.lower_hall_motion
-      - binary_sensor.kitchen_motion
-      - binary_sensor.master_bed_motion
+      - light.kitchen_cooktop_lights
+      - light.kitchen_sink_lights
+      - light.kitchen_main_lights
+      - light.family_room_lights
+      - light.family_lamp_97
+      - light.stairwell_lights
+      - light.stairs_art_lights
+  - type: entities
+    title: Entry Lights
+    state_color: true
+    show_header_toggle: true
+    entities:
+      - light.hallway_left_lights
+      - light.hallway_right_lights
+      - light.living_room_table_lamp
+      - light.garage_entry_lights
+      - light.foyer_lights_86
+      - light.hall_art_light_92
+ 

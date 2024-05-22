@@ -1,9 +1,8 @@
-# Grow Light Control
-id: 'growlightcntrl'         
-alias: "A: Grow Light Control"
+id: 'artlightson'
+alias: "Art Lights"
 trigger:        
   platform: state
-  entity_id: binary_sensor.grow_light
+  entity_id: binary_sensor.art_lights_on
 condition: 
   - condition: template 
     value_template: "{{ trigger.to_state.state != 'unavailable' }}" 
@@ -12,7 +11,4 @@ condition:
 action:
   - service: >
       switch.turn_{{ trigger.to_state.state }}
-    entity_id: switch.grow_lights
-  - service: !secret telegram_notify
-    data_template:
-      message: "Grow Light is {{ trigger.to_state.state }}"
+    entity_id: switch.art_lights

@@ -24,4 +24,10 @@ action:
   # everything else will just report status                                    
   - service: !secret telegram_notify
     data_template:                                                             
-      message: "Vera House Mode command received"
+      message: >
+        {% set token = trigger.event.data['args'][0] %}
+        {% if token == 'status' or token == undefined %}
+          Vera House mode is {{ states('sensor.vera_house_mode') }}
+        {% else %}
+          Setting Vera House Mode to {{ token }}
+        {% endif %}

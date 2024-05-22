@@ -1,13 +1,13 @@
-id: 'republishToyotaRav4Home'
-alias: 'L: Toyota Rav4 Home to MQTT'
+id: 'republishBMWiXHome'
+alias: 'L: BMW iX Home to MQTT'
 trigger:
   platform: state
-  entity_id: device_tracker.toyota_rav4_ibeacon_tracker
+  entity_id: device_tracker.bmw_ix_e907
   to: 'home'
 action:
   - service: mqtt.publish
     data_template:
-      topic: 'location/car/toyota_rav4_gps'
+      topic: 'location/car/bmw_ix_gps'
       retain: false
       payload:
               '

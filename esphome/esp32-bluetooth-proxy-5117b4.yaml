@@ -1,0 +1,23 @@
+substitutions:
+  name: esp32-bluetooth-proxy-5117b4
+  friendly_name: Man Cave BTLE Proxy
+packages:
+  esphome.bluetooth-proxy: github://esphome/bluetooth-proxies/esp32-generic.yaml@main
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: ISh15L0NMCBZmJriCSc4tA56sTYzDmhEqumy23H7jYI=
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+esp32_ble_tracker:
+  scan_parameters:
+    interval: 1000ms
+    window: 900ms
+    active: true

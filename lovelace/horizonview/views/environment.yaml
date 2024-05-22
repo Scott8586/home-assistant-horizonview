@@ -1,12 +1,133 @@
-#title: Environment
-icon: mdi:weather-sunny
+title: Inside
+icon: mdi:home
 path: environment
 theme: default
 badges: []
 cards:
+  - type: 'custom:mini-graph-card'
+    color_thresholds:
+    - color: '#e45e65'
+      value: 2000
+    - color: '#e0b400'
+      value: 1000
+    - color: '#0da035'
+      value: 0
+    color_thresholds_transition: hard
+    entities:
+      - sensor.family_room_eco2
+      - sensor.office_eco2
+      - sensor.game_room_eco2
+    name: Effective CO2
+    group: false
+    hour24: true
+    line_width: 5
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: false
+      average: false
+      fill: fade
+      icon: true
+      labels: false
+      name: true
+      state: true
+    style: |
+      ha-card {
+        border: solid 2px var(--primary-color);
+      }
   - entities:
-      - sun.sun
-#      - sensor.weewx_solar_altitude
-      - sensor.moon
-    title: Astronomy
-    type: entities
+      - sensor.upstairs_temperature
+      - sensor.gw1000_tempin
+      - sensor.gw1000_temp3
+    name: Upstairs Temperature
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: false
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    type: 'custom:mini-graph-card'
+  - entities:
+      - sensor.downstairs_temperature
+      - sensor.gw1000_temp4
+    name: Downstairs Temperature
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: false
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    type: 'custom:mini-graph-card'
+  - entities:
+      - sensor.gw1000_temp1
+    name: Garage Temperature
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: true
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    type: 'custom:mini-graph-card'
+  - entities:
+      - sensor.gw1000_temp2
+    name: Cellar Temperature
+    group: false
+    hour24: true
+    line_width: 4
+    points_per_hour: 1
+    align_icon: left
+    align_header: left
+    show:
+      extrema: true
+      average: false
+      fill: fade
+      icon: true
+      labels: true
+      name: true
+      state: true
+    style: |
+      ha-card {         
+        border: solid 2px var(--primary-color);
+      }                 
+    type: 'custom:mini-graph-card'
+  - type: history-graph
+    entities:
+      - entity: sensor.geiger_counter_count_rate
+        name: Radiation CPM

@@ -24,11 +24,6 @@ homeassistant:
     - /config
   auth_providers:
     - type: homeassistant
-    - type: trusted_networks
-      trusted_networks:
-        - 127.0.0.1
-        - 192.168.0.0/16
-        - 172.30.0.0/24
 
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
@@ -38,6 +33,7 @@ default_config:
 #logbook:
 #sun:
 #system_health:
+python_script:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 # http:
@@ -50,12 +46,12 @@ alexa:
   smart_home:
     locale: en-US
     endpoint: https://api.amazonalexa.com/v3/events
-    client_id: amzn1.application-oa2-client.e9b18adc4c9549419ef104e4f2cd1720
-    client_secret: e5b8174ad9abb3764329790c8e4331dac2300ed750bfa6cb710bd7e497c69b64
+    client_id: !secret amazon_client_id
+    client_secret: !secret amazon_client_secret
     filter:
       include_entities:
-        - sensor.garage_temperature
-        - sensor.cellar_temperature
+        - sensor.gw1000_temp1
+        - sensor.gw1000_temp2
         - sensor.air_quality_index
         - sensor.upstairs_temperature
         - sensor.downstairs_temperature
@@ -69,6 +65,8 @@ alexa:
         - light.pentair_0d_ce_47_pool_light
         - switch.pentair_0d_ce_47_pool
         - switch.pentair_0d_ce_47_cleaner
+        - scene.home
+        - scene.art_lights_on
 #      include_domains:
 #        - switch
 #      exclude_entities:
@@ -101,15 +99,19 @@ alexa:
       sensor.downstairs_temperature:
         name: "Downstairs"
         display_categories: TEMPERATURE_SENSOR
-      sensor.cellar_temperature:
+      sensor.gw1000_temp2:
         name: "Wine Cellar"
         display_categories: TEMPERATURE_SENSOR
-      sensor.garage_temperature:
+      sensor.gw1000_temp1:
         name: "Garage"
         display_categories: TEMPERATURE_SENSOR
       sensor.air_quality_index:
         name: "Air Quality"
         display_categories: TEMPERATURE_SENSOR
+      scene.home:
+        name: "Home Mode"
+      scene.art_lights_on:
+        name: "Art Lights"
 #      light.kitchen:
 #        name: "Custom Name for Alexa"
 #        description: "The light in the kitchen"
@@ -156,7 +158,7 @@ logger:
 #    homeassistant.components.alexa: debug
 #    homeassistant.components.sensor: debug
 #    homeassistant.components.climate: debug
-    homeassistant.components.shell_command: debug
+#    homeassistant.components.shell_command: debug
 #    homeassistant.helpers.entity: debug
     charset_normalizer: warning
 
@@ -166,16 +168,14 @@ device_tracker:
       srp_iphone_ios: 'location/phone/srp_iphone_ios'
       audi_a6_gps: 'location/car/audi_a6_gps'
       audi_q7_gps: 'location/car/audi_q7_gps'
-      toyota_rav4_gps: 'location/car/toyota_rav4_gps'
+      bmw_ix_gps: 'location/car/bmw_ix_gps'
  
-
 #hydrawise:
 #  access_token: !secret hydrawise_api
 
-schluter:     
-  username: !secret schluter_username
-  password: !secret schluter_password
-
+#schluter:     
+#  username: !secret schluter_username
+#  password: !secret schluter_password
 
 envisalink:
   host: !secret envisalink_host
@@ -232,77 +232,50 @@ envisalink:
     1:
       name: 'House Alarm'
 
-input_boolean:
-  guest_mode:
-    name: Guest Mode
-  disable_stairs_cover_down_automation:
-    name: Disable Stairs Cover Down Automation
-    initial: false
-  disable_retreat_cover_down_automation:
-    name: Disable Retreat Cover Down Automation
-    initial: false
-  disable_livingroom_cover_down_automation:
-    name: Disable Livingroom Cover Down Automation
-    initial: false
-  disable_stairs_cover_up_automation:
-    name: Disable Stairs Cover Up Automation
-    initial: false
-  disable_retreat_cover_up_automation:
-    name: Disable Retreat Cover Up Automation
-    initial: false
-  disable_livingroom_cover_up_automation:
-    name: Disable Livingroom Cover Up Automation
-    initial: false
-#  bright_light:
-#    name: Bright Light Outside
-#    initial: false
+input_select:
+  house_mode:
+    name: House Mode
+    options:
+      - Home
+      - Away
+      - Night
+      - Vacation
+      - unavailable
+      - unknown
 
 mqtt:
   sensor:
     - state_topic: room-assistant/status/familyroom
       unique_id: room_assistant_familyroom
       name: "Room Assistant Familyroom"
-    - state_topic: room-assistant/status/gameroom
-      unique_id: room_assistant_gameroom
-      name: "Room Assistant Gameroom"
-    - state_topic: room-assistant/status/retreat
-      unique_id: room_assistant_retreat
-      name: "Room Assistant Retreat"
-    - state_topic: room-assistant/status/garage
-      unique_id: room_assistant_garage
-      name: "Room Assistant Garage"
-    - state_topic: environment/horizonview_garage/BME280_temperature
-      unique_id: garage_temperature
-      name: 'Garage Temperature'                                                   
-    - state_topic: 'environment/horizonview_garage/BME280_humidity'                   
-      unique_id: garage_humidity
-      name: 'Garage Humidity'
-    - state_topic: 'environment/horizonview_garage/BME280_pressure'                   
-      unique_id: garage_pressure
-      name: 'Garage Pressure'                                                      
-      unit_of_measurement: 'hPa'                                                   
-    - state_topic: 'environment/horizonview_garage/BME280_sealevel_pressure'          
-      unique_id: garage_sealevel_pressure
-      name: 'Garage Sealevel Pressure'                                             
-      unit_of_measurement: 'hPa'                                                   
-    
+#     - state_topic: room-assistant/status/gameroom
+#       unique_id: room_assistant_gameroom
+#       name: "Room Assistant Gameroom"
+#     - state_topic: room-assistant/status/retreat
+#       unique_id: room_assistant_retreat
+#       name: "Room Assistant Retreat"
+#     - state_topic: room-assistant/status/garage
+#       unique_id: room_assistant_garage
+#       name: "Room Assistant Garage"                                                               
+
 sensor:
-  - platform: gpsd           
-    name: HorizonView GPS
-    host: 192.168.35.157
-    scan_interval: 300
-#  - platform: hydrawise
-  # Weewx Weather
   - platform: rest
-    resource: http://192.168.35.157/weewx/daily.json
-    name: Weewx Weather
-    scan_interval: 150
-    force_update: true
-    json_attributes:
-      - time
-      - current
-      - almanac
-    value_template: '{{ value_json.location }}'
+    resource: http://192.168.35.171:8181/data/aircraft.json
+    name: Nearby Aircraft
+    value_template: "{{ value_json.aircraft | length | int(0) }}"
+    scan_interval: 120
+    unit_of_measurement: Aircraft
+  # Weewx Weather
+#  - platform: rest
+#    resource: http://192.168.35.157/weewx/daily.json
+#    name: Weewx Weather
+#    scan_interval: 150
+#    force_update: true
+#    json_attributes:
+#      - time
+#      - current
+#      - almanac
+#    value_template: '{{ value_json.location }}'
   - platform: rest
     name: "Vera House Mode"
     resource: !secret vera_resource
@@ -321,64 +294,18 @@ sensor:
     scan_interval: 300 # 5 min
     resource: !secret bobcat_led
     value_template: "{{value_json.led}}"
-  - platform: systemmonitor
-    resources:
-      - type: memory_use_percent
-      - type: swap_use_percent
-      - type: disk_use_percent
-        arg: /
-      - type: processor_use
-      - type: load_1m       
-      - type: last_boot
-# CPU Temperature of pi
-  - platform: command_line
-    name: CPU Temperature
-    command: "cat /sys/class/thermal/thermal_zone0/temp"
-    # If errors occur, remove degree symbol below
-#    value_template: "{{ (value | multiply(0.0018) + 32) | float(default=0) | round(0) }}"
-    value_template: "{{ value | multiply(0.001) | float(default=0) | round(1) }}"
-    unit_of_measurement: " °C"
-#  - platform: filesize
-#    file_paths:              
-#      - /config/home-assistant_v2.db
-#  - platform: version
-#    name: latest_available_version
-#    source: hassio
-#  - platform: version
-#    name: installed_version
+#  - platform: systemmonitor
+#    resources:
+#      - type: memory_use_percent
+#      - type: swap_use_percent
+#      - type: disk_use_percent
+#        arg: /
+#      - type: processor_use
+#      - type: load_1m       
+#      - type: last_boot
   - platform: time_date
     display_options:        
       - 'time'              
-#      - 'date'              
-#      - 'date_time'         
-#      - 'date_time_utc'     
-#      - 'date_time_iso'     
-#      - 'time_date'         
-#      - 'time_utc'          
-  - platform: snmp
-    host: 192.168.35.162
-    baseoid: 1.3.6.1.2.1.25.1.8.1
-    name: raspi_familyroom_hv_cpu_temperature
-    scan_interval: 300
-    accept_errors: true
-    value_template: "{{ value }}"
-    unit_of_measurement: " °C"
-  - platform: snmp
-    host: 192.168.35.163
-    baseoid: 1.3.6.1.2.1.25.1.8.1
-    name: raspi_garage_hv_cpu_temperature
-    scan_interval: 300
-    accept_errors: true
-    value_template: "{{ value }}"
-    unit_of_measurement: " °C"
-#  - platform: snmp
-#    host: 192.168.35.164
-#    baseoid: 1.3.6.1.2.1.25.1.8.1
-#    name: raspi_retreat_hv_cpu_temperature
-#    scan_interval: 300
-#    accept_errors: true
-#    value_template: "{{ value }}"
-#    unit_of_measurement: " °C"
   - platform: snmp
     name: erx_wan_in
     host: 192.168.35.254
@@ -475,8 +402,9 @@ sensor:
     duration:
       hours: 24
   - platform: integration
-    source: sensor.pentair_0d_ce_47_pool_pump_current_watts 
-    name: 'Pentair: 0D-CE-47 Pool Pump Current Energy'
+    source: sensor.pentair_0d_ce_47_pool_pump_watts_now
+    unique_id: pentair_0d_ce_47_pool_pump_energy
+    name: 'Pentair: 0D-CE-47 Pool Pump Energy'
     unit_prefix: k
     unit_time: h
     method: left
@@ -531,15 +459,21 @@ sensor:
 #switch:
 #  - platform: hydrawise
 
-#light:
-#  - platform: switch
-#    name: Pool Lights
-#    entity_id: switch.pentair_pool_lights
-#  - platform: switch
-#    name: Spa Lights
-#    entity_id: switch.pentair_spa_lights
+switch:
+  - platform: template
+    switches:
+      art_lights:
+        unique_id: art_lights
+        friendly_name: Art Lights
+        value_template: "{{ is_state('art_lights_on', 'on') }}"
+        turn_on:
+          service: scene.turn_on
+          entity_id: scene.art_lights_on
+        turn_off:
+          service: scene.turn_on
+          entity_id: scene.art_lights_off
 
-# Example configuration.yaml entry
+
 utility_meter:
   daily_energy:
     source: sensor.eagle_200_net_meter_energy_delivered_minus_received
@@ -559,24 +493,16 @@ utility_meter:
     source: sensor.grid_import_energy
     name: Daily Import Meter
     cycle: daily
+    tariffs:
+      - peak
+      - offpeak
   daily_energy_export:
     source: sensor.grid_export_energy
     name: Daily Export Meter
     cycle: daily
-
-#iqvia:
-#  zip_code: "95404"
-
-#weather:
-#  - platform: darksky
-#    api_key: !secret darksky_api
-#    mode: daily
-#    scan_interval:
-#      minutes: 15
-
-# Text to speech
-#tts:
-#  - platform: google_translate
+    tariffs:
+      - peak
+      - offpeak
 
 lovelace:
   mode: yaml
@@ -611,13 +537,17 @@ lovelace:
       type: module
     - url: /hacsfiles/battery-state-card/battery-state-card.js
       type: module
+    - url: /hacsfiles/clock-weather-card/clock-weather-card.js
+      type: module
+    - url: /local/7segment.css
+      type: css
 
 frontend:                              
   extra_module_url:                                                  
     - /hacsfiles/lovelace-card-mod/card-mod.js
 
 
-history: !include history.yaml
+#history: !include history.yaml
 recorder: !include recorder.yaml
 automation: !include automations.yaml
 automation split: !include_dir_list automations

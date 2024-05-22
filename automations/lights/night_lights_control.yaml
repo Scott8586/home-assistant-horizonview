@@ -1,0 +1,24 @@
+# Night Lights
+id: 'night_lights'
+alias: "Night Lights"
+trigger:
+  platform: state
+  entity_id: binary_sensor.sun_down
+condition:
+  condition: not
+  conditions:
+    - condition: state
+      entity_id: input_select.house_mode
+      state: "vacation"
+    - condition: template
+      value_template: "{{ trigger.to_state.state == 'unavailable' }}"
+    - condition: template 
+      value_template: "{{ trigger.to_state.state == 'unknown' }}" 
+action:
+  - service: light.turn_{{ trigger.to_state.state }}
+    target:
+      entity_id: light.all_night_lights
+  - service: !secret telegram_notify
+    data:
+      message: "N: Night Lights is {{ trigger.to_state.state }}"
+

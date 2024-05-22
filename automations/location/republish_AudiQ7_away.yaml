@@ -2,7 +2,7 @@ id: 'republishAudiQ7Away'
 alias: 'L: Audi Q7 Away to MQTT'
 trigger:
   platform: state
-  entity_id: device_tracker.audi_q7_ibeacon_tracker
+  entity_id: device_tracker.audi_q7_8ff5
   to: 'not_home'
 action:
   - service: mqtt.publish

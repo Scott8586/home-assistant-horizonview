@@ -3,7 +3,7 @@ id: 'carzone'
 alias: 'Car Zone Change'
 trigger:
   platform: state
-  entity_id: device_tracker.audi_a6_ibeacon_tracker, device_tracker.audi_q7_ibeacon_tracker, device_tracker.toyota_rav4_ibeacon_tracker
+  entity_id: device_tracker.audiq7_8ff5, device_tracker.426c7565_4368_6172_6d42_6561636f6e74_3838_4949_8ae8
 condition:
   condition: and
   conditions:

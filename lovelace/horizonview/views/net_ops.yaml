@@ -5,19 +5,24 @@ theme: default
 #badges:
 #  - entity: binary_sensor.updater
 cards:
-  - cards:
-      - type: sensor
-        entity: sensor.internet_in_mbps
-        name: WAN In
-        unit: Mbps
-        graph: none
-      - type: sensor
-        entity: sensor.internet_out_mbps
-        name: WAN Out
-        unit: Mbps
-        graph: none
-    type: horizontal-stack
+  - type: vertical-stack
     title: Internet
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: sensor
+            entity: sensor.internet_in_mbps
+            name: WAN In
+            unit: Mbps
+            graph: none
+          - type: sensor
+            entity: sensor.internet_out_mbps
+            name: WAN Out
+            unit: Mbps
+            graph: none
+      - type: entities
+        entities:
+          - entity: sensor.xfinity_wan_usage_gb
   - cards:                                         
     - title: Local Machine                         
       type: entities                               
@@ -60,7 +65,7 @@ cards:
         - entity: sensor.home_assistant_v2_db_size
           icon: mdi:database                              
         - type: custom:bar-card           
-          columns: 2                      
+          columns: 2
           entities:                 
             - entity: sensor.processor_use
               name: CPU        
@@ -112,30 +117,21 @@ cards:
           url_path: http://hub.tworoads.net/gpsd.php?host=192.168.35.157
       - type: custom:secondaryinfo-entity-row
         entity: sensor.room_assistant_familyroom
-        secondary_info: "Cluster: [[ sensor.familyroom_cluster_leader ]]"
-      - type: custom:secondaryinfo-entity-row
-        entity: sensor.room_assistant_gameroom
-        secondary_info: "Cluster: [[ sensor.gameroom_cluster_leader ]]"
-      - type: custom:secondaryinfo-entity-row
-        entity: sensor.room_assistant_retreat
-        secondary_info: "Cluster: [[ sensor.retreat_cluster_leader ]]"
-      - type: custom:secondaryinfo-entity-row
-        entity: sensor.room_assistant_garage
-        secondary_info: "Cluster: [[ sensor.garage_cluster_leader ]]"
+#        secondary_info: "Cluster: [[ sensor.familyroom_cluster_leader ]]"
+#      - type: custom:secondaryinfo-entity-row
+#        entity: sensor.room_assistant_gameroom
+#        secondary_info: "Cluster: [[ sensor.gameroom_cluster_leader ]]"
+#      - type: custom:secondaryinfo-entity-row
+#        entity: sensor.room_assistant_retreat
+#        secondary_info: "Cluster: [[ sensor.retreat_cluster_leader ]]"
+#      - type: custom:secondaryinfo-entity-row
+#        entity: sensor.room_assistant_garage
+#        secondary_info: "Cluster: [[ sensor.garage_cluster_leader ]]"
 #      - entity: sensor.gameroom_cluster_leader
 #      - entity: binary_sensor.family_room_presense
 #      - entity: binary_sensor.retreat_presense
 #      - entity: binary_sensor.garage_presense
-  - title: Wifi Status
-    type: entities
-    entities:
-      - entity: sensor.2g_wifi_count
-      - entity: sensor.5g_wifi_count
-      - entity: sensor.guest_wifi_count
-  - title: Xfinity Usage
-    type: entities
-    entities:
-      - entity: sensor.xfinity_wan_usage_gb
+      - entity: switch.zb_garage_plug
   - title: Pi-hole Console
     show_header_toggle: false       
     type: entities
@@ -240,7 +236,63 @@ cards:
             {% else %} red                                            
             {% endif %}                                                 
           ;                                        
-          }                                                                                
+          }
+      - entity: switch.zb_bobcat_300                                                                            
 #      - sensor.chilly_brown_owl_temperature
 #      - sensor.chilly_brown_owl_ota_version
 #      - sensor.chilly_brown_owl_miner_image_version
+  - type: entities
+    title: Synology DS920+ (dirt)
+    entities:
+      - type: custom:multiple-entity-row
+        name: Status
+        entity: binary_sensor.dirt_security_status
+        entities:
+          - entity: sensor.dirt_cpu_utilization_total
+            name: "CPU"
+          - entity: sensor.dirt_memory_usage_real
+            name: "Mem"
+      - type: custom:multiple-entity-row
+        name: "Volume 1"
+        entity: sensor.dirt_status_2
+        entities:
+          - entity: sensor.dirt_volume_used_2
+            name: "Used"
+      - type: custom:multiple-entity-row
+        name: "Volume 2"
+        entity: sensor.dirt_status
+        entities:
+          - entity: sensor.dirt_volume_used
+            name: "Used"
+      - type: custom:multiple-entity-row
+        name: "Disk 1"
+        entity: sensor.dirt_status_2
+        entities:
+          - entity: sensor.dirt_temperature
+            name: "Temp"
+          - entity: binary_sensor.dirt_exceeded_max_bad_sectors
+            name: "Bad Sec"
+      - type: custom:multiple-entity-row
+        name: "Disk 2"
+        entity: sensor.dirt_status_3
+        entities:
+          - entity: sensor.dirt_temperature_2
+            name: "Temp"
+          - entity: binary_sensor.dirt_exceeded_max_bad_sectors_2
+            name: "Bad Sec"
+      - type: custom:multiple-entity-row
+        name: "Disk 3"
+        entity: sensor.dirt_status_4
+        entities:
+          - entity: sensor.dirt_temperature_3
+            name: "Temp"
+          - entity: binary_sensor.dirt_exceeded_max_bad_sectors_3
+            name: "Bad Sec"
+      - type: custom:multiple-entity-row
+        name: "Disk 4"
+        entity: sensor.dirt_status_5
+        entities:
+          - entity: sensor.dirt_temperature_4
+            name: "Temp"
+          - entity: binary_sensor.dirt_exceeded_max_bad_sectors_4
+            name: "Bad Sec"

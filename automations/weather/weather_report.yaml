@@ -8,16 +8,12 @@ trigger:
     command: '/weather'
 action:
   - service: !secret telegram_notify
-    data_template:
-      message: > 
-       Temp: {{ states('sensor.weewx_outside_temperature') }}F,
-       {% if (states('sensor.weewx_outside_temperature') | int) != (states('sensor.weewx_outside_heat_index') | int) %}
-       Heat: {{ states('sensor.weewx_outside_heat_index') }}F,
-       {% elif (states('sensor.weewx_outside_temperature') | int) != (states('sensor.weewx_outside_windchill') | int) %}
-       Chill: {{ states('sensor.weewx_outside_windchill') }}F,
-       {% endif %}
-       Humid: {{ states('sensor.weewx_outside_humidity') }},
-       Dewpt: {{ states('sensor.weewx_outside_dewpoint') }}F
-       {% if states('sensor.weewx_outside_temperature') | float - states('sensor.weewx_outside_dewpoint') | float < 1.0 and states('sensor.weewx_outside_humidity') | int > 95 %}         
+    data:
+      message: |
+         Temperature: {{ states('sensor.gw1000_temp', with_unit=True) }}
+         Feels  Like: {{ states('sensor.gw1000_feelslike', with_unit=True) }}
+         Humidity: {{ states('sensor.gw1000_humidity', with_unit=True) }}
+         Dewpoint: {{ states('sensor.gw1000_dewpoint', with_unit=True) }}
+         {% if states('sensor.gw1000_temp') | float - states('sensor.gw1000_dewpoint') | float < 1.0 and states('ssensor.gw1000_humidity') | int > 95 %}         
          Fog possible!
-       {% endif %}
+         {% endif %}

@@ -8,14 +8,19 @@ trigger:
   event_data:
     command: '/pool'
 action:
-  - service: !secret telegram_notify
-    data_template:
-      message: > 
-        Pool: {{states('switch.pentair_0d_ce_47_pool')}}
-         Spa: {{states('switch.pentair_0d_ce_47_spa')}}
-        Jets: {{states('switch.pentair_0d_ce_47_jets')}}
-        Fall: {{states('switch.pentair_0d_ce_47_waterfall')}},  
-        Mode: {{states('climate.pentair_0d_ce_47_pool_heat')}},  
-         Set: {{state_attr('climate.pentair_0d_ce_47_pool_heat', 'temperature')}}F, 
-         Now: {{state_attr('climate.pentair_0d_ce_47_pool_heat', 'current_temperature')}}F,
-         Air: {{states('sensor.pentair_0d_ce_47_air_temperature')}}F
+  service: !secret telegram_notify
+  data:
+    title: "Pool:"
+    message: |
+      {% set token = trigger.event.data['args'][0] %}
+      {% if token == 'status' or token == undefined %}
+        Pool Pump: {{states('switch.pentair_0d_ce_47_pool')}}
+        Pool Cleaner: {{states('switch.pentair_0d_ce_47_cleaner')}}
+        Spa Pump: {{states('switch.pentair_0d_ce_47_spa')}}
+        Spa Jets: {{ states('switch.pentair_0d_ce_47_jets')}}
+        Waterfall: {{states('switch.pentair_0d_ce_47_waterfall')}}
+        Heater: {{states('climate.pentair_0d_ce_47_pool_heat')}}
+        Heater Temp: {{states('sensor.pentair_heater_set_temperature', with_unit=True)}} 
+        Current Temp: {{states('sensor.pentair_pool_temperature', with_unit=True)}}
+        Patio Temp: {{states('sensor.pentair_0d_ce_47_air_temperature', with_unit=True)}}
+      {% endif %}

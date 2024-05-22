@@ -4,76 +4,13 @@ path: weather
 theme: default
 badges: []
 cards:
-#  - entities:
-#      - sensor.weewx_outside_temperature
-#      - sensor.weewx_outside_humidity
-#      - sensor.weewx_outside_dewpoint
-#      - sensor.weewx_outside_heat_index
-#      - sensor.weewx_pm25
-#      - sensor.weewx_cloudbase
-#      - sensor.weewx_wind_speed
-#      - sensor.weewx_wind_direction_ordinal
-#      - sensor.weewx_inside_temperature
-#      - sensor.weewx_inside_humidity
-#      - sensor.weewx_garage_temperature
-#      - sensor.weewx_garage_humidity
-#      - sensor.weewx_cellar_temperature
-#      - sensor.weewx_cellar_humidity
-#    title: Weather Station
-#    type: entities
-  - type: vertical-stack
-    cards:
-      - type: 'custom:compass-card'                      
-        header:                              
-          title:                                        
-            value: Wind
-        indicator_sensors:                         
-          - sensor: sensor.weewx_wind_direction_ordinal
-        value_sensors:                             
-          - sensor: sensor.weewx_wind_speed        
-        style: |                                       
-          ha-card {                                    
-            border: solid 2px var(--primary-color);    
-          }                                            
-      - type: horizontal-stack
-        cards:
-          - entity: sensor.weewx_rain_day
-            max: 2
-            min: 0
-            name: Rain Day Total
-            severity:
-              green: 0
-              yellow: 1
-              red: 2
-            theme: default
-            type: gauge
-          - entity: sensor.weewx_rain_year
-            max: 64
-            min: 0
-            name: Rain Year Total
-            severity:
-              red: 0
-              yellow: 16
-              green: 32
-            theme: default
-            type: gauge       
-        style: |                                       
-          ha-card {                                    
-            border: solid 2px var(--primary-color);    
-            --ha-card-header-font-size: 30px;
-          }                                            
-  - type: entities
-    title: Garden
+  - type: 'custom:mini-graph-card'
     entities:
-      - sensor.soil_temperature_1
-      - sensor.soil_moisture_1
-      - sensor.soil_moisture_2
-  - entities:
-      - entity: sensor.weewx_outside_temperature
+      - entity: sensor.gw1000_temp
         name: Temperature
-      - entity: sensor.weewx_outside_dewpoint
+      - entity: sensor.gw1000_dewpoint
         name: Dewpoint
-      - entity: sensor.weewx_outside_humidity
+      - entity: sensor.gw1000_humidity
         name: Humidity
         y_axis: secondary
     name: Outside Weather
@@ -95,78 +32,110 @@ cards:
       ha-card {         
         border: solid 2px var(--primary-color);
       }                 
-    type: 'custom:mini-graph-card'
+  - type: entities
+    title: Garden Temp and Moisture
+    entities:
+      - sensor.gw1000_tf_ch1
+      - sensor.gw1000_soilmoisture2
+      - sensor.gw1000_soilmoisture1
+  - type: vertical-stack
+    cards:
+      - type: 'custom:compass-card'                      
+        header:                              
+          title:                                        
+            value: Wind
+        indicator_sensors:                         
+          - sensor: sensor.gw1000_winddir
+        value_sensors:                             
+          - sensor: sensor.gw1000_windspeed        
+        style: |                                       
+          ha-card {                                    
+            border: solid 2px var(--primary-color);    
+          }                                            
+      - type: horizontal-stack
+        cards:
+          - entity: sensor.gw1000_dailyrain
+            max: 2
+            min: 0
+            name: Rain Day Total
+            severity:
+              green: 0
+              yellow: 1
+              red: 2
+            theme: default
+            type: gauge
+          - entity: sensor.gw1000_yearlyrain
+            max: 64
+            min: 0
+            name: Rain Year Total
+            severity:
+              red: 0
+              yellow: 16
+              green: 32
+            theme: default
+            type: gauge       
+        style: |                                       
+          ha-card {                                    
+            border: solid 2px var(--primary-color);    
+            --ha-card-header-font-size: 30px;
+          }
+
+  - type: history-graph
+    title: 'Solar Radiation'
+    hours_to_show: 72
+    entities:
+      - sensor.gw1000_solarradiation
+  - type: history-graph
+    title: 'Barometric Pressure'
+    hours_to_show: 72
+    entities:
+      - sensor.gw1000_baromrel
+  - type: horizontal-stack
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: "## Allergens Today"
+          - type: gauge
+            entity: sensor.allergy_index_today
+            title: Today
+            min: 0
+            max: 12
+            unit_of_measurement: " "
+            severity:
+              green: 0.0
+              yellow: 4.8
+              red: 9.7
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: "## Allergens Tomorrow"
+          - type: gauge
+            entity: sensor.allergy_index_tomorrow
+            title: Tomorrow
+            min: 0
+            max: 12
+            unit_of_measurement: " "
+            severity:
+              green: 0.0
+              yellow: 4.8
+              red: 9.7
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: "## Allergen Forecast"
+          - type: gauge
+            entity: sensor.allergy_index_forecasted_average
+            title: Future
+            min: 0
+            max: 12
+            unit_of_measurement: " "
+            severity:
+              green: 0.0
+              yellow: 4.8
+              red: 9.7
   - entities:
-      - sensor.upstairs_temperature
-      - sensor.weewx_office_temperature
-      - sensor.weewx_master_temperature
-    name: Upstairs Temperature
-    group: false
-    hour24: true
-    line_width: 4
-    points_per_hour: 1
-    align_icon: left
-    align_header: left
-    show:
-      extrema: false
-      average: false
-      fill: fade
-      icon: true
-      labels: true
-      name: true
-      state: true
-    style: |
-      ha-card {         
-        border: solid 2px var(--primary-color);
-      }                 
-    type: 'custom:mini-graph-card'
-  - entities:
-      - sensor.downstairs_temperature
-      - sensor.weewx_guest_temperature
-    name: Downstairs Temperature
-    group: false
-    hour24: true
-    line_width: 4
-    points_per_hour: 1
-    align_icon: left
-    align_header: left
-    show:
-      extrema: false
-      average: false
-      fill: fade
-      icon: true
-      labels: true
-      name: true
-      state: true
-    style: |
-      ha-card {         
-        border: solid 2px var(--primary-color);
-      }                 
-    type: 'custom:mini-graph-card'
-  - entities:
-      - sensor.weewx_garage_temperature
-    name: Garage Temperature
-    group: false
-    hour24: true
-    line_width: 4
-    points_per_hour: 1
-    align_icon: left
-    align_header: left
-    show:
-      extrema: true
-      average: false
-      fill: fade
-      icon: true
-      labels: true
-      name: true
-      state: true
-    style: |
-      ha-card {         
-        border: solid 2px var(--primary-color);
-      }                 
-    type: 'custom:mini-graph-card'
-  - entities:
-      - sensor.weewx_pm25
+      - sensor.gw1000_pm25_ch1
     name: Fine Particulate Matter PM 2.5
     group: false
     hour24: true
@@ -202,35 +171,17 @@ cards:
       - value: 350
         color: "#731425"
     type: 'custom:mini-graph-card'
-  - type: 'custom:mini-graph-card'
-    color_thresholds:
-    - color: '#e45e65'
-      value: 2000
-    - color: '#e0b400'
-      value: 1000
-    - color: '#0da035'
-      value: 0
-    color_thresholds_transition: hard
-    entities:
-      - sensor.family_room_eco2
-      - sensor.office_eco2
-      - sensor.mancave_eco2
-    name: Effective CO2
-    group: false
-    hour24: true
-    line_width: 5
-    points_per_hour: 1
-    align_icon: left
-    align_header: left
-    show:
-      extrema: false
-      average: false
-      fill: fade
-      icon: true
-      labels: false
-      name: true
-      state: true
-    style: |
-      ha-card {
-        border: solid 2px var(--primary-color);
-      }
+  - type: markdown
+    title: "BirdNET Events"
+    content: |-
+      Time|Common Name|Day Count|Max Confidence
+      :---|:---|:---:|:---:
+      {%- set t = now() %}
+      {%- set bird_list = state_attr('sensor.birdnet_intake','bird_events') | sort(attribute='time', reverse=true) | map(attribute='name') | unique | list %}
+      {%- set bird_objects = state_attr('sensor.birdnet_intake','bird_events') | sort(attribute='time', reverse=true) %}
+      {%- for thisbird in bird_list or [] %}
+      {%- set ubird = ((bird_objects | selectattr("name", "equalto", thisbird)) | list)[0] %}
+      {%- set ubird_count = ((bird_objects | selectattr("name", "equalto", thisbird)) | list) | length %}
+      {%- set ubird_max_confidence = ((bird_objects | selectattr("name", "equalto", thisbird)) | map(attribute='confidence') | max) %}
+      {{ubird.time}} | {{ubird.name}} | {{ubird_count}} | {{ubird_max_confidence }}
+      {%- endfor %}

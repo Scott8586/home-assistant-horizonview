@@ -1,0 +1,21 @@
+id: "floorheatwarning"
+alias: "Floor Heat Warning"
+trigger:
+  - platform: state
+    entity_id: binary_sensor.both_away
+    to: 'on'
+    for:
+      hours: 24
+condition:
+  condition: or
+  conditions:
+    - condition: template
+      value_template: '{{ states("climate.guest_1") != "off" }}'
+    - condition: template
+      value_template: '{{ states("climate.guest_2") != "off" }}'
+    - condition: template
+      value_template: '{{ states("climate.master_bath") != "off" }}'
+action:
+  service: !secret telegram_notify
+  data:        
+    message: "N: Check Bathroom Floor Heat"

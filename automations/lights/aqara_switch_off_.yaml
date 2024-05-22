@@ -1,0 +1,15 @@
+id: 'aqara switch off'
+alias: Aqara Inside Light Group Off
+trigger:
+  - platform: mqtt
+    topic: 'zigbee2mqtt/ZB Aqara Button1'
+condition:
+  - condition: template
+    value_template: '{{ "single" == trigger.payload_json.action }}'
+action:
+  - service: light.turn_off
+    entity_id: light.all_inside_lights
+  - service: !secret telegram_notify
+    data_template:        
+      message: "N: Aqara All Lights Off"
+      

@@ -11,10 +11,13 @@ action:
   data:
     title: "Commands:"
     message: |
+      /hvac [climate entity] [off|on]
+      /mode [home|away|night|vacation|status]
       /ping - request a test response.
       /reboot - reboot the HA host.
       /restart - restart the HA container.
-      /pool - request pool status.
+      /status - request home status report.
+      /pool - request pool status report.
       /weather - request a weather report.
       /usage - rolling 24hr internet usage.
 

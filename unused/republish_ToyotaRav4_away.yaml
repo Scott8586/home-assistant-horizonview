@@ -1,19 +1,19 @@
-id: 'republishAudiQ7Home'
-alias: 'L: Audi Q7 Home to MQTT'
+id: 'republishToyotaRav4Away'
+alias: 'L: Toyota Rav4 Away to MQTT'
 trigger:
   platform: state
-  entity_id: device_tracker.audi_q7_8ff5
-  to: 'home'
+  entity_id: device_tracker.toyota_rav4_8ae8
+  to: 'not_home'
 action:
   - service: mqtt.publish
     data_template:
-      topic: 'location/car/audi_q7_gps'
+      topic: 'location/car/toyota_rav4_gps'
       retain: false
       payload:
               '
                   {"battery_level":100,
-                  "longitude":{{ states.zone.horizon_view.attributes.longitude }},
-                  "latitude":{{ states.zone.horizon_view.attributes.latitude }},
+                  "longitude":0.0,
+                  "latitude":0.0,
                   "gps_accuracy":100,
                   "tst": {{ as_timestamp(now()) | int }},
                   "_type":"location",

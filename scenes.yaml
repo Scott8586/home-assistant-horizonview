@@ -9,6 +9,9 @@
 - name: Away
   entities:
     switch.hot_water_circ_pump: "on"
+- name: Night
+  entities:
+    switch.hot_water_circ_pump: "off"
 - name: Vacation
   entities:
     switch.zb_office_a_v: "off"

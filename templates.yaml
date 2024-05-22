@@ -1,4 +1,4 @@
-binary_sensor:
+- binary_sensor:
   - name: 'Both Home'
     unique_id: both_home
     state: "{{ is_state('person.scott', 'home') and is_state('person.stephanie', 'home') }}"
@@ -15,12 +15,22 @@ binary_sensor:
         {%- endif %}
       {%- endfor %}
       {{ iif(counter.total > 0, true, false) }}
+  - name: 'Door Open'
+    unique_id: door_open 
+    state: >
+      {%- set counter = namespace(total=0) %}
+      {%- for sensor in expand('group.door_sensors') | map(attribute='last_changed') %}
+        {%- if now() - sensor < timedelta(seconds=600) %}
+          {%- set counter.total = counter.total + 1 %}
+        {%- endif %}
+      {%- endfor %}
+      {{ iif(counter.total > 0, true, false) }}
   - name: 'FamilyRoom Right Red On'
     unique_id: familyroom_right_red_on
     state: >-
       {% set cutoff = 0.75 %}
       {% set elevation_cutoff = 0 %}
-      {% set power = states('sensor.eagle_200_meter_power_demand') | float(default=0) %}
+      {% set power = states('sensor.envoy_net_meter_power_demand') | float(default=0) %}
       {% set solar_elevation = state_attr('sun.sun', 'elevation') | int(default=0) %}
       {{ power > cutoff and solar_elevation > elevation_cutoff }}
   - name: 'FamilyRoom Right Yellow On'
@@ -28,7 +38,7 @@ binary_sensor:
     state: >-
       {% set cutoff = 1.0 %}
       {% set elevation_cutoff = 0 %} 
-      {% set power = states('sensor.eagle_200_meter_power_demand') | float(default=0) | abs %}
+      {% set power = states('sensor.envoy_net_meter_power_demand') | float(default=0) | abs %}
       {% set solar_elevation = state_attr('sun.sun', 'elevation') | int(default=0) %}
       {{ power < cutoff and solar_elevation > elevation_cutoff }}
   - name: 'FamilyRoom Right Green On'
@@ -36,7 +46,7 @@ binary_sensor:
     state: >-
       {% set cutoff = -0.75 %}
       {% set elevation_cutoff = 0 %}
-      {% set power = states('sensor.eagle_200_meter_power_demand') | float(default=0) %}
+      {% set power = states('sensor.envoy_net_meter_power_demand') | float(default=0) %}
       {% set solar_elevation = state_attr('sun.sun', 'elevation') | int(default=0) %}
       {{ power < cutoff and solar_elevation > elevation_cutoff }}
   - name: 'FamilyRoom Left Red On'
@@ -77,38 +87,47 @@ binary_sensor:
       {% set pool_heat = states('climate.pentair_0d_ce_47_pool_heat') %}
       {% set spa_heat = states('climate.pentair_0d_ce_47_spa_heat') %}
       {{ (pool_temp >= pool_cutoff and pool_pump == "on" and pool_heat == "heat") or (spa_temp >= spa_cutoff and spa_pump == "on" and spa_heat == "heat") }}
+  - name: 'Sun Down'
+    unique_id: sun_down
+    state: >-
+      {{ is_state('sun.sun', 'below_horizon') }}
   - name: 'Hot Water Recirc On'
     unique_id: hot_water_recirc_on
     state: >-
-      {% set home = "Home" %}
-      {% set house_mode = states('sensor.vera_house_mode') %}
-      {% set recirc_pump = states('schedule.recirc_pump') %}
+      {% set home = 'Home' %}
+      {% set house_mode = states('input_select.house_mode') %}
+      {% set recirc_pump = states('binary_sensor.recirc_pump') %}
       {{ recirc_pump == "on" and house_mode == home }}
   - name: 'Bright Light'
     unique_id: bright_light
     state: >-
-      {% set solar_radiation_cutoff = 150 %}
-      {% set uv_radiation_cutoff = 1.0 %}
-      {% set solar_radiation = states('sensor.weewx_solar_radiation') | int(default=0) %}
-      {% set uv_radiation = states('sensor.weewx_uv_radiation') | int(default=0) %}
+      {% set solar_radiation_cutoff = 50 %}
+      {% set solar_radiation = states('sensor.gw1000_solarradiation') | int(default=0) %}
       {% set current_bright =  states('binary_sensor.bright_light') %}
       {% set sun_up = is_state('sun.sun', 'above_horizon') %}
-      {{ sun_up and (current_bright == "on" or (solar_radiation > solar_radiation_cutoff and uv_radiation > uv_radiation_cutoff)) }}
+      {{ sun_up and (current_bright == "on" or solar_radiation > solar_radiation_cutoff) }}
   - name: 'All Shades Down'
     unique_id: all_shades_down
     state: >-
-      {% set elevation_cutoff = 5 %}
+      {% set elevation_cutoff = states('input_number.solar_elevation_cutoff') | int(default=0) %}
       {% set solar_elevation = state_attr('sun.sun', 'elevation') | int(default=0) %}
       {% set current_bright =  states('binary_sensor.bright_light') %}
       {{ solar_elevation > elevation_cutoff and current_bright == "on" }}
   - name: 'All Shades Up'
     unique_id: all_shades_up
     state: >-
-      {% set elevation_cutoff = 3 %}
-      {% set home = "Home" %}
+      {% set elevation_cutoff = states('input_number.solar_elevation_cutoff') | int(default=0) %}
+      {% set home = 'Home' %}
       {% set solar_elevation = state_attr('sun.sun', 'elevation') | int(default=0) %}  
-      {% set house_mode = states('sensor.vera_house_mode') %}
+      {% set house_mode = states('input_select.house_mode') %}
       {{ solar_elevation < elevation_cutoff and house_mode == home }}
+  - name: 'Art Lights On'
+    unique_id: art_lights_on
+    state: >-
+      {% set home = 'Home' %}
+      {% set house_mode = states('input_select.house_mode') %}
+      {% set art_lights = states('schedule.art_lights') %}
+      {{ art_lights == "on" and house_mode == home }}
   - name: 'Cellar Alert'
     unique_id: cellar_alert
     state: >-
@@ -116,9 +135,12 @@ binary_sensor:
       {% set high_temp = 60 %}
       {% set low_humid = 50 %}
       {% set high_humid = 75 %}
-      {% set cellar_temp = states('sensor.weewx_cellar_temperature') | int(default=0) %}
-      {% set cellar_humid = states('sensor.weewx_cellar_humidity') | int(default=0) %}
-      {{ cellar_temp < low_temp or cellar_temp > high_temp or cellar_humid < low_humid or cellar_humid > high_humid }}
+      {% set cellar_temp = states('sensor.gw1000_temp2') | int(default=0) %}
+      {% set cellar_humid = states('sensor.gw1000_humidity2') | int(default=0) %}
+      {{ (cellar_temp != 0 and cellar_temp < low_temp) or
+         (cellar_temp !=0 and cellar_temp > high_temp) or
+         (cellar_humid !=0 and cellar_humid < low_humid) or 
+         (cellar_humid !=0 and cellar_humid > high_humid) }}
   - name: 'Upstairs HVAC Status'
     unique_id: upstairs_hvac_status
     state: >-
@@ -143,15 +165,19 @@ binary_sensor:
       {{ water_heater_rate_of_change > heating_rate_of_change }}
   - name: 'Guest1 Bath Status'
     unique_id: guest1_bath_status
-    state: "{{ states('sensor.guest1_bath_set_temperature') != '41' }}"
+    state: "{{ states('climate.guest_1') != 'off' }}"
   - name: 'Guest2 Bath Status'
     unique_id: guest2_bath_status
-    state: "{{ states('sensor.guest2_bath_set_temperature') != '41' }}"
+    state: "{{ states('climate.guest_2') != 'off' }}"
   - name: 'Master Bath Status'
     unique_id: master_bath_status
-    state: "{{ states('sensor.master_bath_set_temperature') != '41' }}"
+    state: "{{ states('climate.master_bath') != 'off' }}"
+  - name: Main Garage Door
+    unique_id: main_garage_door
+    device_class: garage_door
+    state: "{{ states('binary_sensor.garage_tilt_94') }}"
 
-sensor:
+- sensor:
   - name: 'Grid Import Power'
     unique_id: grid_import_power
     icon: mdi:transmission-tower
@@ -179,45 +205,41 @@ sensor:
     unit_of_measurement: kWh
     device_class: energy
     state: "{{ (states('sensor.envoy_lifetime_energy_consumption') | float(default=0) - states('sensor.envoy_lifetime_energy_production') | float(default=0) ) / 1000.0 }}"
-  - name: Guest1 Floor Power
-    unique_id: guest1_floor_power
-    unit_of_measurement: W                                                                                                                                         
-    device_class: power                                                                                                                                            
+  - name: "Current Energy Tariff"
+    unique_id: current_energy_tariff
+    icon: mdi:currency-usd
+    unit_of_measurement: "USD/kWh"
     state: >-
-      {% if state_attr('climate.guest_1', 'hvac_action') != "idle" %}
-        347
+      {% set tariff = { "offpeak": 0.46052, "peak": 0.49913 } %}
+      {% set dow = now().strftime('%A') %}
+
+      {% if dow == "Saturday" or dow == "Sunday" %}
+        {{ tariff.offpeak }}
       {% else %}
-        0
+        {% if (now().hour >= 17) and (now().hour <= 20) %}
+          {{ tariff.peak }}
+        {% else %}
+          {{ tariff.offpeak }}
+        {% endif %}  
       {% endif %}
-  - name: Guest2 Floor Power
-    unique_id: guest2_floor_power
-    unit_of_measurement: W                                                                                                                                         
-    device_class: power                                                                                                                                            
+  - name: "South Roof Power"
+    unique_id: south_roof_power
+    unit_of_measurement: W
     state: >-
-      {% if state_attr('climate.guest_2', 'hvac_action') != "idle" %}
-        330
-      {% else %}
-        0
-      {% endif %}
-  - name: Master Floor Power
-    unique_id: master_floor_power
-    unit_of_measurement: W                                                                                                                                         
-    device_class: power                                                                                                                                            
+      {% set p_list = area_entities('South Roof') %}
+      {{ expand(p_list | select('has_value')) | map(attribute='state') | map('float') | sum }}  
+  - name: "West Roof Power"
+    unique_id: west_roof_power
+    unit_of_measurement: W
     state: >-
-      {% if state_attr('climate.master_bath', 'hvac_action') != "idle" %}
-        832
-      {% else %}
-        0
-      {% endif %}
-  - name: 2G Wifi Count
-    unique_id: 2g_wifi_count
-    state: "{{ states.device_tracker | selectattr('state', 'eq', 'home') | selectattr('attributes.radio_proto', 'defined') | selectattr('attributes.radio_proto', 'eq', 'ng') | list | count }}"
-  - name: 5G Wifi Count
-    unique_id: 5g_wifi_count
-    state: "{{ states.device_tracker | selectattr('state', 'eq', 'home') | selectattr('attributes.radio_proto', 'defined') | selectattr('attributes.radio_proto', 'search', '(ac|na)') | list | count }}"
-  - name: Guest Wifi Count
-    unique_id: guest_wifi_count
-    state: "{{ states.device_tracker | selectattr('state', 'eq', 'home') | selectattr('attributes.radio_proto', 'defined') | selectattr('attributes.essid', 'eq', 'guest-vistasea') | list | count }}"
+      {% set p_list = area_entities('West Roof') %}
+      {{ expand(p_list | select('has_value')) | map(attribute='state') | map('float') | sum }}
+  - name: "East Roof Power" 
+    unique_id: east_roof_power
+    unit_of_measurement: W
+    state: >-
+      {% set p_list = area_entities('East Roof') %}
+      {{ expand(p_list | select('has_value')) | map(attribute='state') | map('float') | sum }}
   - name: Audi A6 Distance
     unique_id: audi_a6_distance           
     state: "{{ state_attr('sensor.audi_a6_ibeacon_room_presence', 'distance') }}"
@@ -237,6 +259,10 @@ sensor:
   - name: "Pentair Spa Temperature"
     unique_id: pentair_spa_temperature
     state: "{{ state_attr('climate.pentair_0d_ce_47_spa_heat', 'current_temperature') }}"
+    unit_of_measurement: "°F" 
+  - name: "Pentair Heater Set Temperature"
+    unique_id: pentair_heater_set_temperature
+    state: "{{ state_attr('climate.pentair_0d_ce_47_pool_heat', 'temperature') }}"
     unit_of_measurement: "°F"                                                                              
   - name: "Internet In Mbps"
     unique_id: internet_in_mbps
@@ -270,18 +296,18 @@ sensor:
 #    unique_id: chiller_runtime_yesterday
 #    unit_of_measurement: '%'
 #    state: "{{ ((states('sensor.tasmota5_energy_yesterday') | float) / (0.930 * 24) * 100.0) | round(2) }}"
-  - name: 'Guest1 Bath Set Temperature'
-    unique_id: guest1_bath_set_temperature
-    state: "{{ state_attr('climate.guest_1', 'temperature') }}"
-    unit_of_measurement: "°F"                                                                              
-  - name: 'Guest2 Bath Set Temperature'
-    unique_id: guest2_bath_set_temperature
-    state: "{{ state_attr('climate.guest_2', 'temperature') }}"
-    unit_of_measurement: "°F"                                                                              
-  - name: 'Master Bath Set Temperature'
-    unique_id: master_bath_set_temperature
-    state: "{{ state_attr('climate.master_bath', 'temperature') }}"
-    unit_of_measurement: "°F"                                                                              
+  # - name: 'Guest1 Bath Set Temperature'
+  #   unique_id: guest1_bath_set_temperature
+  #   state: "{{ state_attr('climate.guest_1', 'temperature') }}"
+  #   unit_of_measurement: "°F"                                                                              
+  # - name: 'Guest2 Bath Set Temperature'
+  #   unique_id: guest2_bath_set_temperature
+  #   state: "{{ state_attr('climate.guest_2', 'temperature') }}"
+  #   unit_of_measurement: "°F"                                                                              
+  # - name: 'Master Bath Set Temperature'
+  #   unique_id: master_bath_set_temperature
+  #   state: "{{ state_attr('climate.master_bath', 'temperature') }}"
+  #   unit_of_measurement: "°F"                                                                              
   - name: 'Downstairs Temperature'
     unique_id: downstairs_temperature
     state: "{{ state_attr('climate.downstairs', 'current_temperature') }}"
@@ -290,116 +316,137 @@ sensor:
     unique_id: upstairs_temperature
     state: "{{ state_attr('climate.main_floor', 'current_temperature') }}"
     unit_of_measurement: "°F"                                                                              
-  - name: WeeWx Weather Update
-    unique_id: weewx_weather_update
-    state: "{{ states.sensor.weewx_weather.attributes['time'] }}"
-  - name: WeeWx Outside Temperature
-    unique_id: weewx_outside_temperature
-    unit_of_measurement: '°F'
-    state: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"
-  - name: WeeWx Outside Dewpoint                                                                       
-    unique_id: weewx_outside_dewpoint                                                                                 
-    unit_of_measurement: "°F"                                                                             
-    state: "{{ states.sensor.weewx_weather.attributes.current['dewpoint'] }}"                        
-  - name: WeeWx Outside Windchill
-    unique_id: weewx_outside_windchill                                                                                 
-    unit_of_measurement: "°F"                                                                              
-    state: "{{ states.sensor.weewx_weather.attributes.current['windchill'] }}"                        
-  - name: WeeWx Outside Heat Index
-    unique_id: weewx_outside_heat_index                                                                                 
-    unit_of_measurement: "°F"                                                                              
-    state: "{{ states.sensor.weewx_weather.attributes.current['heatindex'] }}"                        
-  - name: WeeWx Rain Rate                                            
-    unique_id: weewx_rain_rate
-    unit_of_measurement: "in/h"   
-    state: "{{ states.sensor.weewx_weather.attributes.current['rainRate'] }}"
-  - name: WeeWx Rain Day              
-    unique_id: weewx_rain_day
-    state: "{{ states.sensor.weewx_weather.attributes.current['rainDaySum'] }}"
-    unit_of_measurement: "in"
-  - name: WeeWx Rain Year   
-    unique_id: weewx_rain_year
-    unit_of_measurement: "in"
-    state: "{{ states.sensor.weewx_weather.attributes.current['rainYearSum'] }}"
-  - name: WeeWx Office Temperature
-    unique_id: weewx_office_temperature
-    unit_of_measurement: '°F'
-    state: "{{ states.sensor.weewx_weather.attributes.current['inTemp'] }}"
-  - name: 'WeeWx Garage Temperature'
-    unique_id: weewx_garage_temperature
-    state: "{{ states.sensor.weewx_weather.attributes.current['extraTemp1'] }}"                        
-    unit_of_measurement: "°F"                                                                              
-  - name: 'WeeWx Cellar Temperature'
-    unique_id: weewx_cellar_temperature
-    state: "{{ states.sensor.weewx_weather.attributes.current['extraTemp2'] }}"                        
-    unit_of_measurement: "°F"                                                                              
-  - name: 'WeeWx Master Temperature'
-    unique_id: weewx_master_temperature
-    state: "{{ states.sensor.weewx_weather.attributes.current['extraTemp3'] }}"                        
-    unit_of_measurement: "°F"                                                                              
-  - name: 'WeeWx Guest Temperature'
-    unique_id: weewx_guest_temperature
-    state: "{{ states.sensor.weewx_weather.attributes.current['extraTemp4'] }}"                        
-    unit_of_measurement: "°F"                                                                              
-  - name: 'WeeWx Outside Humidity'
-    unique_id: weewx_outside_humidity
-    icon: mdi:water-percent 
-    unit_of_measurement: '%'
-    state: "{{ states.sensor.weewx_weather.attributes.current['outHumidity'] }}"
-  - name: WeeWx Office Humidity
-    unique_id: weewx_office_humidity
-    icon: mdi:water-percent 
-    unit_of_measurement: '%'
-    state: "{{ states.sensor.weewx_weather.attributes.current['inHumidity'] }}"
-  - name: 'WeeWx Garage Humidity'
-    unique_id: weewx_garage_humidity
-    icon: mdi:water-percent 
-    unit_of_measurement: '%'
-    state: "{{ states.sensor.weewx_weather.attributes.current['extraHumid1'] }}"                 
-  - name: 'WeeWx Cellar Humidity'
-    unique_id: weewx_cellar_humidity
-    icon: mdi:water-percent 
-    unit_of_measurement: '%'
-    state: "{{ states.sensor.weewx_weather.attributes.current['extraHumid2'] }}"                 
-  - name: 'WeeWx Master Humidity'
-    unique_id: weewx_master_humidity
-    icon: mdi:water-percent 
-    unit_of_measurement: '%'
-    state: "{{ states.sensor.weewx_weather.attributes.current['extraHumid3'] }}"                 
-  - name: 'WeeWx Guest Humidity'
-    unique_id: weewx_guest_humidity
-    icon: mdi:water-percent 
-    unit_of_measurement: '%'
-    state: "{{ states.sensor.weewx_weather.attributes.current['extraHumid4'] }}"                 
-  - name: WeeWx Wind Speed  
-    unique_id: weewx_wind_speed
-    icon: mdi:weather-windy 
-    unit_of_measurement: 'mph'
-    state: "{{ states.sensor.weewx_weather.attributes.current['windSpeed'] }}"
-  - name: WeeWx Wind Direction Ordinal
-    unique_id: weewx_wind_direction_ordinal
-    icon: mdi:weather-windy 
-    state: "{{ states.sensor.weewx_weather.attributes.current['windDirText'] }}"
-  - name: WeeWx Cloudbase   
-    unique_id: weewx_cloudbase                                                             
-    unit_of_measurement: "ft"
-    state: "{{ states.sensor.weewx_weather.attributes.current['cloudbase'] }}"   
-  - name: WeeWx Solar Altitude
-    unique_id: weewx_solar_altitude
-    unit_of_measurement: '°'
-    state: "{{ states.sensor.weewx_weather.attributes.almanac.sun['altitude'] }}"
-  - name: WeeWx Solar Radiation
-    unique_id: weewx_solar_radiation
-    state: "{{ states.sensor.weewx_weather.attributes.current['solarRadiation'] }}"   
-    unit_of_measurement: "Wpm2"
-  - name: 'WeeWx UV Radiation'
-    unique_id: weewx_uv_radiation                                                             
-    state: "{{ states.sensor.weewx_weather.attributes.current['UV'] }}"   
-    unit_of_measurement: "Wpm2"                                                    
-  - name: 'WeeWx PM25'
-    unique_id: weewx_pm25
-    state: "{{ states.sensor.weewx_weather.attributes.current['pm2_5'] }}"   
-    unit_of_measurement: "ug/m3"
+  # - name: WeeWx Weather Update
+  #   unique_id: weewx_weather_update
+  #   state: "{{ states.sensor.weewx_weather.attributes['time'] }}"
+  # - name: WeeWx Outside Temperature
+  #   unique_id: weewx_outside_temperature
+  #   unit_of_measurement: '°F'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"
+  # - name: WeeWx Outside Dewpoint                                                                       
+  #   unique_id: weewx_outside_dewpoint                                                                                 
+  #   unit_of_measurement: "°F"                                                                             
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['dewpoint'] }}" 
+  # - name: WeeWx Barometer
+  #   unique_id: weewx_barometer
+  #   unit_of_measurement: "in"
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['barometer'] }}" 
+  # - name: WeeWx Outside Windchill
+  #   unique_id: weewx_outside_windchill                                                                                 
+  #   unit_of_measurement: "°F"                                                                              
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['windchill'] }}"                        
+  # - name: WeeWx Outside Heat Index
+  #   unique_id: weewx_outside_heat_index                                                                                 
+  #   unit_of_measurement: "°F"                                                                              
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['heatindex'] }}"                        
+  # - name: WeeWx Rain Rate                                            
+  #   unique_id: weewx_rain_rate
+  #   unit_of_measurement: "in/h"   
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['rainRate'] }}"
+  # - name: WeeWx Rain Day              
+  #   unique_id: weewx_rain_day
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['rainDaySum'] }}"
+  #   unit_of_measurement: "in"
+  # - name: WeeWx Rain Year   
+  #   unique_id: weewx_rain_year
+  #   unit_of_measurement: "in"
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['rainYearSum'] }}"
+  # - name: WeeWx Office Temperature
+  #   unique_id: weewx_office_temperature
+  #   unit_of_measurement: '°F'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['inTemp'] }}"
+  # - name: 'WeeWx Garage Temperature'
+  #   unique_id: weewx_garage_temperature
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['extraTemp1'] }}"                        
+  #   unit_of_measurement: "°F"                                                                              
+  # - name: 'WeeWx Cellar Temperature'
+  #   unique_id: weewx_cellar_temperature
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['extraTemp2'] }}"                        
+  #   unit_of_measurement: "°F"                                                                              
+  # - name: 'WeeWx Master Temperature'
+  #   unique_id: weewx_master_temperature
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['extraTemp3'] }}"                        
+  #   unit_of_measurement: "°F"                                                                              
+  # - name: 'WeeWx Guest Temperature'
+  #   unique_id: weewx_guest_temperature
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['extraTemp4'] }}"                        
+  #   unit_of_measurement: "°F"                                                       
+  # - name: 'WeeWx Soil Temperature'
+  #   unique_id: weewx_soil_temperature
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['soilTemp1'] }}"                        
+  #   unit_of_measurement: "°F"                                                                            
+  # - name: 'WeeWx Outside Humidity'
+  #   unique_id: weewx_outside_humidity
+  #   icon: mdi:water-percent 
+  #   unit_of_measurement: '%'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['outHumidity'] }}"
+  # - name: WeeWx Office Humidity
+  #   unique_id: weewx_office_humidity
+  #   icon: mdi:water-percent 
+  #   unit_of_measurement: '%'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['inHumidity'] }}"
+  # - name: 'WeeWx Garage Humidity'
+  #   unique_id: weewx_garage_humidity
+  #   icon: mdi:water-percent 
+  #   unit_of_measurement: '%'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['extraHumid1'] }}"                 
+  # - name: 'WeeWx Cellar Humidity'
+  #   unique_id: weewx_cellar_humidity
+  #   icon: mdi:water-percent 
+  #   unit_of_measurement: '%'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['extraHumid2'] }}"                 
+  # - name: 'WeeWx Master Humidity'
+  #   unique_id: weewx_master_humidity
+  #   icon: mdi:water-percent 
+  #   unit_of_measurement: '%'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['extraHumid3'] }}"                 
+  # - name: 'WeeWx Guest Humidity'
+  #   unique_id: weewx_guest_humidity
+  #   icon: mdi:water-percent 
+  #   unit_of_measurement: '%'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['extraHumid4'] }}"
+  # - name: 'WeeWx Soil Moisture 1'
+  #   unique_id: weewx_soil_moisture_1
+  #   icon: mdi:water-percent 
+  #   unit_of_measurement: '%'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['soilMoist1'] }}"     
+  # - name: 'WeeWx Soil Moisture 2'
+  #   unique_id: weewx_soil_moisture_2
+  #   icon: mdi:water-percent 
+  #   unit_of_measurement: '%'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['soilMoist2'] }}"
+  # - name: WeeWx Wind Speed  
+  #   unique_id: weewx_wind_speed
+  #   icon: mdi:weather-windy 
+  #   unit_of_measurement: 'mph'
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['windSpeed'] }}"
+  # - name: WeeWx Wind Direction Ordinal
+  #   unique_id: weewx_wind_direction_ordinal
+  #   icon: mdi:weather-windy 
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['windDirText'] }}"
+  # - name: WeeWx Cloudbase   
+  #   unique_id: weewx_cloudbase                                                             
+  #   unit_of_measurement: "ft"
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['cloudbase'] }}"   
+  # - name: WeeWx Solar Altitude
+  #   unique_id: weewx_solar_altitude
+  #   unit_of_measurement: '°'
+  #   state: "{{ states.sensor.weewx_weather.attributes.almanac.sun['altitude'] }}"
+  # - name: WeeWx Solar Radiation
+  #   unique_id: weewx_solar_radiation
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['solarRadiation'] }}"
+  #   state_class: "measurement"
+  #   unit_of_measurement: "Wpm2"
+  # - name: 'WeeWx UV Radiation'
+  #   unique_id: weewx_uv_radiation                                                             
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['UV'] }}"
+  #   state_class: "measurement"
+  #   unit_of_measurement: "Wpm2"                                                    
+  # - name: 'WeeWx PM25'
+  #   unique_id: weewx_pm25
+  #   state: "{{ states.sensor.weewx_weather.attributes.current['pm2_5'] }}"
+  #   state_class: "measurement"
+  #   unit_of_measurement: "ug/m3"
   - name: "Solar Azimuth"
     state: "{{ state_attr('sun.sun', 'azimuth') }}"
     unit_of_measurement: "°"
@@ -417,15 +464,15 @@ sensor:
     state: "{{ now().strftime('%a, %b %e') + now().strftime(' %-I:%M %p') }}"
   - name: Kitchen Fridge Sensor Age
     unique_id: kitchen_fridge_sensor_age
-    state: "{{ (states.sensor.time.last_changed - states.sensor.kitchen_fridge_temperature.last_changed).total_seconds() | round(0) }}"
+    state: "{{ (states.sensor.time.last_changed - states.sensor.xi_kitchen_fridge_97ce_temperature.last_changed).total_seconds() | round(0) }}"
     unit_of_measurement: "Seconds"
   - name: Beverage Cooler Sensor Age
     unique_id: beverage_cooler_sensor_age
-    state: "{{ (states.sensor.time.last_changed - states.sensor.beverage_cooler_temperature.last_changed).total_seconds() | round(0) }}"
+    state: "{{ (states.sensor.time.last_changed - states.sensor.xi_beverage_cooler_0444_temperature.last_changed).total_seconds() | round(0) }}"
     unit_of_measurement: "Seconds"
   - name: Downstairs Minifridge Sensor Age
     unique_id: downstairs_minifridge_sensor_age
-    state: "{{ (states.sensor.time.last_changed - states.sensor.downstairs_minifridge_temperature.last_changed).total_seconds() | round(0) }}"
+    state: "{{ (states.sensor.time.last_changed - states.sensor.xi_downstairs_minifridge_1690_temperature.last_changed).total_seconds() | round(0) }}"
     unit_of_measurement: "Seconds"
   - name: 'Air Quality Index'
     unit_of_measurement: "AQI"
@@ -433,22 +480,109 @@ sensor:
       {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
         {{ (((Ih - Il)/(BPh - BPl)) * (Cp - BPl) + Il)|round }}
       {%- endmacro %}
-      {% if (states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)) > 1000 %}
+      {% if (states.sensor.gw1000_pm25_ch1|float(default=0)) > 1000 %}
         invalid
-      {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)) > 350.5 %}
-        {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)), 500.0, 401.0, 500.0, 350.5) }}
-      {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)) > 250.5 %}
-        {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)), 400.0, 301.0, 350.4, 250.5) }}
-      {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)) > 150.5 %}
-        {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)), 300.0, 201.0, 250.4, 150.5) }}
-      {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)) > 55.5 %}
-        {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)), 200.0, 151.0, 150.4, 55.5) }}
-      {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)) > 35.5 %}
-        {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)), 150.0, 101.0, 55.4, 35.5) }}
-      {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)) > 12.1 %}
-        {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)), 100.0, 51.0, 35.4, 12.1) }}
-      {% elif (states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)) >= 0.0 %}
-        {{ calcAQI((states.sensor.weewx_weather.attributes.current['pm2_5']|float(default=0)), 50.0, 0.0, 12.0, 0.0) }}
+      {% elif (states.sensor.gw1000_pm25_ch1|float(default=0)) > 350.5 %}
+        {{ calcAQI((states.sensor.gw1000_pm25_ch1|float(default=0)), 500.0, 401.0, 500.0, 350.5) }}
+      {% elif (states.sensor.gw1000_pm25_ch1|float(default=0)) > 250.5 %}
+        {{ calcAQI((sensor.gw1000_pm25_ch1|float(default=0)), 400.0, 301.0, 350.4, 250.5) }}
+      {% elif (states.sensor.gw1000_pm25_ch1|float(default=0)) > 150.5 %}
+        {{ calcAQI((states.sensor.gw1000_pm25_ch1|float(default=0)), 300.0, 201.0, 250.4, 150.5) }}
+      {% elif (states.sensor.gw1000_pm25_ch1|float(default=0)) > 55.5 %}
+        {{ calcAQI((states.sensor.gw1000_pm25_ch1|float(default=0)), 200.0, 151.0, 150.4, 55.5) }}
+      {% elif (states.sensor.gw1000_pm25_ch1|float(default=0)) > 35.5 %}
+        {{ calcAQI((states.sensor.gw1000_pm25_ch1|float(default=0)), 150.0, 101.0, 55.4, 35.5) }}
+      {% elif (states.sensor.gw1000_pm25_ch1|float(default=0)) > 12.1 %}
+        {{ calcAQI((states.sensor.gw1000_pm25_ch1|float(default=0)), 100.0, 51.0, 35.4, 12.1) }}
+      {% elif (states.sensor.gw1000_pm25_ch1|float(default=0)) >= 0.0 %}
+        {{ calcAQI((states.sensor.gw1000_pm25_ch1|float(default=0)), 50.0, 0.0, 12.0, 0.0) }}
       {% else %}
         invalid
       {% endif %}
+  - name: "Washer Door Lock"
+    unique_id: washer_door_lock
+    state: "{{ state_attr('sensor.washer','door_lock') }}"
+
+#      mini_washer_door_lock:
+#        friendly_name: "Mini Washer Door Lock"
+#        value_template: "{{ state_attr('sensor.mini_washer','door_lock') }}"
+
+#      dishwasher_door_open:
+#        friendly_name: "Dish Washer Door Lock"
+#        value_template: "{{ state_attr('sensor.dishwasher','door_open') }}"
+
+  - name: "Washer Time Display"
+    unique_id: washer_time_display
+    state: >
+      {% if is_state('sensor.washer_run_state', '-') %}
+      {% elif is_state('sensor.washer_run_state', 'unavailable') %}
+      {% elif is_state('sensor.washer_run_state', 'Standby') %}
+        -:--
+      {% else %}
+        {{ state_attr("sensor.washer","remain_time").split(":")[:-1] | join(':') }}   
+      {% endif %}
+
+#      mini_washer_time_display:
+#        friendly_name: "Mini Washer Time Display"
+#        value_template: >
+#          {% if is_state('sensor.mini_washer_run_state', '-') %}
+#          {% elif is_state('sensor.mini_washer_run_state', 'unavailable') %}
+#          {% elif is_state('sensor.mini_washer_run_state', 'Standby') %}
+#            -:--
+#          {% else %}
+#            {{ state_attr("sensor.mini_washer","remain_time").split(":")[:-1] | join(':') }}
+#          {% endif %}
+  
+  - name: "Dryer Time Display"
+    unique_id: dryer_time_display
+    state: >
+      {% if is_state('sensor.dryer_run_state', '-') %}
+      {% elif is_state('sensor.dryer_run_state', 'unavailable') %}
+      {% elif is_state('sensor.dryer_run_state', 'Standby') %}
+        -:--
+      {% else %}
+        {{ state_attr("sensor.dryer","remain_time").split(":")[:-1] | join(':') }}
+      {% endif %}
+
+#      dishwasher_time_display:
+#        friendly_name: "Dish Washer Time Display"
+#        value_template: >
+#          {% if is_state('sensor.dishwasher_run_state', '-') %}
+#          {% elif is_state('sensor.dishwasher_run_state', 'unavailable') %}
+#          {% elif is_state('sensor.dishwasher_run_state', 'Standby') %}
+#            -:--
+#          {% else %}
+#            {{ state_attr("sensor.dishwasher","remain_time").split(":")[:-1] | join(':') }}
+#          {% endif %}
+
+  - name: "Blank Sensor"
+    unique_id: blank_sensor
+    state: ""
+
+- trigger:
+  - platform: mqtt
+    topic: "birdnet/event"
+  - platform: time
+    at: "00:00:00"
+    id: reset
+  sensor: 
+    - unique_id: c893533c-3c06-4ebe-a5bb-da833da0a947
+      name: BirdNET Intake
+      state: >
+          {% if trigger.id == 'reset' %}
+            {{ now() }}
+          {% else %}
+            {{ today_at(trigger.payload_json.Time) }}
+          {% endif %}
+      attributes: 
+        bird_events: >
+          {% if trigger.id == 'reset' %}
+            {{ [] }}
+          {% else %}
+            {% set time = trigger.payload_json.Time %}
+            {% set name = trigger.payload_json.CommonName %}
+            {% set confidence = trigger.payload_json.Confidence|round(2) * 100 ~ '%' %}
+            {% set current = this.attributes.get('bird_events', []) %}
+            {% set new = dict(time=time, name=name, confidence=confidence) %}
+            {{ current + [new] }}
+          {% endif %}

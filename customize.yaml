@@ -59,3 +59,15 @@ sensor.pentair_0d_ce_47_pool_pump_current_energy:
   friendly_name: Pool Pump Energy
   icon: mdi:chart-histogram
   Area: Pool
+device_tracker.audi_a6_gps:
+  friendly_name: Audi A6
+  icon: mdi:car
+device_tracker.audi_q7_gps:
+  friendly_name: Audi Q7
+  icon: mdi:car
+device_tracker.bmw_ix_gps:
+  friendly_name: BMW iX
+  icon: mdi:car
+device_tracker.toyota_rav4_gps:
+  friendly_name: Toyota Rav4
+  icon: mdi:car

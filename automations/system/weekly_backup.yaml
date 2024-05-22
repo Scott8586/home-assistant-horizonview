@@ -1,6 +1,5 @@
-# 36883ed7_remote_backup
 id: 'weeklybackup'         
-alias: "A: Weekly Snapshot"
+alias: "S: Weekly Backup"
 initial_state: 'on'
 trigger:        
   platform: time
@@ -10,9 +9,8 @@ condition:
   weekday:                       
     - sat                          
 action:                            
-- service: hassio.addon_start          
-  data:                                
-    addon: 36883ed7_remote_backup  
+- service: hassio.backup_full
+  data: {}
 - service: !secret telegram_notify                  
   data_template:                                
     message: "Home Assistant backed up"

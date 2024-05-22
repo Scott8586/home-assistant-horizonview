@@ -8,6 +8,6 @@ condition:
     value_template: '{{ "single" == trigger.payload_json.action }}'
 action:
   service: !secret telegram_notify
-  data_template:        
+  data:
     message: "N: Just testing - single button press"
 

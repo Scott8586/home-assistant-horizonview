@@ -2,45 +2,83 @@
 icon: mdi:thermometer-lines
 path: sensors
 cards:
-  - entities:
-      - entity: sensor.closet_temperature
-      - entity: sensor.closet_humidity
-    title: Machine Room BME280
-    type: entities
-  - entities:
-      - entity: sensor.pentair_0d_ce_47_air_temperature
-      - entity: sensor.pentair_pool_temperature
-      - entity: sensor.pentair_spa_temperature
-    title: Pool Temps
-    type: entities
-  - entities:
-      - entity: sensor.mancave_temperature
-      - entity: sensor.mancave_humidity
-      - entity: sensor.mancave_eco2
-      - entity: sensor.mancave_iaq
-    title: Man Cave BME680
-    type: entities
-  - entities:
-      - entity: sensor.office_temperature
-      - entity: sensor.office_humidity
-      - entity: sensor.office_eco2
-      - entity: sensor.office_iaq
-    title: Office BME680
-    type: entities
-  - entities:
-      - entity: sensor.family_room_temperature
-      - entity: sensor.family_room_humidity
-      - entity: sensor.family_room_eco2
-      - entity: sensor.family_room_iaq
-    title: Family Room BME680
-    type: entities
-  - entities:
-      - entity: sensor.garage_temperature
-      - entity: sensor.garage_humidity
-      - entity: sensor.garage_pressure
-      - entity: sensor.garage_sealevel_pressure
-    title: Garage BME280
-    type: entities
+  # - entities:
+  #     - entity: sensor.pentair_0d_ce_47_air_temperature
+  #     - entity: sensor.pentair_pool_temperature
+  #     - entity: sensor.pentair_spa_temperature
+  #   title: Pool Temps
+  #   type: entities
+  # - type: entities
+  #   title: Enviromental Sensors
+  #   entities:
+  #     - type: custom:multiple-entity-row
+  #       name: Family Room
+  #       entity: sensor.family_room_temperature
+  #       entities:
+  #         - entity: sensor.family_room_comfort_level
+  #           name: " "
+  #         - entity: sensor.family_room_humidity
+  #           name: humidity
+  #         - entity: sensor.family_room_iaq
+  #           name: IAQ
+  #     - type: custom:multiple-entity-row
+  #       name: Game Room
+  #       entity: sensor.game_room_temperature
+  #       entities:
+  #         - entity: sensor.game_room_comfort_level
+  #           name: " "
+  #         - entity: sensor.game_room_humidity
+  #           name: humidity
+  #         - entity: sensor.game_room_iaq
+  #           name: IAQ
+  #     - type: custom:multiple-entity-row
+  #       name: Office
+  #       entity: sensor.office_temperature
+  #       entities:
+  #         - entity: sensor.office_comfort_level
+  #           name: " "
+  #         - entity: sensor.office_humidity
+  #           name: humidity
+  #         - entity: sensor.office_iaq
+  #           name: IAQ
+  #     - type: custom:multiple-entity-row
+  #       name: Man Cave
+  #       entity: sensor.mancave_temperature
+  #       entities:
+  #         - entity: sensor.mancave_comfort_level
+  #           name: " "
+  #         - entity: sensor.mancave_humidity
+  #           name: humidity
+  #         - entity: sensor.mancave_iaq
+  #           name: IAQ
+  # - entities:
+  #     - entity: sensor.mancave_temperature
+  #     - entity: sensor.mancave_humidity
+  #     - entity: sensor.mancave_eco2
+  #     - entity: sensor.mancave_iaq
+  #   title: Man Cave BME680
+  #   type: entities
+  # - entities:
+  #     - entity: sensor.office_temperature
+  #     - entity: sensor.office_humidity
+  #     - entity: sensor.office_eco2
+  #     - entity: sensor.office_iaq
+  #   title: Office BME680
+  #   type: entities
+  # - entities:
+  #     - entity: sensor.family_room_temperature
+  #     - entity: sensor.family_room_humidity
+  #     - entity: sensor.family_room_eco2
+  #     - entity: sensor.family_room_iaq
+  #   title: Family Room BME680
+  #   type: entities
+  # - entities:
+  #     - entity: sensor.garage_temperature
+  #     - entity: sensor.garage_humidity
+  #     - entity: sensor.garage_pressure
+  #     - entity: sensor.garage_sealevel_pressure
+  #   title: Garage BME280
+  # type: entities
   - entities:
       - entity: switch.familyroom_left_red_led
       - entity: switch.familyroom_left_yellow_led
@@ -53,55 +91,86 @@ cards:
       - entity: switch.familyroom_right_green_led
     title: Familyroom Power LED
     type: entities
+  # - type: entities
+  #   title: Livingroom Flower
+  #   entities:
+  #     - entity: sensor.gameroom_flower_temperature
+  #     - entity: sensor.gameroom_flower_illuminance
+  # - type: entities
+  #   title: Growroom Flower
+  #   entities:
+  #     - entity: sensor.greenhouse_flower_temperature
+  #     - entity: sensor.greenhouse_flower_illuminance
   - type: entities
-    title: Greenhouse Mijia
+    title: Cooler Sensors
     entities:
-      - entity: sensor.greenhouse_mijia_temperature
-      - entity: sensor.greenhouse_mijia_humidity
+      - type: custom:multiple-entity-row
+        name: Beverage Cooler
+        entity: sensor.xi_beverage_cooler_0444_temperature
+        entities:
+          - entity: sensor.xi_beverage_cooler_0444_humidity
+            name: humidity
+      - type: custom:multiple-entity-row
+        name: Kitchen Fridge
+        entity: sensor.xi_kitchen_fridge_97ce_temperature
+        entities:
+          - entity: sensor.xi_kitchen_fridge_97ce_humidity
+            name: humidity
+      - type: custom:multiple-entity-row
+        name: Downstairs Minifridge
+        entity: sensor.xi_downstairs_minifridge_1690_temperature
+        entities:
+          - entity: sensor.xi_downstairs_minifridge_1690_humidity
+            name: humidity
   - type: entities
-    title: Growroom Mijia
+    title: Grow Sensors
     entities:
-      - entity: sensor.growroom_mijia_temperature
-      - entity: sensor.growroom_mijia_humidity
-  - type: entities
-    title: Livingroom Flower
-    entities:
-      - entity: sensor.gameroom_flower_temperature
-      - entity: sensor.gameroom_flower_illuminance
-  - type: entities
-    title: Growroom Flower
-    entities:
-      - entity: sensor.greenhouse_flower_temperature
-      - entity: sensor.greenhouse_flower_illuminance
-  - type: entities
-    title: Beverage Cooler
-    entities:
-      - entity: sensor.beverage_cooler_temperature
-      - entity: sensor.beverage_cooler_humidity
-  - type: entities
-    title: Kitchen Fridge
-    entities:
-      - entity: sensor.kitchen_fridge_temperature
-      - entity: sensor.kitchen_fridge_humidity
-  - type: entities
-    title: Downstairs Minifridge
-    entities:
-      - entity: sensor.downstairs_minifridge_temperature
-      - entity: sensor.downstairs_minifridge_humidity
+      - type: custom:multiple-entity-row
+        name: Growroom
+        entity: sensor.xi_growroom_e22f_temperature
+        entities:
+          - entity: sensor.xi_growroom_e22f_humidity
+            name: humidity
+      - type: custom:multiple-entity-row
+        name: Greenhouse
+        entity: sensor.xi_greenhouse_e0de_temperature
+        entities:
+          - entity: sensor.xi_greenhouse_e0de_humidity
+            name: humidity 
   - type: entities
     title: Pool Room Exhaust
     entities:
       - entity: sensor.pool_room_temperature
       - entity: sensor.pool_room_humidity
+  - entities:
+      - entity: sensor.closet_temperature
+      - entity: sensor.closet_humidity
+    title: Machine Room BME280
+    type: entities
   - type: custom:battery-state-card                                                    
-    title: Battery Levels                                                              
-    color_gradient:                                                                    
-      - red                                                                            
-      - yellow                                                                         
-      - green                                                                          
+    title: Xiaomi Battery Levels
+    secondary_info: "{last_changed}"
+    colors:
+      steps:                                                                    
+        - green                                                                           
+        - yellow                                                                         
+        - red
     entities:                                                                          
-      - entity: sensor.kitchen_fridge_battery                                         
-      - entity: sensor.beverage_cooler_battery                                       
-      - entity: sensor.downstairs_minifridge_battery                                     
-      - entity: sensor.greenhouse_mijia_battery                                       
-      - entity: sensor.growroom_mijia_battery                                         
+      - entity: sensor.xi_kitchen_fridge_97ce_battery                                         
+      - entity: sensor.xi_beverage_cooler_0444_battery                                       
+      - entity: sensor.xi_downstairs_minifridge_1690_battery                                     
+      - entity: sensor.xi_greenhouse_e0de_battery                                       
+      - entity: sensor.xi_growroom_e22f_battery                                         
+  - type: custom:battery-state-card                                                    
+    title: Zigbee Battery Levels
+    secondary_info: "{last_changed}"
+    colors:                                                                    
+      steps:
+        - green
+        - yellow                                                                         
+        - red                                                                          
+    entities:                                                                          
+      - entity: sensor.zb_aqara_button1_battery                                        
+      - entity: sensor.zb_smart_button1_battery                                     
+      - entity: sensor.zb_leak_sensor_battery                                   
+

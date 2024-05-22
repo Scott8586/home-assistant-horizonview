@@ -1,0 +1,27 @@
+# Help message      
+id: 'statusmessage'
+alias: "Status Message"
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/status'
+action:
+  service: !secret telegram_notify
+  data:
+    title: "Status:"
+    message: |
+      House mode: {{ state_translated('sensor.vera_house_mode') }}
+      Guest mode: {{ state_translated('input_boolean.guest_mode') }}
+      Scott: {{ state_translated('person.scott') }}
+      Steph: {{ state_translated('person.stephanie') }}
+      Audi Q7: {{ state_translated('device_tracker.audi_q7_8ff5') }}
+      BMW iX: {{ state_translated('device_tracker.bmw_ix_e907')}}
+      Out Temp :  {{ states('sensor.gw1000_temp', with_unit=True) }}
+      Out Humid: {{ states('sensor.gw1000_humidity', with_unit=True) }}
+      Out Dewpt: {{ states('sensor.gw1000_dewpoint', with_unit=True) }}
+      Upstairs: {{ states('climate.main_floor') }}
+      Downstairs: {{ states('climate.downstairs') }}
+      Master Bath: {{ states('climate.master_bath') }}
+      Guest 1: {{ states('climate.guest_1') }}
+      Guest 2: {{ states('climate.guest_2') }}

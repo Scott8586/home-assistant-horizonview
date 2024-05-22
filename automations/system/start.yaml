@@ -6,18 +6,53 @@ trigger:
   platform: homeassistant        
 condition: []                              
 action:                       
-  # Send a telegram                                 
-  - service: !secret telegram_notify
-    data:                                                                                        
-      message: "Home Assistant (re)started"                                  
-  - delay: 00:00:05                
-  # Restart the monitor services   
-  - service: mqtt.publish                            
-    data:                                                                         
-      topic: "monitor/scan/restart"  
-      payload: ""        
-  - service: mqtt.publish
-    data:
-      topic: "cmnd/tasmotas/state"
-      payload: ""
-
+  # Send a telegram
+  - choose:
+    - alias: "send telegram on start"
+      conditions: []
+      sequence:
+        - service: !secret telegram_notify
+          data:                                                                                        
+            message: "Home Assistant (re)started"
+  - delay: 00:00:05
+  - choose:
+    - alias: "send state to tasmotas"
+      conditions: []
+      sequence:
+        - service: mqtt.publish
+          data:
+            topic: "cmnd/tasotas/state"
+            payload: ""
+#  - choose:
+#    - alias: "Set A6 not_home/away if unavailable"
+#      conditions:
+#        - condition: state
+#          entity_id: device_tracker.audi_a6_166a
+#          state: "unavailable"
+#      sequence:
+#        - service: python_script.set_state
+#          data_template:
+#            entity_id: device_tracker.audi_a6_166a
+#            state: "not_home"
+  - choose:
+    - alias: "Set Q7 not_home/away if unavailable"
+      conditions:
+        - condition: state
+          entity_id: device_tracker.audi_q7_8ff5
+          state: "unavailable"
+      sequence:
+        - service: python_script.set_state
+          data_template:
+            entity_id: device_tracker.audi_q7_8ff5
+            state: "not_home"
+  - choose:
+    - alias: "Set iX not_home/away if unavailable"
+      conditions:
+        - condition: state
+          entity_id: device_tracker.bmw_ix_e907
+          state: "unavailable"
+      sequence:
+        - service: python_script.set_state
+          data_template:
+            entity_id: device_tracker.bmw_ix_e907
+            state: "not_home"

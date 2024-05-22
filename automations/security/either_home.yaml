@@ -4,6 +4,10 @@ trigger:
   - platform: state
     entity_id: binary_sensor.both_away
     to: 'off'
+condition:
+  alias: "House not already in home mode"
+  condition: template
+  value_template: "{{ not is_state('sensor.vera_house_mode', 'Home') }}"
 action:                                                                   
   - service: rest_command.hm_command
     data_template:                                                           

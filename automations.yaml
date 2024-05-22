@@ -43,3 +43,34 @@
     target:
       entity_id: input_boolean.disable_livingroom_cover_down_automation
   mode: single
+- id: '1704648116344'
+  alias: Shelly Button Press
+  description: Shelly Button Press
+  trigger:
+  - platform: device
+    device_id: b9b4f7ce4020ec21860fe8c8f24c7d2c
+    domain: bthome
+    type: button
+    subtype: press
+  condition: []
+  action:
+  - service: notify.telegram_horizonview
+    data:
+      message: 'N: Shelly button press'
+      title: this is a title
+  mode: single
+- id: '1714620673577'
+  alias: 'C: Hello-Goodbye'
+  description: Testing Automation UI
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+      command: /hello
+  condition: []
+  action:
+  - service: notify.telegram_horizonview
+    data:
+      message: goodbye!
+      title: This is my message
+  mode: single

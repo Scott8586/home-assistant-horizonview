@@ -6,4 +6,10 @@ motion_sensors:
     - binary_sensor.lower_hall_motion
     - binary_sensor.kitchen_motion
     - binary_sensor.master_bed_motion
-
+door_sensors:
+  name: Door Sensors
+  icon: mdi:door
+  entities:
+    - binary_sensor.entry_doors
+    - binary_sensor.upper_doors
+    - binary_sensor.lower_doors

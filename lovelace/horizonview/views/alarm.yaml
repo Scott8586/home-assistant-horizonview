@@ -9,4 +9,52 @@ cards:
     title: House Alarm Panel
     entities:
       - entity: sensor.house_alarm_keypad
-
+  - type: entities
+    title: Doors
+    state_color: true 
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.crawl_space_door_62
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.crawl_space_door_62', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.garage_door_60
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.garage_door_60', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.open_space_gate_59
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.open_space_gate_59', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.pool_gate_43
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.pool_gate_43', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.pool_room_door_63
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.pool_room_door_63', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.wine_cellar_93
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.wine_cellar_93', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.entry_doors
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.entry_doors', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.upper_doors
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.upper_doors', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.lower_doors
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.lower_doors', 'last_tripped_time'))) }} ago"
+  - type: entities
+    title: Motion
+    state_color: color
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.entry_hall_motion
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.entry_hall_motion', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.lower_hall_motion
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.lower_hall_motion', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.kitchen_motion
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.kitchen_motion', 'last_tripped_time'))) }} ago"
+      - entity: binary_sensor.master_bed_motion
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "{{ relative_time(as_datetime(state_attr('binary_sensor.master_bed_motion', 'last_tripped_time'))) }} ago"

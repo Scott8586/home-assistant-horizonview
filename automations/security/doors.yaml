@@ -14,7 +14,7 @@ condition:
     - condition: or
       conditions:
         - condition: template
-          value_template: "{{ states('sensor.vera_house_mode') != 'Home' }}"
+          value_template: "{{ states('input_select.house_mode') != 'Home' }}"
         - condition: template
           value_template: "{{ states('alarm_control_panel.house_alarm') != 'disarmed' }}"
     - condition: template

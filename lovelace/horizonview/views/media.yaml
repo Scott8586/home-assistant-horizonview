@@ -49,3 +49,10 @@ cards:
         group: true
         hide:
           controls: true
+  - type: 'custom:mini-media-player'
+    entity: media_player.fire_tv_192_168_35_219
+    source: full
+  # - type: entity-button
+  #   entity: script.familyroom_firestick_screensaver
+  #   tap_action: call-service
+  #   service: script.turn_on

@@ -1,0 +1,41 @@
+# Floor control     
+id: 'floorcontrol'
+alias: "C: Floor HVAC Control"
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/floor'
+action:
+  # - service: climate.turn_{{ trigger.event.data['args'][1] }}
+  #   target:
+  #     entity_id: "{{ trigger.event.data['args'][0] }}"                                                                                                     
+  - service: !secret telegram_notify
+    data:
+      message: |
+        {% set token = trigger.event.data['args'][0] %}
+        {% if token == 'status' or token == undefined %}
+          Master Bath Floor: {{ states('climate.master_bath') }}
+          Guest 1 Floor: {{ states('climate.guest_1') }}
+          Guest 2 Floor: {{ states('climate.guest_2') }}
+        {% else %}
+          {{ trigger.event.data['args'][0] }} is now {{ trigger.event.data['args'][1] }}
+        {% endif %}
+  # quit if condition is false
+  - condition: and
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.event.data['args'][0] != 'status' }}"
+      - condition: template
+        value_template: "{{ trigger.event.data['args'][1] != undefined }}"
+  - service: climate.turn_{{ trigger.event.data['args'][1] }}
+    target:
+      entity_id: "{{ trigger.event.data['args'][0] }}"
+  # If turning on, set to auto hvac mode
+  - condition: template
+    value_template: "{{ trigger.event.data['args'][1] == 'on' }}"
+  - service: climate.set_hvac_mode
+    target:
+      entity_id: "{{ trigger.event.data['args'][0] }}"
+    data:
+      hvac_mode: "auto"

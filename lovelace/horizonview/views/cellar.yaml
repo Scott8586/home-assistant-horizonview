@@ -10,12 +10,12 @@ cards:
       - binary_sensor.chiller_status
       - sensor.chiller_duty_cycle
       - sensor.chiller_cycle_length
-      - sensor.weewx_cellar_temperature
-      - sensor.weewx_cellar_humidity
+      - sensor.gw1000_temp2
+      - sensor.gw1000_humidity2
       - switch.cellar_ac
   - entities:
-      - sensor.weewx_cellar_temperature
-      - sensor.weewx_cellar_humidity
+      - sensor.gw1000_temp2
+      - sensor.gw1000_humidity2
     name: Wine Cellar Temperature
     group: false
     hour24: true

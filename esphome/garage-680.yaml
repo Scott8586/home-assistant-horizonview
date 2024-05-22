@@ -1,0 +1,144 @@
+esphome:
+  name: garage-680
+  friendly_name: garage-680
+
+esp8266:
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "7BFlEis004Z/u8pkrC2lSok2HdaBs3fhIDb4Dw/AUAk="
+
+ota:
+  password: "075d52c7a84eda7ea94eb8cb496f4d00"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Garage-680 Fallback Hotspot"
+    password: "eSe5aE9S2IHT"
+
+captive_portal:
+
+# Example configuration entry
+web_server:
+
+# Activates prometheus /metrics endpoint
+prometheus:
+
+# Example configuration entry
+time:
+  - platform: sntp
+    id: sntp_time
+    servers:
+      - 192.168.35.157
+      
+i2c:
+  sda: 4
+  scl: 5
+  scan: True
+
+bme680_bsec:
+  address: 0x77
+  
+sensor:
+  - platform: uptime
+    name: Garage 680 Uptime Second
+    id: uptime_sensor
+    update_interval: 60s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+              int seconds = round(id(uptime_sensor).raw_state);
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              seconds = seconds % 60;
+              return (
+                (days ? String(days) + "d " : "") +
+                (hours ? String(hours) + "h " : "") +
+                (minutes ? String(minutes) + "m " : "") +
+                (String(seconds) + "s")
+              ).c_str();
+
+  - platform: bme680_bsec
+    temperature:
+      name: "Garage Temperature"
+      id: garage_temperature
+    pressure:
+      name: "Garage Pressure"
+    humidity:
+      name: "Garage Humidity"
+      id: garage_humidity
+    iaq:
+      name: "Garage IAQ"
+    co2_equivalent:
+      name: "Garage eCO2"
+    breath_voc_equivalent:
+      name: "Garage eVOC"
+
+  - platform: template
+    name: "Garage DewPoint"
+    id: garage_dewpoint
+    lambda: |-
+      return (243.5*(log(id(garage_humidity).state/100)+((17.67*id(garage_temperature).state)/
+      (243.5+id(garage_temperature).state)))/(17.67-log(id(garage_humidity).state/100)-
+      ((17.67*id(garage_temperature).state)/(243.5+id(garage_temperature).state))));
+    unit_of_measurement: °C
+    update_interval: 60s
+    icon: 'mdi:water-thermometer'
+
+  - platform: wifi_signal
+    name: "Garage 680 WiFi Signal"
+    update_interval: 60s
+
+# Example configuration entry
+button:
+  - platform: restart
+    name: "Garage 680 Restart"
+
+text_sensor:
+  - platform: bme680_bsec
+    iaq_accuracy:
+      name: "Garage IAQ Accuracy"
+
+  - platform: template
+    name: Garage Comfort Level
+    lambda: |-
+      if (id(garage_dewpoint).state > 23.9) {
+        return {"Miserable"};
+      } else if (id(garage_dewpoint).state > 21.1) {
+        return {"Oppresive"};
+      } else if (id(garage_dewpoint).state > 18.3) {
+        return {"Uncomfortable"};
+      } else if (id(garage_dewpoint).state > 15.6) {
+        return {"Sticky"};
+      } else if (id(garage_dewpoint).state > 12.8) {
+        return {"Comfortable"};
+      } else if (id(garage_dewpoint).state > 10.0) {
+        return {"Pleasant"};
+      } else if (id(garage_dewpoint).state > 0) {
+        return {"Dry"};
+      } else {
+        return {"Undefined"};
+      }
+    icon: "mdi:water-percent"
+    update_interval: 60s
+
+  - platform: template
+    name: Garage 680 Uptime
+    id: uptime_human
+    icon: mdi:clock-start
+
+

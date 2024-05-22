@@ -1,20 +1,14 @@
 # Check Garage doors
 id: 'checkgaragedoors'
-alias: "S: Check Garage Doors"
-initial_state: 'on'
+alias: "S: Check Garage Door"
 trigger:
   platform: time
   at: '21:30:00'
 condition:
-  condition: or
-  conditions:
-    - condition: state
-      entity_id: cover.hv_main_door
-      state: "open"
-    - condition: state
-      entity_id: cover.hv_side_door
-      state: "open"
+  - condition: state
+    entity_id: binary_sensor.main_garage_door
+    state: "on"
 action:
   - service: !secret telegram_notify
-    data_template:
-      message: "A garage door is open"
+    data:
+      message: "S: Main Garage Door is Open"
